@@ -6,7 +6,7 @@ import java.util.GregorianCalendar;
  */
 public class Driver
 {
-  static final int holidayAllowance = 25;
+  public static final int holidayAllowance = 25;
   
   // a driver has a name and an id number
   private String name;
