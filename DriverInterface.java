@@ -257,7 +257,7 @@ public class DriverInterface extends JFrame implements ActionListener
 	{
 		resultTextArea.setText ("");
 		requestHolidayMessage.setText("<html>"+e.getMessage()+"<br><br><br>");
-	}
+	}//catch
  	 
  	}// else if
  	
