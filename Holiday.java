@@ -67,7 +67,7 @@ public class Holiday
     Date date; // date object required by database wrapper methods
     int[] result = new int[length+1]; // array to store the results
     result[0] = 1;
-    //02/0117
+    
     for (int day = 0; day < length; day++)
     {
       date = counter.getTime();
