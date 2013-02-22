@@ -4,7 +4,7 @@ import javax.swing.*;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-/* Dani and Adam  test*/
+/* Dani and Adam */
 
 public class DriverInterface extends JFrame implements ActionListener
 {
