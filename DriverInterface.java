@@ -83,7 +83,7 @@ public class DriverInterface extends JFrame implements ActionListener
         
     setDefaultCloseOperation (EXIT_ON_CLOSE);
     pack();
- } // constructor
+ } // constructorr
  
 	
 	// Query the DB for the driver's remaining days
