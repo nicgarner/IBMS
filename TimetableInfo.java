@@ -70,6 +70,15 @@ public class TimetableInfo
   }
   
   /**
+   * Get all the services in a route for the given day.
+   * (Added by Nic)
+   */
+  public static int[] getServices(int route, Date date)
+  {
+    return getServices(route, timetableKind(date));
+  }
+  
+  /**
    * Get the number of services on a given route and data
    */
   public static int getNumberOfServices(int route, Date date)
@@ -99,6 +108,19 @@ public class TimetableInfo
     int service = service_ids[serviceNumber];
     String source = database.join("timetable_line", "service", "service");
     return database.busDatabase.select_ids("time", source, "service", service, "time");
+  }
+  
+  /**
+   * Get the service times for a particular service. (Added by Nic)
+   */
+  public static int[] getServiceTimes(int service)
+  {
+    if (service == 0) throw new InvalidQueryException("Nonexistent service");
+    String source = database.join("timetable_line", "service", "service");
+    if (source == "")
+      throw new InvalidQueryException("Nonexistent service");
+    else
+      return database.busDatabase.select_ids("time", source, "service", service, "time");
   }
   
   /**

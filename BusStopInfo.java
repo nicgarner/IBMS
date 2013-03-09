@@ -46,12 +46,15 @@ public class BusStopInfo
 
   /**
    * Get the name of a route
+   * Modified by Nic to throw error when route doesn't exist
    * @return the name of one of the routes within the scope of the IBMS
    */
   public static String getRouteName(int route)
   {
     if (route == 0) throw new InvalidQueryException("Nonexistent route");
-    return database.busDatabase.get_string("route", route, "name");
+    String string = database.busDatabase.get_string("route", route, "name");
+    if (string == "") throw new InvalidQueryException("Nonexistent route");
+    else return string;
   }
 
   /**
@@ -85,6 +88,7 @@ public class BusStopInfo
   /**
    * Get the full name of a bus stop in the format 'areaname,stopname', eg
    * "Marple,Navigation"
+   * Modified by Nic to throw error when route doesn't exist
    */
   public static String getFullName(int busStop)
   {
@@ -93,11 +97,11 @@ public class BusStopInfo
     if (db.select_record("area.name, name", database.join("bus_stop", "area", "area"), "bus_stop_id", busStop))
       return (String)db.get_field("area.name") + ", " + (String)db.get_field("name");
     else
-      return "";
+      throw new InvalidQueryException("Nonexistent bus stop");
   }
 
   /**
-   * Get al the bus stops in a given area
+   * Get all the bus stops in a given area
    */
   public static int[] getBusStopsInArea(int area)
   {
