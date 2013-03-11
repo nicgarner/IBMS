@@ -21,10 +21,6 @@ public class Timetable
       System.out.println(journeys[j]);
   }
   
-  
-  
-  
-  
   /**
    * Returns an array of Journey objects to represent all the bus journeys to be
    * made between the specified dates. This is the first stage of the rostering
@@ -76,7 +72,7 @@ public class Timetable
    *
    * @param  route     the route the timetable is for
    * @param  date      the day the timetable is for
-   * @return Service[] 2D-array of times in the timetable
+   * @return Service[] services in the timetable
    */
   public static Service[] get_services(Route route, GregorianCalendar date)
   {
@@ -113,10 +109,8 @@ public class Timetable
       System.out.println("Route: " + BusStopInfo.getRouteName(routes[route]) +
                          " (id:" + routes[route] + ")");
       
-      // get the bus stops on the route
+      // get the bus stops and timing points on the route
       int[] stops = BusStopInfo.getBusStops(routes[route]);
-      
-      // get the timing points on the route
       int[] tp = TimetableInfo.getTimingPoints(routes[route]);
       
       // get the services of each kind (weekdays, saturday, Sunday) on the route

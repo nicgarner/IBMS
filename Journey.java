@@ -2,80 +2,90 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 
 /** 
- * Creates a journey for IBMS rostering. A journey is a combination of a time and a service. 
- * The combination of a journey
- * and a date will give a unique pair, a stretch. Implemented by Adam.
+ * Creates a journey for IBMS rostering. A journey is a combination of a date 
+ * and a service. The combination of a service and a date will give a unique 
+ * pair, called a journey. Implemented by Adam and Nic.
 */
 
 public class Journey 
 {
-	private int busID, driverID, service;
-	private GregorianCalendar journeyDate;
+	private Service service;
+	private GregorianCalendar date;
 	
 	/**
 	 * Represents a journey in the system. 
 	 * @param serviceID the service's ID from the database (a column of a timetable)
 	 * @param date the journey's date
 	 */
-	public Journey (int serviceID, GregorianCalendar date)
+	public Journey (int serviceID, GregorianCalendar journeyDate)
 	{
-		busID = -1;
-		driverID = -1;
-		service = serviceID;
-		journeyDate = (GregorianCalendar) date.clone();
+		service = new Service(serviceID);
+		date = (GregorianCalendar) journeyDate.clone();
 	}// constructor
 	
 	/**
-	 * Assigns a bus ID to the journey once the buses are scheduled
-	 * @param IDToSet the ID of the bus we want to assign to the journey
-	*/
-	public void setBusID (int IDToSet)
-	{
-		busID = IDToSet;
-	}// setBusID
-	
-	/**
-	 * Assigns a driver ID to the journey once the drivers are scheduled
-	 * @param IDToSet the ID of the driver to be assigned to the journey
+	 * Gets the service ID of the journey
+	 * @return the service ID of the journey
 	 */	
-	public void setDriverID (int IDToSet)
-	{
-		driverID = IDToSet;
-	}// setDriverID
-	
-	/**
-	 * Returns the journey's assigned bus ID
-	 * @return the bus ID of the journey
-	 */	
-	public int getBusID ()
-	{
-		return busID;
-	}// getBusID
-	
-	/**
-	 * Returns the journey's assigned driver ID
-	 * @return the driver's ID of the journey
-	 */	
-	public int getDriverID ()
-	{
-		return driverID;
-	}// getDriverID
-	
-	/**
-	* Gets the service ID of the journey
-	* @return the service ID of the journey
-	*/	
-	public int getServiceID ()
+	public Service getService ()
 	{
 		return service;
 	}// getJourneyID
 	
+	/**
+	 * Gets the date of the journey
+	 * @return the date of the journey
+	 */	
+	public GregorianCalendar getDate ()
+	{
+		return date;
+	}// getJourneyID
 	
+	/**
+	 * Gets the start time of the journey.
+	 * @return the start time of the journey
+	 */
+  public int startTime()
+  {
+    return service.startTime();
+  }
+	
+	/**
+	 * Gets the end time of the journey.
+	 * @return the end time of the journey
+	 */
+  public int endTime()
+  {
+    return service.endTime();
+  }
+	
+	/**
+	 * Gets the duration of the journey in minutes.
+	 * @return the duration of the journey in minutes
+	 */
+  public int duration()
+  {
+    return service.duration();
+  }
+	
+	/**
+	 * Returns a string representation of the journey.
+	 * @return string representation of the journey
+	 */
 	public String toString ()
 	{
-		return "Service ID: " + service + ", Journey date: " + 
-		       Timetable.dateToString(journeyDate) + ", Driver ID: " + driverID + 
-		       ", Bus ID: " + busID;
+		return "Service: " + service + ", " +
+		       "Date: " + Timetable.dateToString(date);
+	}// toString
+	
+	/**
+	 * Returns a more detailed string representation of the journey.
+	 * @return string representation of the journey
+	 */
+	public String toFullString ()
+	{
+		return "Service: " + service.toFullString() + ", " +
+		       "Date: " + Timetable.dateToString(date);
 	}// toString
 	
 }// class

@@ -31,7 +31,7 @@ public class Service {
    *
    * @return int the number of minutes past midnight when the service will start
    */
-  public int getStartTime()
+  public int startTime()
   {
     return times[0];
   }
@@ -41,7 +41,7 @@ public class Service {
    *
    * @return int the number of minutes past midnight when the service will end
    */
-  public int getEndTime()
+  public int endTime()
   {
     int endTime = times[times.length-1];
     
@@ -62,8 +62,8 @@ public class Service {
    */
   public int duration()
   {
-    int startTime = getStartTime();
-    int endTime = getEndTime();
+    int startTime = startTime();
+    int endTime = endTime();
     
     // if service crosses midnight can't do a simple subtraction
     if (endTime < startTime)
@@ -73,15 +73,26 @@ public class Service {
   } // method (duration)
   
   /**
-   * Returns a string representation of the service.
+   * Returns a short string representation of the service.
    *
-   * @return String the service id followed by the times in that service
+   * @return String the service id
    */
   public String toString()
   {
-    String string = id + ": ";
-    for (int time = 0; time < times.length; time++)
+    return "" + id;
+  } // method (toString)
+  
+  /**
+   * Returns a longer string representation of the service.
+   *
+   * @return String the service id followed by the times in that service
+   */
+  public String toFullString()
+  {
+    String string = toString() + " (";
+    for (int time = 0; time < times.length-1; time++)
       string += times[time] + " ";
+    string += times[times.length-1] + ")";
     return string;
   } // method (toString)
   
