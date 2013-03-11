@@ -7,7 +7,15 @@ public class Stretch
 {
 	// Duration is given in minutes. startTime and endTime are given in minutes
 	// past midnight.
-	private int duration, busID, driverID, startTime, endTime;
+	private int busID, driverID;
+	private Journey[] journeys;
+	
+	/* mewthods for duration, start time, end time */
+	/* date field with get method
+	/* array of journey objects */
+	
+	/* constructor will take a single journey object */
+	/* additional method to add a new journey object */
 	
 	/**
 	 * Creates a stretch.
