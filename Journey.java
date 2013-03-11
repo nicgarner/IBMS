@@ -2,7 +2,8 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 
 /** 
- *Creates a stretch for IBMS rostering. The combination of a journey
+ * Creates a journey for IBMS rostering. A journey is a combination of a time and a service. 
+ * The combination of a journey
  * and a date will give a unique pair, a stretch. Implemented by Adam.
 */
 
