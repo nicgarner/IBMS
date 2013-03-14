@@ -22,7 +22,7 @@ public class Stretch
 	{
 		busID = -1;
 		driverID = -1;
-		date = journey.date;
+		date = journey.getDate();
 	}// constructor
 	
 	/**
@@ -30,7 +30,7 @@ public class Stretch
 	 @param a Journey object from the loop of the Roster class
 	 @return puts the journey into the list of relevant journeys
 	 */
-	public void getJourneys (Journey journey)
+	public Journey[] getJourneys (Journey journey)
 	{
 		ArrayList<Journey> journeysList = new ArrayList<Journey>();
 		journeys = new Journey[journeysList.size()];
@@ -77,7 +77,7 @@ public class Stretch
 	 * Returns the date of the stretch
 	 * @return the date of the stretch it is called by
 	 */
-	public Date getDate ()
+	public GregorianCalendar getDate ()
 	{
 		return date;
 	}// getDate
@@ -89,7 +89,7 @@ public class Stretch
 	 */
 	public int startTime ()
 	{
-		return journeys[0].startTime;
+		return journeys[0].startTime();
 	}// startTime
 	
 	/**
@@ -99,7 +99,7 @@ public class Stretch
 	 */
 	 public int endTime ()
 	 {
-	 	return journeys[journeys.length - 1].endTime;
+	 	return journeys[journeys.length - 1].endTime();
 	 }// endTime
 	 
 	 /**
@@ -115,7 +115,8 @@ public class Stretch
 	
 	public String toString ()
 	{
-		return "Start time: " + startTime + " End time: " + endTime + " Duration: " + duration + 
+		return "Start time: " + startTime() + " End time: " + endTime()
+		 + " Duration: " + duration() + 
 			" Bus ID: " + busID + " Driver ID: " + driverID;
 	}// toString
 }// class 
