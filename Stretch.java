@@ -10,32 +10,38 @@ import java.util.ArrayList;
 public class Stretch
 {
 	private int busID, driverID;
-	private Journey[] journeys;
+	private ArrayList <Journey> journeys;
 	private GregorianCalendar date;
 		
 	/**
-	 * Creates a stretch.
-	 * @param start the start time of the stretch in minutes after midnight
-	 * @param end the end time of the stretch in minutes after midnight
+	 * Creates a stretch. BusID and driverID are not set here, they have specific methods.
+	 * @param journey a journey associated with the stretch
 	*/
 	public Stretch 	(Journey journey)
 	{
 		busID = -1;
 		driverID = -1;
 		date = journey.getDate();
+		journeys = new ArrayList<Journey>();
 	}// constructor
 	
 	/**
 	 * Puts the journeys related to the stretch into an array.
-	 @param a Journey object from the loop of the Roster class
 	 @return puts the journey into the list of relevant journeys
 	 */
-	public Journey[] getJourneys (Journey journey)
+	public Journey[] getJourneys ()
 	{
-		ArrayList<Journey> journeysList = new ArrayList<Journey>();
-		journeys = new Journey[journeysList.size()];
-		return journeysList.toArray (journeys);
+		Journey[] journeyArray = new Journey[journeys.size()];		
+		return journeys.toArray (journeyArray);
 	}// getJourney
+	
+	/**
+	 * Adds a journey to the array of journeys.
+	 */
+	public void addJourney (Journey journey)
+	{
+		journeys.add (journey);
+	}// addJourney
 	
 	/**
 	 * Assigns a bus ID to the journey once the buses are scheduled
@@ -89,7 +95,7 @@ public class Stretch
 	 */
 	public int startTime ()
 	{
-		return journeys[0].startTime();
+		return journeys.get(0).startTime();
 	}// startTime
 	
 	/**
@@ -99,7 +105,8 @@ public class Stretch
 	 */
 	 public int endTime ()
 	 {
-	 	return journeys[journeys.length - 1].endTime();
+	 	int size = journeys.size();
+	 	return journeys.get(size - 1).endTime();
 	 }// endTime
 	 
 	 /**
