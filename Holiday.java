@@ -30,12 +30,12 @@ public class Holiday
       throw new IllegalArgumentException("Start date must precede end date.");
     
     // calculate the number of days in the range
-    GregorianCalendar counter = (GregorianCalendar) start_date.clone();
+    GregorianCalendar date = (GregorianCalendar) start_date.clone();
     int length = 1;
-    while (counter.before(end_date))
+    while (date.before(end_date))
     {
       length++;
-      counter.add(GregorianCalendar.DAY_OF_MONTH, 1);
+      date.add(GregorianCalendar.DAY_OF_MONTH, 1);
     }
     
     // check for impossible durations
@@ -63,15 +63,12 @@ public class Holiday
     Driver[] drivers = Driver.get_drivers();
     
     // counter to represent each day in the range, starting on the start date
-    counter = (GregorianCalendar) start_date.clone();
-    Date date; // date object required by database wrapper methods
+    date = (GregorianCalendar) start_date.clone();
     int[] result = new int[length+1]; // array to store the results
     result[0] = 1;
     
     for (int day = 0; day < length; day++)
     {
-      date = counter.getTime();
-      
       if (driver.available(date) == false)
         // driver already has this day booked so don't need to continue
         result[day+1] = 1;
@@ -92,7 +89,7 @@ public class Holiday
           result[0] = 0;
         }
         else if (unavailable_drivers >= 10 && 
-                 TimetableInfo.timetableKind(date) ==
+                 TimetableInfo.timetableKind(date.getTime()) ==
                                  TimetableInfo.timetableKind.valueOf("weekday"))
         {
           result[day+1] = 0;
@@ -102,7 +99,7 @@ public class Holiday
           result[day+1] = 2;
       }
         
-      counter.add(GregorianCalendar.DAY_OF_MONTH, 1);
+      date.add(GregorianCalendar.DAY_OF_MONTH, 1);
     }
     
     if (result[0] == 0)
@@ -121,16 +118,13 @@ public class Holiday
     }
     
     // holiday is approved, so record in database
-    counter = (GregorianCalendar) start_date.clone();
+    date = (GregorianCalendar) start_date.clone();
     for (int day = 1; day < result.length; day++)
     {
       if (result[day] == 2)
-      {
-        date = counter.getTime();
-        DriverInfo.setAvailable(driver.key(), date, false);
-      }
+        DriverInfo.setAvailable(driver.key(), date.getTime(), false);
         
-      counter.add(GregorianCalendar.DAY_OF_MONTH, 1);
+      date.add(GregorianCalendar.DAY_OF_MONTH, 1);
     }
     update_holiday_used(days_to_book, driver);
     
