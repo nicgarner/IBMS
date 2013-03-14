@@ -1,7 +1,7 @@
 import java.util.Date;
 import java.util.GregorianCalendar;
 
-/**
+/** smth
  * Provides the method for processing holidays. Implemented by Nic.
  */
 public class Holiday
