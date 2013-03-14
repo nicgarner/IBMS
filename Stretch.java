@@ -3,33 +3,39 @@
  * to a journey. Implemented by Adam.
 */
 
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.ArrayList;
+
 public class Stretch
 {
-	// Duration is given in minutes. startTime and endTime are given in minutes
-	// past midnight.
 	private int busID, driverID;
 	private Journey[] journeys;
-	
-	/* mewthods for duration, start time, end time */
-	/* date field with get method
-	/* array of journey objects */
-	
-	/* constructor will take a single journey object */
-	/* additional method to add a new journey object */
-	
+	private GregorianCalendar date;
+		
 	/**
 	 * Creates a stretch.
 	 * @param start the start time of the stretch in minutes after midnight
 	 * @param end the end time of the stretch in minutes after midnight
 	*/
-	public Stretch (int start, int end)
+	public Stretch 	(Journey journey)
 	{
 		busID = -1;
 		driverID = -1;
-		startTime = start;
-		endTime = end;
-		duration = startTime - endTime;
+		date = journey.date;
 	}// constructor
+	
+	/**
+	 * Puts the journeys related to the stretch into an array.
+	 @param a Journey object from the loop of the Roster class
+	 @return puts the journey into the list of relevant journeys
+	 */
+	public void getJourneys (Journey journey)
+	{
+		ArrayList<Journey> journeysList = new ArrayList<Journey>();
+		journeys = new Journey[journeysList.size()];
+		return journeysList.toArray (journeys);
+	}// getJourney
 	
 	/**
 	 * Assigns a bus ID to the journey once the buses are scheduled
@@ -66,6 +72,46 @@ public class Stretch
 	{
 		return driverID;
 	}// getDriverID
+	
+	/**
+	 * Returns the date of the stretch
+	 * @return the date of the stretch it is called by
+	 */
+	public Date getDate ()
+	{
+		return date;
+	}// getDate
+	
+	/**
+	 * Gets the start time of the stretch
+	 * @return the start time of the first element of the
+	 * relevant journeys
+	 */
+	public int startTime ()
+	{
+		return journeys[0].startTime;
+	}// startTime
+	
+	/**
+	 * Returns the end time of the stretch
+	 * @return the end time of the last element of the
+	 * relevant journeys
+	 */
+	 public int endTime ()
+	 {
+	 	return journeys[journeys.length - 1].endTime;
+	 }// endTime
+	 
+	 /**
+	 * Calculates the duration of a stretch
+	 * @return the difference between the end time of the last
+	 * journey and the start time of the first journey
+	 */
+	public int duration ()
+	{
+		return startTime () - endTime ();
+	}// duration
+	
 	
 	public String toString ()
 	{
