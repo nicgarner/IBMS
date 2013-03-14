@@ -3,7 +3,6 @@
  * to a journey. Implemented by Adam.
 */
 
-import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.ArrayList;
 
@@ -116,7 +115,7 @@ public class Stretch
 	 */
 	public int duration ()
 	{
-		return startTime () - endTime ();
+		return endTime () - startTime ();
 	}// duration
 	
 	
