@@ -126,13 +126,13 @@ public class DriverInterface extends JFrame implements ActionListener
 		requestHolidayMessage.setFont(new Font("SansSerif", Font.PLAIN, 12));
 		holidayRequestPanel.add (requestHolidayMessage);
 		
-		Dimension requestPanelSize = new Dimension (100, 53);
+		//Dimension requestPanelSize = new Dimension (100, 53);
 		
 		// Start and end date fields 
 		JPanel startDatePanel = new JPanel ();
 		startDatePanel.setLayout (new BoxLayout (startDatePanel, BoxLayout.Y_AXIS));
-		startDatePanel.setPreferredSize (requestPanelSize);
-		startDatePanel.setMaximumSize (requestPanelSize);
+		//startDatePanel.setPreferredSize (requestPanelSize);
+		//startDatePanel.setMaximumSize (requestPanelSize);
 		//startDatePanel.add (Box.Filler (10, 10, 10));
 		holidayRequestPanel.add (startDatePanel);
 		JLabel startDateLabel = new JLabel ("Start date: ");
@@ -145,8 +145,8 @@ public class DriverInterface extends JFrame implements ActionListener
 		
 		JPanel endDatePanel = new JPanel ();
 		endDatePanel.setLayout (new BoxLayout (endDatePanel, BoxLayout.Y_AXIS));
-		endDatePanel.setPreferredSize (requestPanelSize);
-		endDatePanel.setMaximumSize (requestPanelSize);
+		//endDatePanel.setPreferredSize (requestPanelSize);
+		//endDatePanel.setMaximumSize (requestPanelSize);
 		holidayRequestPanel.add (endDatePanel);
 		JLabel endDateLabel = new JLabel ("End date: ");
 		endDatePanel.add (endDateLabel);

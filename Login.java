@@ -12,12 +12,12 @@ public class Login extends JFrame implements ActionListener
 	private static Login login;
 	//public static Menu theMenu;
 	public static DriverInterface driverInterface;
+	public static SupervisorInterface supervisorInterface;
 	// 2 textfields for the login
 	private final JTextField username = new JTextField(10);
   //private final JPasswordField password = new JPasswordField(10);
-  	private JLabel warningJLabel;
-  	
-  	private Driver driver;
+	private JLabel warningJLabel;
+	private Driver driver;
   
   // Constructor
   public Login ()
@@ -33,15 +33,17 @@ public class Login extends JFrame implements ActionListener
     
     loginPanel.add (new JLabel ("Username: "));
     loginPanel.add (username);
-/*    username.addKeyListener(new KeyListener()
+    
+    // nic trying to add code so that button responds to enter key
+/*  username.addKeyListener(new KeyListener()
     {
       public void keyPressed(KeyEvent e)
       {
         if (e.getKeyChar() == KeyEvent.VK_ENTER)
           actionPerformed (e);
       }
-    }); */
-    
+    });
+*/    
     //loginPanel.add (new JLabel ("Password:"));
     //loginPanel.add (password);
     
@@ -62,11 +64,18 @@ public class Login extends JFrame implements ActionListener
   public void actionPerformed (ActionEvent event)
   {  	  	
     // On click of Login button    
-    // Try to create a new Driver object if the ID is found in the DB
+    // check to see if controller is loggin in, otherwise
+    // try to create a new Driver object if the ID is found in the DB
     try
     {
-    driver = new Driver (username.getText());
-    displayDriverInterface();
+      if (username.getText().toLowerCase().equals("supervisor") ||
+          username.getText().toLowerCase().equals("s"))
+        displaySupervisorInterface();
+      else
+      {
+        driver = new Driver (username.getText());
+        displayDriverInterface();
+      }
     }// try
     
     catch (InvalidQueryException exception)
@@ -91,7 +100,24 @@ public class Login extends JFrame implements ActionListener
   	driverInterface.setVisible (true);  	
   	driverInterface.setDefaultCloseOperation (EXIT_ON_CLOSE);
   	login.setVisible (false);  	
-  }// displayDriverInterface
+  } // displayDriverInterface
+  
+  private void displaySupervisorInterface ()
+  {
+  	supervisorInterface = new SupervisorInterface();
+  	
+  	// Position the window to the middle of the screen
+  	Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+		supervisorInterface.setLocation(dim.width/2-
+		supervisorInterface.getSize().width/2,
+		dim.height/2-supervisorInterface.getSize().height/2);
+		
+  	// Pressing the Login button will hide the login
+  	// app and open the menu
+  	supervisorInterface.setVisible (true);  	
+  	supervisorInterface.setDefaultCloseOperation (EXIT_ON_CLOSE);
+  	login.setVisible (false);  	
+  } // displaySupervisorInterface
   
   public static void main (String[] args)
   {
