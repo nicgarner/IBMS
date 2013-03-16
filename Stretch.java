@@ -22,6 +22,7 @@ public class Stretch
 		driverID = -1;
 		date = journey.getDate();
 		journeys = new ArrayList<Journey>();
+		journeys.add(journey);
 	}// constructor
 	
 	/**
