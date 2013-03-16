@@ -4,6 +4,7 @@
 */
 
 import java.util.GregorianCalendar;
+import java.util.Date;
 import java.util.ArrayList;
 
 public class Stretch
@@ -13,10 +14,12 @@ public class Stretch
 	private GregorianCalendar date;
 		
 	/**
-	 * Creates a stretch. BusID and driverID are not set here, they have specific methods.
-	 * @param journey a journey associated with the stretch
+	 * Creates a stretch with a single journey, for use in generating a roster.
+	 * BusID and driverID are not set here, they have specific methods.
+	 *
+	 * @param  journey  a journey associated with the stretch
 	*/
-	public Stretch 	(Journey journey)
+	public Stretch (Journey journey)
 	{
 		busID = -1;
 		driverID = -1;
@@ -26,8 +29,35 @@ public class Stretch
 	}// constructor
 	
 	/**
+	 * Instatiates a stretch saved in the database.
+	 * 
+	 * @param  stretchID  the id number of the stretch record in the database
+	 */
+	public Stretch (int stretchID)
+	{
+	  busID = database.busDatabase.find_id("bus_id", "stretch", "stretch_id", stretchID);
+	  driverID = database.busDatabase.find_id("driver_id", "stretch", "stretch_id", stretchID);
+	  date = new GregorianCalendar();
+	  date.setTime(database.busDatabase.get_date("stretch", stretchID, "date"));
+	  
+	  //System.out.println(busID + " " + driverID + " " + Timetable.dateToString(date));
+	  
+	  journeys = new ArrayList<Journey>();
+	  int[] journey_ids = database.busDatabase.select_ids("journey_id", "journey", 
+	                                                      "stretch_id", stretchID,
+	                                                      "journey_id");
+	  for (int j = 0; j < journey_ids.length; j++)
+	  {
+	    //System.out.print(journey_ids[j] + " ");
+	    journeys.add(new Journey(journey_ids[j], date, true));
+	  }
+	  //System.out.println();
+	}
+	
+	/**
 	 * Puts the journeys related to the stretch into an array.
-	 @return puts the journey into the list of relevant journeys
+	 *
+	 * @return puts the journey into the list of relevant journeys
 	 */
 	public Journey[] getJourneys ()
 	{

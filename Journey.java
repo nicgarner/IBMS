@@ -7,7 +7,7 @@ import java.util.GregorianCalendar;
  * pair, called a journey. Implemented by Adam and Nic.
 */
 
-public class Journey 
+public class Journey
 {
 	private Service service;
 	private GregorianCalendar date;
@@ -21,6 +21,11 @@ public class Journey
 	{
 		service = new Service(serviceID);
 		date = (GregorianCalendar) journeyDate.clone();
+	}// constructor
+	
+	public Journey (int journeyID, GregorianCalendar journeyDate, boolean value)
+	{
+		this(database.busDatabase.find_id("service_id", "journey", "journey_id", journeyID), journeyDate);
 	}// constructor
 	
 	/**

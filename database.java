@@ -157,6 +157,13 @@ public class database
     if (move_first()) return (Integer)get_field(table + "_id");
     else return 0;
   }
+  
+  public int find_id(String id_field, String source, String field, Object value)
+  {
+    select(id_field, source, field + " = " + value_string(value), "");
+    if (move_first()) return (Integer)get_field(id_field);
+    else return 0;
+  }
 
   public int find_id(String id_field, String source, String field1, Object value1, String field2, Object value2)
   {
@@ -164,7 +171,7 @@ public class database
     if (move_first()) return (Integer)get_field(id_field);
     else return 0;
   }
-
+  
   public int[] select_ids(String id_field, String source, String order)
   {
     int    count    = record_count(id_field, source, "");
@@ -222,7 +229,7 @@ public class database
   {
     select(field_name, table, table + "_id = " + id, "");
     if (move_first())
-      return (Date)get_field(field_name);
+      return (java.util.Date)get_field(field_name);
     else return database.today();
   }
 
@@ -364,6 +371,18 @@ public class database
         set_field(name, value);
       }
     end_new_record();
+  }
+  
+  public int new_record_return_id(String table, Object[][] fields)
+  {
+    begin_new_record(table);
+      for (Object field: fields)
+      {
+        String name  = (String)((Object[])field)[0];
+        Object value = ((Object[])field)[1];
+        set_field(name, value);
+      }
+    return end_new_record();
   }
 
   public Boolean select_record(String table_name, String criteria)
