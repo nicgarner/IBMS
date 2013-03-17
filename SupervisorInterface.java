@@ -270,7 +270,39 @@ public class SupervisorInterface extends JFrame implements ActionListener
     }
       
  	}// else if
- 	
+
+/* 	
+ 	else if (event.getSource() == generateRosterButton)
+ 	{
+    try
+    {
+      viewMessage.setText("<html>Enter dates for the desired <br>" +
+		                      "period and click View.</html>");
+      
+      String startString = startDateField.getText();
+      String endString = endDateField.getText();
+      
+      GregorianCalendar start = Timetable.parseDate(startString);
+      GregorianCalendar end = Timetable.parseDate(endString);
+      
+      ArrayList<ArrayList<Stretch>> roster = Timetable.generate_roster(start, end);
+      resultTextArea.setText(Timetable.print_roster(roster));
+      
+      // enable the approve button
+      approveRosterButton.setEnabled(true);
+    }
+    catch (Exception e)
+    {
+      resultTextArea.setText("");
+  		generateMessage.setText("<html>"+e.getMessage()+"</html>");
+  		
+  		// disable to approve button
+  		approveRosterButton.setEnabled(false);
+    }
+      
+ 	}// else if
+*/
+
  	// On pressing the timetables button, the timetable for
  	// the driver is displayed
  	else if (event.getSource() == timetablesButton)
