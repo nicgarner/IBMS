@@ -11,7 +11,7 @@ public class Driver
   
   // a driver has a name and an id number
   private String name;
-  private String id_number;
+  private int id_number;
   
   // he also has a key which is used to identify him in the database
   // this remains internal to the class
@@ -28,7 +28,7 @@ public class Driver
     {
       name = DriverInfo.getName(DriverInfo.findDriver(id));
       key = DriverInfo.findDriver(id);
-      id_number = id;
+      id_number = Integer.parseInt(id);
     }
     catch (InvalidQueryException e) { throw e; }
   }
@@ -76,7 +76,7 @@ public class Driver
    *
    * @return  the driver's ID number
    */
-  public String id_number()
+  public int getID()
   {
     return id_number;
   }
