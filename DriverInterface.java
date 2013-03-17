@@ -176,25 +176,9 @@ public class DriverInterface extends JFrame implements ActionListener
  		String startDateString = startDateField.getText();
  		String endDateString = endDateField.getText();
  		
- 		if (startDateString.length() > 10 || endDateString.length() > 10)
- 			throw new IllegalArgumentException 
- 			                     ("Invalid date format, please check and try again.");
- 			
- 		String[] startDateComponents = startDateString.split ("/");
- 		String[] endDateComponents = endDateString.split ("/");
+ 		GregorianCalendar startDate = Timetable.parseDate(startDateString);
+ 		GregorianCalendar endDate = Timetable.parseDate(endDateString);
  		
- 		if (startDateComponents.length != 3 || endDateComponents.length != 3)
- 			throw new IllegalArgumentException 
- 			                     ("Invalid date format, please check and try again.");	
- 			
- 	  GregorianCalendar startDate = new GregorianCalendar (
- 	                                Integer.parseInt (startDateComponents[2]), 
- 	                                Integer.parseInt (startDateComponents[1]) - 1,
- 	                                Integer.parseInt (startDateComponents[0]));
- 	  GregorianCalendar endDate = new GregorianCalendar (
- 	                                  Integer.parseInt (endDateComponents[2]), 
- 	                                  Integer.parseInt (endDateComponents[1]) - 1,
- 	                         	        Integer.parseInt (endDateComponents[0]));
     int[] holidayRequestResult = driver.request_holiday (startDate, endDate);
  	 
  	  // Display error message if the request is denied

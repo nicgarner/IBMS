@@ -15,9 +15,9 @@ public class Timetable
   {
     database.openBusDatabase();
     
-  /* 
-    Journey[] journeys = get_journeys(new GregorianCalendar(2013,02,17), 
-                                      new GregorianCalendar(2013,02,23));
+   
+    Journey[] journeys = get_journeys(new GregorianCalendar(2013,02,18), 
+                                      new GregorianCalendar(2013,02,18));
     
     GregorianCalendar date = journeys[0].getDate();
     ArrayList<ArrayList<Stretch>> roster = new ArrayList<ArrayList<Stretch>>();
@@ -62,12 +62,17 @@ public class Timetable
       }
     }
     System.out.println(print_roster(roster));
-    save_roster(roster);
-  */
-  
-    ArrayList<ArrayList<Stretch>> roster = load_roster(new GregorianCalendar(2013,02,17), 
-                                                       new GregorianCalendar(2013,02,23));
+    
+    BusScheduler.generateSchedule(roster);
+    
     System.out.println(print_roster(roster));
+    
+    //save_roster(roster);
+      
+    
+    //ArrayList<ArrayList<Stretch>> roster = load_roster(new GregorianCalendar(2013,02,16), 
+    //                                                   new GregorianCalendar(2013,02,17));
+    //System.out.println(print_roster(roster));
     
     //Stretch stretch = new Stretch(1);
     //System.out.println(stretch);
@@ -102,9 +107,9 @@ public class Timetable
       {
         // print the details of the stretch
         Stretch stretch = roster.get(d).get(s);
-        string += "  Stretch " + (s+1) + ": ";
-        string += "Driver: " + stretch.getDriverID() + ", ";
-        string += "Bus: " + stretch.getBusID() + ", ";
+        string += "   Stretch " + (s+1) + ": ";
+        string += "Driver: " + stretch.getDriver() + ", ";
+        string += "Bus: " + stretch.getBus() + ", ";
         string += Timetable.minutesToDuration(stretch.duration()) + "\n";
         
         // print out the details of each journey in the stretch
@@ -112,7 +117,7 @@ public class Timetable
         for (int j = 0; j < journys.length; j++)
         {
           Service service = journys[j].getService();
-          string += "    Service " + service + ": ";
+          string += "      Service " + service + ": ";
           string += Timetable.minutesToTime(service.startTime()) + " - ";
           string += Timetable.minutesToTime(service.endTime()) + "\n";
         } // for (journey)
@@ -150,21 +155,34 @@ public class Timetable
     for (GregorianCalendar day = (GregorianCalendar)start_date.clone();
          !day.after(end_date); day.add(GregorianCalendar.DAY_OF_MONTH, 1))
     {
-      // create a list for the current day's stretches
-      roster.add(new ArrayList<Stretch>());
+      
       
       // get the stretch ids for the current day's stretches and use them
       // to instantiate stretch objects
       int[] stretches = database.busDatabase.select_ids("stretch_id", "stretch", 
                                                         "date", day.getTime(),
                                                         "stretch_id");
-      for (int s = 0; s < stretches.length; s++)
-        roster.get(d).add(new Stretch(stretches[s]));
-      
-      // increment the day counter ready for the next day
-      d++;
+      // only continue if there are some stretches on this day
+      if (stretches.length > 0)
+      {
+        // create a list for the current day's stretches
+        roster.add(new ArrayList<Stretch>());
+        
+        // add each stretch to the list
+        for (int s = 0; s < stretches.length; s++)
+          roster.get(d).add(new Stretch(stretches[s]));
+        
+        // increment the day counter ready for the next day
+        d++;
+        
+      } // if (stretches were found for today)
       
     } // for (each day)
+    
+    // throw an error if no data was returned
+    if (roster.size() == 0)
+      throw new IllegalArgumentException("No roster information was found " +
+                                         "between the specified dates.");
     
     return roster;
     
@@ -193,8 +211,8 @@ public class Timetable
         int stretch_id = database.busDatabase.new_record_return_id("stretch",
           new Object[][] {
             { "date",      stretch.getDate().getTime() },
-            { "bus_id",    stretch.getBusID() },
-            { "driver_id", stretch.getDriverID() } } );
+            { "bus_id",    stretch.getBus() },
+            { "driver_id", stretch.getDriver() } } );
                 
         // insert each journey's details
         Journey[] journeys = stretch.getJourneys();
@@ -326,6 +344,42 @@ public class Timetable
     
     return hour + "h " + min + "m";
  	}
+  
+  /**
+   * Returns a calendar date from a string.
+   *
+   * @param  string  the input string
+   * @return         calendar object matching the input string
+   */
+  public static GregorianCalendar parseDate(String string)
+  {
+    // check the input string isn't too long to be a date
+    if (string.length() > 10)
+ 			throw new IllegalArgumentException 
+ 			                     ("Invalid date format, please check and try again.");
+ 	  
+ 	  // split on / and check there's exactly three parts
+ 		String[] dateComponents = string.split ("/");
+ 		if (dateComponents.length != 3)
+ 			throw new IllegalArgumentException 
+ 			                     ("Invalid date format, please check and try again.");	
+ 	  
+ 	  // parse the parts as ints
+ 	  int day = Integer.parseInt(dateComponents[0]);
+ 	  int month = Integer.parseInt(dateComponents[1]);
+ 	  int year = Integer.parseInt(dateComponents[2]);
+ 	  
+ 	  // do some sanity checking on the ints (this isn't perfect!)
+ 	  if (day < 1 || day > 31 || month < 1 || month > 12)
+ 	    throw new IllegalArgumentException 
+ 			                     ("Invalid date format, please check and try again.");
+ 	  
+ 	  // create the date
+ 	  GregorianCalendar date = new GregorianCalendar (year, month-1, day);
+ 	  
+ 	  return date;
+  }
+  
   
   /**
    * Outputs full timetable information for all routes.

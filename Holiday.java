@@ -25,7 +25,10 @@ public class Holiday
     // ensure start date isn't after end date and dates are not before today
     GregorianCalendar today = new GregorianCalendar();
     if (start_date.before(today))
+    {
+      System.out.println(Timetable.dateToString(start_date));
       throw new IllegalArgumentException("Dates must be in the future.");
+    }
     if (start_date.after(end_date))
       throw new IllegalArgumentException("Start date must precede end date.");
     
