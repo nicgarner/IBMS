@@ -44,7 +44,6 @@ public class BusScheduler
 						break;
 					}
 				}
-				System.out.println();
 			}
 		}
 	}// generateSchedule
