@@ -43,11 +43,9 @@ public class Roster
   System.out.println(journeysD.length + " journeys were created.");
     for (int j = 0; j < journeysD.length; j++)
       System.out.println(journeysD[j]); 
- */
+  */
     
-   rostering(journeysB, journeysA) ;
-   
-     
+  rostering(journeysB, journeysA) ;
   
    
 
@@ -65,137 +63,188 @@ public class Roster
     //Journey [] r = new Journey[];
     //boolean[] assigned1, assigned2;
    
- 
-
-
-
-public static boolean hasJourneysA(boolean[] assigned)
-{
-  for(int i = 0; i < assigned.length; i++)
-   if(!assigned[i]) 
-       return true;
-return false ;
-}
-
-public static void rostering(Journey[] a, Journey[] b)
-{
-  
-  int second_timetable = 2;
-  int first_timetable = 1;
-  /*if(a.length > b.length)
-    swap(a,b); */
-  boolean[] assigned1 = new boolean[a.length];
-  boolean[] assigned2 = new boolean[b.length];
-
-
-  System.out.println(a.length) ;
-  System.out.println(b.length) ;
-  
-  GregorianCalendar date = a[0].getDate();
-  ArrayList<ArrayList<Stretch>> roster = new ArrayList<ArrayList<Stretch>>();
     
-    int day = 0;
-    roster.add(new ArrayList<Stretch>());
-    roster.get(0).add(new Stretch(a[0].getDate()));
-
-System.out.println("DAY " + day);
-       
-    while( hasJourneysA(assigned1) )
-    {
-
-    // put the journeys into stretches
-    for (int j = 0; j < a.length; j++)
-    {
-      System.out.print("Journey A["+j+"]: ");
-      if (date.before(a[j].getDate()))
-      {
-        // start a new day by placing the current journey in the first stretch
-        // of the next day
-        date = (GregorianCalendar)a[j].getDate().clone();
-        day++ ;
-        roster.add(new ArrayList<Stretch>());
-        roster.get(day).add(new Stretch(a[j].getDate()));
- 
-        System.out.println("DAY " + day);
-
-      }
-      boolean added = false;
-      for (int s = 0; s < roster.get(day).size(); s++)
-      {
-        Stretch stretch = roster.get(day).get(s);
-        System.out.print(" S["+s+"]");
-        
-        if (!assigned1[j] && a[j].startTime() >= stretch.endTime() &&
-            ((stretch.duration() == 0) || ((stretch.duration() + a[j].duration() 
-                         + (a[j].startTime() - stretch.endTime())) <= (5*60))))
-          {
-          System.out.print("A ");
-          stretch.addJourney(a[j]);
-          added = true;
-          assigned1[j] = true ;
-          //System.out.println(first_timetable) ;
-
-          for(int i = 0; i < b.length; i++)
-          {
-	    if (!assigned2[i] && b[i].startTime() >= 
-            stretch.endTime() &&
-            (stretch.duration() + b[i].duration() + 
-            (b[i].startTime() - stretch.endTime())) <= (5*60))
-            {
-              System.out.print("B("+i+") ");
-	      stretch.addJourney(b[i]);
-	      assigned2[i] = true;
-              //System.out.println(second_timetable) ;
-	      break;
-	    }//if
-          }//for
-          break;
-          
-
-        }//if not assigned, current time < start time, stretch < 5hrs
-          
-      }//for that stretch
-        
-        if (!added)
-        {
-          roster.get(day).add(new Stretch(a[j].getDate()));
-          roster.get(day).get(roster.get(day).size()-1).addJourney(a[j]);
-          assigned1[j] = true ;
-          System.out.print(" S["+(roster.get(day).size()-1)+"]*A ");
-          Stretch stretch = roster.get(day).get(roster.get(day).size()-1) ;
-          for(int i = 0; i < b.length; i++)
-          {
-	    if (!assigned2[i] && b[i].startTime() >= 
-            stretch.endTime() &&
-            (stretch.duration() + b[i].duration() + 
-            (b[i].startTime() - stretch.endTime())) <= (5*60))
-            {
-              System.out.print("B("+i+") ");
-	      stretch.addJourney(b[i]);
-	      assigned2[i] = true;
-              //System.out.println(second_timetable) ;
-	      break;
-	    }//if
-          }//for
-        }
-        System.out.println();
-      
-    }//for journey length
-  }//while has journeys
- /*for(int i = 0; i < b.length; i++)
+  /**
+   * Adds the stretches from one roster into another, so that stretches on
+   * the same day are in the same list. The two rosters must correspond to
+   * the same period of time; that is they must be the same length and the
+   * stretches in the same element in each list must correspond to the same
+   * date.
+   *
+   * @param  originalRoster  the original roster
+   * @param  newRoster       the roster to be merged into original roster
+   */  
+  public static void merge_rosters(ArrayList<ArrayList<Stretch>> originalRoster, 
+                                   ArrayList<ArrayList<Stretch>> newRoster)
   {
-    if(!assigned2[i])
-	{
-	  stretch.addJourney(journeys[i]);
-	  busNum++;
-	}
-  } */
-  System.out.println(print_roster(roster));
+    for (int d = 0; d < originalRoster.size(); d++)
+      originalRoster.get(d).addAll(newRoster.get(d));
+  }
+    
+  /**
+   * Main driver class for roster creation. Takes the dates and calls on other
+   * classes to complete the full rostering process.
+   *
+   * @param  start  the start date of the roster
+   * @param  end    the end date of the roster
+   *
+   * @return        the completed roster
+   */
+  public static ArrayList<ArrayList<Stretch>> generate_roster(
+                                   GregorianCalendar start, GregorianCalendar end)
+  {
+    Route[] routes = Route.getAllRoutes();
+    
+    Journey[] a = Timetable.get_journeys(start, end, routes[0]);
+    Journey[] b = Timetable.get_journeys(start, end, routes[1]);
+    
+    ArrayList<ArrayList<Stretch>> roster = rostering(a, b);
+    
+    a = Timetable.get_journeys(start, end, routes[2]);
+    b = Timetable.get_journeys(start, end, routes[3]);
+    
+    ArrayList<ArrayList<Stretch>> roster2 = rostering(a, b);
+    
+    merge_rosters(roster, roster2);
+    
+    BusScheduler.generateSchedule(roster);
+    DriverScheduler.generateSchedule(roster);
+    
+    return roster;
+  }
 
 
-} //roster
+  public static boolean hasJourneysA(boolean[] assigned)
+  {
+    for(int i = 0; i < assigned.length; i++)
+     if(!assigned[i]) 
+         return true;
+  return false ;
+  }
 
- public static String print_roster(ArrayList<ArrayList<Stretch>> roster)
+  public static ArrayList<ArrayList<Stretch>> rostering(Journey[] a, Journey[] b)
+  {
+    
+    int second_timetable = 2;
+    int first_timetable = 1;
+    /*if(a.length > b.length)
+      swap(a,b); */
+    boolean[] assigned1 = new boolean[a.length];
+    boolean[] assigned2 = new boolean[b.length];
+
+
+    System.out.println(a.length) ;
+    System.out.println(b.length) ;
+    
+    GregorianCalendar date = a[0].getDate();
+    ArrayList<ArrayList<Stretch>> roster = new ArrayList<ArrayList<Stretch>>();
+      
+      int day = 0;
+      roster.add(new ArrayList<Stretch>());
+      roster.get(0).add(new Stretch(a[0].getDate()));
+
+  System.out.println("DAY " + day);
+         
+      while( hasJourneysA(assigned1) )
+      {
+
+      // put the journeys into stretches
+      for (int j = 0; j < a.length; j++)
+      {
+        System.out.print("Journey A["+j+"]: ");
+        if (date.before(a[j].getDate()))
+        {
+          // start a new day by placing the current journey in the first stretch
+          // of the next day
+          date = (GregorianCalendar)a[j].getDate().clone();
+          day++ ;
+          roster.add(new ArrayList<Stretch>());
+          roster.get(day).add(new Stretch(a[j].getDate()));
+   
+          System.out.println("DAY " + day);
+
+        }
+        boolean added = false;
+        for (int s = 0; s < roster.get(day).size(); s++)
+        {
+          Stretch stretch = roster.get(day).get(s);
+          System.out.print(" S["+s+"]");
+          
+          if (!assigned1[j] && a[j].startTime() >= stretch.endTime() &&
+              ((stretch.duration() == 0) || ((stretch.duration() + a[j].duration() 
+                           + (a[j].startTime() - stretch.endTime())) <= (5*60))))
+            {
+            System.out.print("A ");
+            stretch.addJourney(a[j]);
+            added = true;
+            assigned1[j] = true ;
+            //System.out.println(first_timetable) ;
+
+            for(int i = 0; i < b.length; i++)
+            {
+	      if (!assigned2[i] && b[i].startTime() >= 
+              stretch.endTime() &&
+              (stretch.duration() + b[i].duration() + 
+              (b[i].startTime() - stretch.endTime())) <= (5*60))
+              {
+                System.out.print("B("+i+") ");
+	        stretch.addJourney(b[i]);
+	        assigned2[i] = true;
+                //System.out.println(second_timetable) ;
+	        break;
+	      }//if
+            }//for
+            break;
+            
+
+          }//if not assigned, current time < start time, stretch < 5hrs
+            
+        }//for that stretch
+          
+          if (!added)
+          {
+            roster.get(day).add(new Stretch(a[j].getDate()));
+            roster.get(day).get(roster.get(day).size()-1).addJourney(a[j]);
+            assigned1[j] = true ;
+            System.out.print(" S["+(roster.get(day).size()-1)+"]*A ");
+            Stretch stretch = roster.get(day).get(roster.get(day).size()-1) ;
+            for(int i = 0; i < b.length; i++)
+            {
+	      if (!assigned2[i] && b[i].startTime() >= 
+              stretch.endTime() &&
+              (stretch.duration() + b[i].duration() + 
+              (b[i].startTime() - stretch.endTime())) <= (5*60))
+              {
+                System.out.print("B("+i+") ");
+	        stretch.addJourney(b[i]);
+	        assigned2[i] = true;
+                //System.out.println(second_timetable) ;
+	        break;
+	      }//if
+            }//for
+          }
+          System.out.println();
+        
+      }//for journey length
+    }//while has journeys
+   /*for(int i = 0; i < b.length; i++)
+    {
+      if(!assigned2[i])
+	  {
+	    stretch.addJourney(journeys[i]);
+	    busNum++;
+	  }
+    } */
+    
+    System.out.println(print_roster(roster));
+    
+    return roster;
+    
+
+
+  } //roster
+
+  public static String print_roster(ArrayList<ArrayList<Stretch>> roster)
   {
     String string = "";
     
