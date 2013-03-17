@@ -11,7 +11,7 @@ import java.util.ArrayList;
 public class BusScheduler 
 {
 	// Arrays for available bus IDs and the buses' assigned stretchs' 
-	//end time
+	//end times
 	private static Bus[] availableBuses;
 	private static int[] busEndTime;
 	/**
@@ -28,6 +28,8 @@ public class BusScheduler
 			availableBuses = Bus.getAvailableBuses
 			 (roster.get(day).get(0).getDate());
 			 
+			 busEndTime = new int[availableBuses.length];
+			
 			for (int s = 0; s < roster.get(day).size(); s++)
 			{
 				Stretch stretch = roster.get(day).get(s);
@@ -38,9 +40,11 @@ public class BusScheduler
 					{
 						stretch.setBus (availableBuses[bus]);
 						busEndTime[bus] = stretch.endTime ();
+						
 						break;
 					}
 				}
+				System.out.println();
 			}
 		}
 	}// generateSchedule

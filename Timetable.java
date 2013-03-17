@@ -65,6 +65,7 @@ public class Timetable
     
     BusScheduler.generateSchedule(roster);
     
+    System.out.println ("********************************************");
     System.out.println(print_roster(roster));
     
     //save_roster(roster);

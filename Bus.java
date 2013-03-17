@@ -3,14 +3,15 @@
  */
 
 import java.util.GregorianCalendar;
+import java.util.ArrayList;
 
 public class Bus
 {
 	private int busID;
 	private String fleetNo;
 	/** 
-	 * The constructor creates bus objects given a fleet number.
-	 * @param fleet_no the ID of the bus to be created
+	 * The constructor creates bus objects given the ID of the bus.
+	 * @param id the ID of the bus to be created
 	 */
 	public Bus (int id)
 	{
@@ -30,15 +31,16 @@ public class Bus
 	public static Bus[] getAvailableBuses (GregorianCalendar date)
 	{
 		int[] buses = BusInfo.getBuses();
-		Bus[] availableBuses = null;
+		ArrayList <Bus> availableBuses = new ArrayList <Bus> ();
 		
 		for (int i = 0; i < buses.length; i++)
 		{
 			if (BusInfo.isAvailable (buses[i], date.getTime()))
-				for (int j = 0; j < buses.length; j++)
-					availableBuses[j] = new Bus (buses[i]);
+					availableBuses.add (new Bus (buses[i]));
 		}
-		return availableBuses;
+		Bus[] busArray = new Bus[availableBuses.size()];
+		availableBuses.toArray (busArray);
+		return busArray;
 	}// getAvailableBuses
 	
 	/**
