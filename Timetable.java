@@ -15,7 +15,6 @@ public class Timetable
   {
     database.openBusDatabase();
     
-   
     Journey[] journeys = get_journeys(new GregorianCalendar(2013,02,18), 
                                       new GregorianCalendar(2013,02,18));
     
@@ -61,18 +60,26 @@ public class Timetable
         
       }
     }
+
+/*    
+    // test bus assignment
     System.out.println(print_roster(roster));
-    
     BusScheduler.generateSchedule(roster);
-    
     System.out.println(print_roster(roster));
     
-    //save_roster(roster);
-      
+    // test driver assignment
+    System.out.println(print_roster(roster));
+    DriverScheduler.generateSchedule(roster);
+    System.out.println(print_roster(roster));
+*/    
     
-    //ArrayList<ArrayList<Stretch>> roster = load_roster(new GregorianCalendar(2013,02,16), 
-    //                                                   new GregorianCalendar(2013,02,17));
-    //System.out.println(print_roster(roster));
+    SPWystem.out.println(print_roster(roster));
+    //save_roster(roster);
+    
+    
+    
+    //ArrayList<ArrayList<Stretch>> roster2 = load_roster(new GregorianCalendar(2013,02,24), new GregorianCalendar(2013,02,24));
+    //System.out.println(print_roster(roster2));
     
     //Stretch stretch = new Stretch(1);
     //System.out.println(stretch);
@@ -208,11 +215,15 @@ public class Timetable
         // insert stretch details and get back the stretch id created
         Stretch stretch = roster.get(d).get(s);
         
+        // if stretch doesn't have a bus/driver assigned, enter -1 in database
+        int bus_id = stretch.getBus() == null ? -1 : stretch.getBus().getID();
+        int driver_id = stretch.getDriver() == null ? -1 : stretch.getDriver().getID();
+        
         int stretch_id = database.busDatabase.new_record_return_id("stretch",
           new Object[][] {
             { "date",      stretch.getDate().getTime() },
-            { "bus_id",    stretch.getBus() },
-            { "driver_id", stretch.getDriver() } } );
+            { "bus_id",    bus_id },
+            { "driver_id", driver_id } } );
                 
         // insert each journey's details
         Journey[] journeys = stretch.getJourneys();
