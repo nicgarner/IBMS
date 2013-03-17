@@ -61,7 +61,7 @@ public class Bus
 	
 	public String toString ()
 	{
-		return "Bus ID: " + busID + " Fleet number: " + fleetNo;
+		return fleetNo;
 	}
 	
 	

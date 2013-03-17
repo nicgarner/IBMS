@@ -18,6 +18,25 @@ public class Timetable
     Journey[] journeys = get_journeys(new GregorianCalendar(2013,02,18), 
                                       new GregorianCalendar(2013,02,18));
     
+    // test roster creation and bus and driver assignment
+    ArrayList<ArrayList<Stretch>> roster = generate_roster(journeys);
+    System.out.println(print_roster(roster));
+    BusScheduler.generateSchedule(roster);
+    DriverScheduler.generateSchedule(roster);
+    System.out.println(print_roster(roster));
+    
+    //save_roster(roster);
+    
+    // ArrayList<ArrayList<Stretch>> roster2 = load_roster(new GregorianCalendar(2013,02,24), new GregorianCalendar(2013,02,24));
+    // System.out.println(print_roster(roster2));
+    
+  } // main method (testing only)
+  
+  /**
+   * DUMMY MAKE STRETCHES
+   */
+  public static ArrayList<ArrayList<Stretch>> generate_roster(Journey[] journeys)
+  {
     GregorianCalendar date = journeys[0].getDate();
     ArrayList<ArrayList<Stretch>> roster = new ArrayList<ArrayList<Stretch>>();
     
@@ -54,39 +73,13 @@ public class Timetable
           
         }
         if (!added)
-        {
           roster.get(day).add(new Stretch(journeys[j]));
-        }
-        
       }
     }
-
-/*    
-    // test bus assignment
-    System.out.println(print_roster(roster));
-    BusScheduler.generateSchedule(roster);
-    System.out.println(print_roster(roster));
     
-    // test driver assignment
-    System.out.println(print_roster(roster));
-    DriverScheduler.generateSchedule(roster);
-git ad
-    System.out.println(print_roster(roster));
-*/    
+    return roster;
     
-    System.out.println(print_roster(roster));
-    //save_roster(roster);
-    
-    
-    
-    //ArrayList<ArrayList<Stretch>> roster2 = load_roster(new GregorianCalendar(2013,02,24), new GregorianCalendar(2013,02,24));
-    //System.out.println(print_roster(roster2));
-    
-    //Stretch stretch = new Stretch(1);
-    //System.out.println(stretch);
-    
-  } // main method (testing only)
-  
+  }
   
   /**
    * Returns a (long!) string representation of a roster in a heirarchical form
@@ -163,7 +156,6 @@ git ad
     for (GregorianCalendar day = (GregorianCalendar)start_date.clone();
          !day.after(end_date); day.add(GregorianCalendar.DAY_OF_MONTH, 1))
     {
-      
       
       // get the stretch ids for the current day's stretches and use them
       // to instantiate stretch objects
@@ -396,7 +388,7 @@ git ad
   /**
    * Outputs full timetable information for all routes.
    */
-  public static void print_all()
+  public static void print_all(boolean printServiceNames)
   {
     database.openBusDatabase();
     
@@ -428,6 +420,16 @@ git ad
           // print the timetable
           System.out.println("  " + kinds[kind] + " ("+stops.length+" stops, "+
                              services.length+" services)");
+          
+          if (printServiceNames)
+          {
+            int[] serviceNames = TimetableInfo.getServices(routes[route], kinds[kind]);
+          
+            for (int s = 0; s <serviceNames.length; s++)
+              System.out.print(serviceNames[s] + " ");
+            System.out.println();
+          }
+          
           for (int stop = 0; stop < stops.length; stop++)
           {
             System.out.format("  %2s: %-42s", (stop+1), 

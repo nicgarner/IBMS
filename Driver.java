@@ -105,7 +105,7 @@ public class Driver
   
   public String toString()
   {
-    return "Name: " + name + ", ID number: " + id_number;
+    return name;
   }
   
   /**

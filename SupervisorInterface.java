@@ -41,6 +41,8 @@ public class SupervisorInterface extends JFrame implements ActionListener
   	setTitle ("Supervisor interface");
 
   	contents.setLayout (new BorderLayout());
+		contents.setMaximumSize(new Dimension(570,490));
+		contents.setPreferredSize(new Dimension(570,490));
   	
   	// Create a menu panel on the top part of the window
   	JPanel menuPanel = new JPanel (new GridLayout (2, 1));
@@ -222,7 +224,9 @@ public class SupervisorInterface extends JFrame implements ActionListener
     generateRosterButtonsPanel.setLayout(new BorderLayout());
     generateRosterPanel.add (generateRosterButtonsPanel, BorderLayout.SOUTH);
     
-    generateRosterMessage = new JLabel("<html><br><br><br><br></html>");
+    generateRosterMessage = new JLabel("");
+		generateRosterMessage.setMaximumSize(new Dimension(80,50));
+		generateRosterMessage.setPreferredSize(new Dimension(80,50));
 		generateRosterMessage.setFont(new Font("SansSerif", Font.PLAIN, 12));
     generateRosterButtonsPanel.add(generateRosterMessage, BorderLayout.NORTH);
     
@@ -239,6 +243,8 @@ public class SupervisorInterface extends JFrame implements ActionListener
 		
 		// Results panel on the right side
 		JScrollPane resultScrollPane = new JScrollPane(resultTextArea);
+		resultScrollPane.setMaximumSize(new Dimension(100,400));
+		resultScrollPane.setPreferredSize(new Dimension(100,400));
 		rosterPanel.add(resultScrollPane, BorderLayout.EAST);
 		resultTextArea.setEnabled (false);
     resultTextArea.setDisabledTextColor (Color.black);
@@ -267,11 +273,14 @@ public class SupervisorInterface extends JFrame implements ActionListener
     {
       resultTextArea.setText("");
   		viewMessage.setText("<html>"+e.getMessage()+"</html>");
+  		
+  		// disable approve button
+  		approveRosterButton.setEnabled(false);
     }
       
  	}// else if
 
-/* 	
+ 	
  	else if (event.getSource() == generateRosterButton)
  	{
     try
@@ -285,7 +294,10 @@ public class SupervisorInterface extends JFrame implements ActionListener
       GregorianCalendar start = Timetable.parseDate(startString);
       GregorianCalendar end = Timetable.parseDate(endString);
       
-      ArrayList<ArrayList<Stretch>> roster = Timetable.generate_roster(start, end);
+      Journey[] journeys = Timetable.get_journeys(start, end);
+      ArrayList<ArrayList<Stretch>> roster = Timetable.generate_roster(journeys);
+      BusScheduler.generateSchedule(roster);
+      DriverScheduler.generateSchedule(roster);
       resultTextArea.setText(Timetable.print_roster(roster));
       
       // enable the approve button
@@ -294,14 +306,13 @@ public class SupervisorInterface extends JFrame implements ActionListener
     catch (Exception e)
     {
       resultTextArea.setText("");
-  		generateMessage.setText("<html>"+e.getMessage()+"</html>");
+  		generateRosterMessage.setText("<html>"+e.getMessage()+"</html>");
   		
-  		// disable to approve button
+  		// disable approve button
   		approveRosterButton.setEnabled(false);
     }
       
  	}// else if
-*/
 
  	// On pressing the timetables button, the timetable for
  	// the driver is displayed

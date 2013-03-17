@@ -36,23 +36,23 @@ public class Stretch
 	 */
 	public Stretch (int stretchID)
 	{
-	  bus = new Bus (database.busDatabase.find_id("bus_id", "stretch", "stretch_id", stretchID));
-	  driver = new Driver ("" + database.busDatabase.find_id("driver_id", "stretch", "stretch_id", stretchID));
+	  int busID = database.busDatabase.find_id("bus_id", "stretch", "stretch_id", 
+	                                           stretchID);
+	  bus = busID == -1 ? null : new Bus (busID);
+	  
+	  int driverID = database.busDatabase.find_id("driver_id", "stretch", 
+	                                              "stretch_id", stretchID);
+	  driver = driverID == -1 ? null : new Driver ("" + driverID);
+
 	  date = new GregorianCalendar();
 	  date.setTime(database.busDatabase.get_date("stretch", stretchID, "date"));
-	  
-	  //System.out.println(busID + " " + driverID + " " + Timetable.dateToString(date));
 	  
 	  journeys = new ArrayList<Journey>();
 	  int[] journey_ids = database.busDatabase.select_ids("journey_id", "journey", 
 	                                                      "stretch_id", stretchID,
 	                                                      "journey_id");
 	  for (int j = 0; j < journey_ids.length; j++)
-	  {
-	    //System.out.print(journey_ids[j] + " ");
 	    journeys.add(new Journey(journey_ids[j], date, true));
-	  }
-	  //System.out.println();
 	}
 	
 	/**
