@@ -18,16 +18,14 @@ public class Stretch
 	 * Creates a stretch with a single journey, for use in generating a roster.
 	 * BusID and driverID are not set here, they have specific methods.
 	 *
-	 * @param  journey  a journey associated with the stretch
 	*/
-	public Stretch (Journey journey)
+	public Stretch (GregorianCalendar stretchDate)
 	{
 		bus = null;
 		driver = null;
-		date = journey.getDate();
+		date = stretchDate ;
 		journeys = new ArrayList<Journey>();
-		journeys.add(journey);
-	}// constructor
+        }// constructor
 	
 	/**
 	 * Instatiates a stretch saved in the database.
@@ -126,7 +124,10 @@ public class Stretch
 	 */
 	public int startTime ()
 	{
-		return journeys.get(0).startTime();
+	      if(journeys.size() == 0)
+                 return 0 ;
+              else 
+              return journeys.get(0).startTime();
 	}// startTime
 	
 	/**
@@ -136,8 +137,12 @@ public class Stretch
 	 */
 	 public int endTime ()
 	 {
-	 	int size = journeys.size();
-	 	return journeys.get(size - 1).endTime();
+	 	if(journeys.size() == 0)
+                  return 0 ;
+                else {
+                int size = journeys.size();
+	 	return journeys.get(size - 1).endTime(); 
+                }
 	 }// endTime
 	 
 	 /**
