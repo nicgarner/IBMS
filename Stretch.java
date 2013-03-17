@@ -9,7 +9,8 @@ import java.util.ArrayList;
 
 public class Stretch
 {
-	private int busID, driverID;
+	private Bus bus;
+	private Driver driver;
 	private ArrayList <Journey> journeys;
 	private GregorianCalendar date;
 		
@@ -21,8 +22,8 @@ public class Stretch
 	*/
 	public Stretch (Journey journey)
 	{
-		busID = -1;
-		driverID = -1;
+		bus = null;
+		driver = null;
 		date = journey.getDate();
 		journeys = new ArrayList<Journey>();
 		journeys.add(journey);
@@ -35,8 +36,8 @@ public class Stretch
 	 */
 	public Stretch (int stretchID)
 	{
-	  busID = database.busDatabase.find_id("bus_id", "stretch", "stretch_id", stretchID);
-	  driverID = database.busDatabase.find_id("driver_id", "stretch", "stretch_id", stretchID);
+	  bus = new Bus (database.busDatabase.find_id("bus_id", "stretch", "stretch_id", stretchID));
+	  driver = new Driver ("" + database.busDatabase.find_id("driver_id", "stretch", "stretch_id", stretchID));
 	  date = new GregorianCalendar();
 	  date.setTime(database.busDatabase.get_date("stretch", stretchID, "date"));
 	  
@@ -77,36 +78,36 @@ public class Stretch
 	 * Assigns a bus ID to the journey once the buses are scheduled
 	 * @param IDToSet the ID of the bus we want to assign to the journey
 	*/
-	public void setBusID (int IDToSet)
+	public void setBus (Bus busToSet)
 	{
-		busID = IDToSet;
-	}// setBusID
+		bus = busToSet;
+	}// setBus
 	
 	/**
 	 * Assigns a driver ID to the journey once the drivers are scheduled
 	 * @param IDToSet the ID of the driver to be assigned to the journey
 	 */	
-	public void setDriverID (int IDToSet)
+	public void setDriver (Driver driverToSet)
 	{
-		driverID = IDToSet;
+		driver = driverToSet;
 	}// setDriverID
 	
 	/**
 	 * Returns the journey's assigned bus ID
 	 * @return the bus ID of the journey
 	 */	
-	public int getBusID ()
+	public Bus getBus ()
 	{
-		return busID;
+		return bus;
 	}// getBusID
 	
 	/**
 	 * Returns the journey's assigned driver ID
 	 * @return the driver's ID of the journey
 	 */	
-	public int getDriverID ()
+	public Driver getDriver ()
 	{
-		return driverID;
+		return driver;
 	}// getDriverID
 	
 	/**
@@ -154,6 +155,6 @@ public class Stretch
 	{
 		return "Start time: " + startTime() + " End time: " + endTime()
 		 + " Duration: " + duration() + 
-			" Bus ID: " + busID + " Driver ID: " + driverID;
+			" Bus: " + bus + " Driver: " + driver;
 	}// toString
 }// class 
