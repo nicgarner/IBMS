@@ -39,8 +39,7 @@ public class BusScheduler
 					if (busEndTime[bus] < stretch.startTime())
 					{
 						stretch.setBus (availableBuses[bus]);
-						busEndTime[bus] = stretch.endTime ();
-						
+						busEndTime[bus] = stretch.endTime ();						
 						break;
 					}
 				}

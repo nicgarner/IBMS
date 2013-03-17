@@ -65,18 +65,18 @@ public class Timetable
     // test bus assignment
     System.out.println(print_roster(roster));
     BusScheduler.generateSchedule(roster);
-    System.out.println(print_roster(roster));
+    //System.out.println(print_roster(roster));
     
     // test driver assignment
-    System.out.println(print_roster(roster));
+    //System.out.println(print_roster(roster));
     DriverScheduler.generateSchedule(roster);
 
-    System.out.println(print_roster(roster));
-*/    
+    //System.out.println(print_roster(roster));
+ 
     
     System.out.println(print_roster(roster));
     //save_roster(roster);
-    
+*/   
     
     
     //ArrayList<ArrayList<Stretch>> roster2 = load_roster(new GregorianCalendar(2013,02,24), new GregorianCalendar(2013,02,24));
