@@ -43,8 +43,11 @@ public class DriverScheduler
 				
 				for (int driver = 0; driver < availableDrivers.length; driver++)
 				{
-					if (driverEndTime[driver] < stretch.startTime() &&
-					 stretchesWorked[driver] < 2)
+					if (driverEndTime[driver] < stretch.startTime() && 
+						stretchesWorked[driver] < 2 &&					
+						((driverEndTime[driver] - stretch.startTime() >= 60) ||
+						(stretchesWorked[driver] == 0))
+					 	)
 					{
 						stretch.setDriver (availableDrivers[driver]);
 						driverEndTime[driver] = stretch.endTime ();		

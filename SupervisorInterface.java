@@ -12,7 +12,11 @@ import java.util.ArrayList;
  */
 public class SupervisorInterface extends JFrame implements ActionListener
 {
-		
+  // define contexts
+  private enum Context{WELCOME, ROSTERS, TIMETABLES, DRIVERS, OTHER};
+  // remember the current context
+  private Context context;
+  
 	// Define a JTextArea for the results to be displayed
 	private JScrollPane resultScrollPanel;
 	private final JTextArea resultTextArea = new JTextArea (20, 30);
@@ -41,6 +45,7 @@ public class SupervisorInterface extends JFrame implements ActionListener
 	// Constructor
 	public SupervisorInterface ()
   {
+  	context = Context.WELCOME;
   	setTitle ("Supervisor interface");
 
   	contents.setLayout (new BorderLayout());
@@ -101,157 +106,162 @@ public class SupervisorInterface extends JFrame implements ActionListener
  	// and the appropriate booked and past holidays are displayed.
  	if (event.getSource() == rostersButton)
  	{
- 		// Remove the welcome text area
- 		contents.remove (welcomeTextArea);
+ 	  if (context != Context.ROSTERS)
+ 	  {
+ 	    context = Context.ROSTERS;
+   		// Remove the welcome text area
+   		contents.remove (welcomeTextArea);
 		
-		// Display the driver's remaining holidays
-    // messageLabel.setText ("Remaining holidays: " + remainingDays());
-    		
-		// Place the input fields and buttons on the left
-		// and the results on the right
-		JPanel rosterPanel = new JPanel();
-		rosterPanel.setLayout(new BorderLayout());
-		contents.add(rosterPanel, BorderLayout.CENTER);
+		  // Display the driver's remaining holidays
+      // messageLabel.setText ("Remaining holidays: " + remainingDays());
+      		
+		  // Place the input fields and buttons on the left
+		  // and the results on the right
+		  JPanel rosterPanel = new JPanel();
+		  rosterPanel.setLayout(new BorderLayout());
+		  contents.add(rosterPanel, BorderLayout.CENTER);
 		
-		JLabel manageRosterLabel = new JLabel ("Manage Rosters");
-		manageRosterLabel.setFont(new Font("SansSerif", Font.BOLD, 18));
-		rosterPanel.add(manageRosterLabel, BorderLayout.NORTH);
+		  JLabel manageRosterLabel = new JLabel ("Manage Rosters");
+		  manageRosterLabel.setFont(new Font("SansSerif", Font.BOLD, 18));
+		  rosterPanel.add(manageRosterLabel, BorderLayout.NORTH);
 		
-		JPanel rosterOptionsPanel = new JPanel();
-		rosterOptionsPanel.setLayout(new BorderLayout());
-		rosterPanel.add(rosterOptionsPanel, BorderLayout.WEST);
+		  JPanel rosterOptionsPanel = new JPanel();
+		  rosterOptionsPanel.setLayout(new BorderLayout());
+		  rosterPanel.add(rosterOptionsPanel, BorderLayout.WEST);
 		
-		JPanel viewRosterPanel = new JPanel();
-		viewRosterPanel.setLayout(new BorderLayout());
-		rosterOptionsPanel.add(viewRosterPanel, BorderLayout.NORTH);
-    
-    JPanel viewRosterMessagePanel = new JPanel();
-    viewRosterMessagePanel.setLayout(new GridLayout(2,1));
-    viewRosterPanel.add(viewRosterMessagePanel, BorderLayout.NORTH);
-    
-    JLabel viewRosterLabel = new JLabel("<html><br>View an existing roster</html>");
-		viewRosterLabel.setFont(new Font("SansSerif", Font.BOLD, 12));
-		viewRosterMessagePanel.add(viewRosterLabel);
+		  JPanel viewRosterPanel = new JPanel();
+		  viewRosterPanel.setLayout(new BorderLayout());
+		  rosterOptionsPanel.add(viewRosterPanel, BorderLayout.NORTH);
+      
+      JPanel viewRosterMessagePanel = new JPanel();
+      viewRosterMessagePanel.setLayout(new GridLayout(2,1));
+      viewRosterPanel.add(viewRosterMessagePanel, BorderLayout.NORTH);
+      
+      JLabel viewRosterLabel = new JLabel("<html><br>View an existing roster</html>");
+		  viewRosterLabel.setFont(new Font("SansSerif", Font.BOLD, 12));
+		  viewRosterMessagePanel.add(viewRosterLabel);
 		
-		viewMessage.setText("<html>Enter dates for the desired <br>" +
-		                    "period and click View.</html>");
-		viewMessage.setFont(new Font("SansSerif", Font.PLAIN, 12));
-		viewMessage.setMaximumSize(new Dimension(80,50));
-		viewMessage.setPreferredSize(new Dimension(80,50));
-    viewRosterMessagePanel.add(viewMessage);
-    
-    Dimension requestPanelSize = new Dimension (90, 53);
-    // Start and end date fields 
-		JPanel viewStartDatePanel = new JPanel ();
-		viewStartDatePanel.setLayout (new BoxLayout (viewStartDatePanel, BoxLayout.Y_AXIS));
-		viewStartDatePanel.setPreferredSize (requestPanelSize);
-		viewStartDatePanel.setMaximumSize (requestPanelSize);
-		viewRosterPanel.add (viewStartDatePanel, BorderLayout.WEST);
-		JLabel viewStartDateLabel = new JLabel ("Start date: ");
-		viewStartDatePanel.add (viewStartDateLabel);
-		viewStartDateField = new JTextField (10);
-		viewStartDatePanel.add (viewStartDateField);
-		JLabel viewStartHintLabel = new JLabel ("<html>dd/mm/yyyy<br><br></html>");
-		viewStartHintLabel.setFont(new Font("SansSerif", Font.PLAIN, 9));
-		viewStartDatePanel.add (viewStartHintLabel);
+		  viewMessage.setText("<html>Enter dates for the desired <br>" +
+		                      "period and click View.</html>");
+		  viewMessage.setFont(new Font("SansSerif", Font.PLAIN, 12));
+		  viewMessage.setMaximumSize(new Dimension(80,50));
+		  viewMessage.setPreferredSize(new Dimension(80,50));
+      viewRosterMessagePanel.add(viewMessage);
+      
+      Dimension requestPanelSize = new Dimension (90, 53);
+      // Start and end date fields 
+		  JPanel viewStartDatePanel = new JPanel ();
+		  viewStartDatePanel.setLayout (new BoxLayout (viewStartDatePanel, BoxLayout.Y_AXIS));
+		  viewStartDatePanel.setPreferredSize (requestPanelSize);
+		  viewStartDatePanel.setMaximumSize (requestPanelSize);
+		  viewRosterPanel.add (viewStartDatePanel, BorderLayout.WEST);
+		  JLabel viewStartDateLabel = new JLabel ("Start date: ");
+		  viewStartDatePanel.add (viewStartDateLabel);
+		  viewStartDateField = new JTextField (10);
+		  viewStartDatePanel.add (viewStartDateField);
+		  JLabel viewStartHintLabel = new JLabel ("<html>dd/mm/yyyy<br><br></html>");
+		  viewStartHintLabel.setFont(new Font("SansSerif", Font.PLAIN, 9));
+		  viewStartDatePanel.add (viewStartHintLabel);
 		
-		JPanel viewEndDatePanel = new JPanel ();
-		viewEndDatePanel.setLayout (new BoxLayout (viewEndDatePanel, BoxLayout.Y_AXIS));
-		viewEndDatePanel.setPreferredSize (requestPanelSize);
-		viewEndDatePanel.setMaximumSize (requestPanelSize);
-		viewRosterPanel.add (viewEndDatePanel, BorderLayout.EAST);
-		JLabel viewEndDateLabel = new JLabel ("End date: ");
-		viewEndDatePanel.add (viewEndDateLabel);
-		viewEndDateField = new JTextField (10);
-		viewEndDatePanel.add (viewEndDateField);
-		JLabel viewEndHintLabel = new JLabel ("<html>dd/mm/yyyy<br><br></html>");
-		viewEndHintLabel.setFont(new Font("SansSerif", Font.PLAIN,9));
-		viewEndDatePanel.add (viewEndHintLabel);
+		  JPanel viewEndDatePanel = new JPanel ();
+		  viewEndDatePanel.setLayout (new BoxLayout (viewEndDatePanel, BoxLayout.Y_AXIS));
+		  viewEndDatePanel.setPreferredSize (requestPanelSize);
+		  viewEndDatePanel.setMaximumSize (requestPanelSize);
+		  viewRosterPanel.add (viewEndDatePanel, BorderLayout.EAST);
+		  JLabel viewEndDateLabel = new JLabel ("End date: ");
+		  viewEndDatePanel.add (viewEndDateLabel);
+		  viewEndDateField = new JTextField (10);
+		  viewEndDatePanel.add (viewEndDateField);
+		  JLabel viewEndHintLabel = new JLabel ("<html>dd/mm/yyyy<br><br></html>");
+		  viewEndHintLabel.setFont(new Font("SansSerif", Font.PLAIN,9));
+		  viewEndDatePanel.add (viewEndHintLabel);
 		
-		JPanel viewRosterButtonsPanel = new JPanel();
-    viewRosterButtonsPanel.setLayout(new BorderLayout());
-    viewRosterPanel.add (viewRosterButtonsPanel, BorderLayout.SOUTH);
+		  JPanel viewRosterButtonsPanel = new JPanel();
+      viewRosterButtonsPanel.setLayout(new BorderLayout());
+      viewRosterPanel.add (viewRosterButtonsPanel, BorderLayout.SOUTH);
 		
-		// View roster button
-		viewRosterButton = new JButton("View");
-		viewRosterButtonsPanel.add (viewRosterButton, BorderLayout.WEST);
-		viewRosterButton.addActionListener(this);
-    
-    JPanel generateRosterPanel = new JPanel();
-		generateRosterPanel.setLayout(new BorderLayout());
-		rosterOptionsPanel.add(generateRosterPanel, BorderLayout.CENTER);
-    
-    JPanel generateRosterMessagePanel = new JPanel();
-    generateRosterMessagePanel.setLayout(new GridLayout(2,1));
-    generateRosterPanel.add(generateRosterMessagePanel, BorderLayout.NORTH);
-    
-    JLabel generateRosterLabel = new JLabel("<html><br>Generate a new roster</html>");
-		generateRosterLabel.setFont(new Font("SansSerif", Font.BOLD, 12));
-		generateRosterMessagePanel.add(generateRosterLabel);
+		  // View roster button
+		  viewRosterButton = new JButton("View");
+		  viewRosterButtonsPanel.add (viewRosterButton, BorderLayout.WEST);
+		  viewRosterButton.addActionListener(this);
+      
+      JPanel generateRosterPanel = new JPanel();
+		  generateRosterPanel.setLayout(new BorderLayout());
+		  rosterOptionsPanel.add(generateRosterPanel, BorderLayout.CENTER);
+      
+      JPanel generateRosterMessagePanel = new JPanel();
+      generateRosterMessagePanel.setLayout(new GridLayout(2,1));
+      generateRosterPanel.add(generateRosterMessagePanel, BorderLayout.NORTH);
+      
+      JLabel generateRosterLabel = new JLabel("<html><br>Generate a new roster</html>");
+		  generateRosterLabel.setFont(new Font("SansSerif", Font.BOLD, 12));
+		  generateRosterMessagePanel.add(generateRosterLabel);
 		
-		JLabel generateMessage = new JLabel("<html>Please enter the dates for the" +
-		                                    "<br> new roster and click Generate." +
-		                                    "<br><br></html>");
-		generateMessage.setFont(new Font("SansSerif", Font.PLAIN, 12));
-    generateRosterMessagePanel.add(generateMessage);
-    
-    // Start and end date fields 
-		JPanel startDatePanel = new JPanel ();
-		startDatePanel.setLayout (new BoxLayout (startDatePanel, BoxLayout.Y_AXIS));
-		startDatePanel.setPreferredSize (requestPanelSize);
-		startDatePanel.setMaximumSize (requestPanelSize);
-		generateRosterPanel.add (startDatePanel, BorderLayout.WEST);
-		JLabel startDateLabel = new JLabel ("Start date: ");
-		startDatePanel.add (startDateLabel);
-		startDateField = new JTextField (10);
-		startDatePanel.add (startDateField);
-		JLabel startHintLabel = new JLabel ("<html>dd/mm/yyyy<br><br><br><br></html>");
-		startHintLabel.setFont(new Font("SansSerif", Font.PLAIN, 9));
-		startDatePanel.add (startHintLabel);
+		  JLabel generateMessage = new JLabel("<html>Please enter the dates for the" +
+		                                      "<br> new roster and click Generate." +
+		                                      "<br><br></html>");
+		  generateMessage.setFont(new Font("SansSerif", Font.PLAIN, 12));
+      generateRosterMessagePanel.add(generateMessage);
+      
+      // Start and end date fields 
+		  JPanel startDatePanel = new JPanel ();
+		  startDatePanel.setLayout (new BoxLayout (startDatePanel, BoxLayout.Y_AXIS));
+		  startDatePanel.setPreferredSize (requestPanelSize);
+		  startDatePanel.setMaximumSize (requestPanelSize);
+		  generateRosterPanel.add (startDatePanel, BorderLayout.WEST);
+		  JLabel startDateLabel = new JLabel ("Start date: ");
+		  startDatePanel.add (startDateLabel);
+		  startDateField = new JTextField (10);
+		  startDatePanel.add (startDateField);
+		  JLabel startHintLabel = new JLabel ("<html>dd/mm/yyyy<br><br><br><br></html>");
+		  startHintLabel.setFont(new Font("SansSerif", Font.PLAIN, 9));
+		  startDatePanel.add (startHintLabel);
 		
-		JPanel endDatePanel = new JPanel ();
-		endDatePanel.setLayout (new BoxLayout (endDatePanel, BoxLayout.Y_AXIS));
-		endDatePanel.setPreferredSize (requestPanelSize);
-		endDatePanel.setMaximumSize (requestPanelSize);
-		generateRosterPanel.add (endDatePanel, BorderLayout.EAST);
-		JLabel endDateLabel = new JLabel ("End date: ");
-		endDatePanel.add (endDateLabel);
-		endDateField = new JTextField (10);
-		endDatePanel.add (endDateField);
-		JLabel endHintLabel = new JLabel ("<html>dd/mm/yyyy<br><br><br><br></html>");
-		endHintLabel.setFont(new Font("SansSerif", Font.PLAIN,9));
-		endDatePanel.add (endHintLabel);
-    
-    JPanel generateRosterButtonsPanel = new JPanel();
-    generateRosterButtonsPanel.setLayout(new BorderLayout());
-    generateRosterPanel.add (generateRosterButtonsPanel, BorderLayout.SOUTH);
-    
-    generateRosterMessage = new JLabel("");
-		generateRosterMessage.setMaximumSize(new Dimension(80,50));
-		generateRosterMessage.setPreferredSize(new Dimension(80,50));
-		generateRosterMessage.setFont(new Font("SansSerif", Font.PLAIN, 12));
-    generateRosterButtonsPanel.add(generateRosterMessage, BorderLayout.NORTH);
-    
-    // Generate roster button
-		generateRosterButton = new JButton("Generate");
-		generateRosterButtonsPanel.add (generateRosterButton, BorderLayout.WEST);
-		generateRosterButton.addActionListener(this);
+		  JPanel endDatePanel = new JPanel ();
+		  endDatePanel.setLayout (new BoxLayout (endDatePanel, BoxLayout.Y_AXIS));
+		  endDatePanel.setPreferredSize (requestPanelSize);
+		  endDatePanel.setMaximumSize (requestPanelSize);
+		  generateRosterPanel.add (endDatePanel, BorderLayout.EAST);
+		  JLabel endDateLabel = new JLabel ("End date: ");
+		  endDatePanel.add (endDateLabel);
+		  endDateField = new JTextField (10);
+		  endDatePanel.add (endDateField);
+		  JLabel endHintLabel = new JLabel ("<html>dd/mm/yyyy<br><br><br><br></html>");
+		  endHintLabel.setFont(new Font("SansSerif", Font.PLAIN,9));
+		  endDatePanel.add (endHintLabel);
+      
+      JPanel generateRosterButtonsPanel = new JPanel();
+      generateRosterButtonsPanel.setLayout(new BorderLayout());
+      generateRosterPanel.add (generateRosterButtonsPanel, BorderLayout.SOUTH);
+      
+      generateRosterMessage = new JLabel("");
+		  generateRosterMessage.setMaximumSize(new Dimension(80,50));
+		  generateRosterMessage.setPreferredSize(new Dimension(80,50));
+		  generateRosterMessage.setFont(new Font("SansSerif", Font.PLAIN, 12));
+      generateRosterButtonsPanel.add(generateRosterMessage, BorderLayout.NORTH);
+      
+      // Generate roster button
+		  generateRosterButton = new JButton("Generate");
+		  generateRosterButtonsPanel.add (generateRosterButton, BorderLayout.WEST);
+		  generateRosterButton.addActionListener(this);
 		
-		// Approve roster button
-		approveRosterButton = new JButton("Approve");
-		approveRosterButton.setEnabled(false);
-		generateRosterButtonsPanel.add (approveRosterButton, BorderLayout.EAST);
-		approveRosterButton.addActionListener(this);
+		  // Approve roster button
+		  approveRosterButton = new JButton("Approve");
+		  approveRosterButton.setEnabled(false);
+		  generateRosterButtonsPanel.add (approveRosterButton, BorderLayout.EAST);
+		  approveRosterButton.addActionListener(this);
 		
-		// Results panel on the right side
-		resultScrollPanel = new JScrollPane(resultTextArea);
-		resultScrollPanel.setMaximumSize(new Dimension(380,400));
-		resultScrollPanel.setPreferredSize(new Dimension(380,400));
-		rosterPanel.add(resultScrollPanel, BorderLayout.EAST);
-		resultTextArea.setEnabled (false);
-    resultTextArea.setDisabledTextColor (Color.black);
+		  // Results panel on the right side
+		  resultScrollPanel = new JScrollPane(resultTextArea);
+		  resultScrollPanel.setMaximumSize(new Dimension(380,400));
+		  resultScrollPanel.setPreferredSize(new Dimension(380,400));
+		  rosterPanel.add(resultScrollPanel, BorderLayout.EAST);
+		  resultTextArea.setEnabled (false);
+      resultTextArea.setDisabledTextColor (Color.black);
 		
-		pack();
+		  pack();
+		  
+		} // if (context == rosters)
 
  	}// else if
  	

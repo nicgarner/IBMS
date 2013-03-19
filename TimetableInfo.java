@@ -107,7 +107,7 @@ public class TimetableInfo
     if (serviceNumber < 0 || serviceNumber >=  numberOfServices) throw new InvalidQueryException("Invalid service number " + serviceNumber);
     int service = service_ids[serviceNumber];
     String source = database.join("timetable_line", "service", "service");
-    return database.busDatabase.select_ids("time", source, "service", service, "time");
+    return database.busDatabase.select_ids("time", source, "service", service, "timing_point");
   }
   
   /**
@@ -120,7 +120,7 @@ public class TimetableInfo
     if (source == "")
       throw new InvalidQueryException("Nonexistent service");
     else
-      return database.busDatabase.select_ids("time", source, "service", service, "time");
+      return database.busDatabase.select_ids("time", source, "service", service, "timing_point");
   }
   
   /**

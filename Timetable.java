@@ -9,241 +9,15 @@ import java.util.ArrayList;
  */
 public class Timetable
 {
-  
-  // for testing only
-  public static void main(String args[])
-  {
-    database.openBusDatabase();
-    
-    Journey[] journeys = get_journeys(new GregorianCalendar(2013,02,18), 
-                                      new GregorianCalendar(2013,02,18),
-                                      new Route(68));
-    
-    // test roster creation and bus and driver assignment
-    ArrayList<ArrayList<Stretch>> roster = generate_roster(journeys);
-    System.out.println(print_roster(roster));
-    BusScheduler.generateSchedule(roster);
-    DriverScheduler.generateSchedule(roster);
-    System.out.println(print_roster(roster));
-    
-    //save_roster(roster);
-    
-    // ArrayList<ArrayList<Stretch>> roster2 = load_roster(new GregorianCalendar(2013,02,24), new GregorianCalendar(2013,02,24));
-    // System.out.println(print_roster(roster2));
-    
-  } // main method (testing only)
-  
-  /**
-   * DUMMY MAKE STRETCHES
-   */
-  public static ArrayList<ArrayList<Stretch>> generate_roster(Journey[] journeys)
-  {
-    GregorianCalendar date = journeys[0].getDate();
-    ArrayList<ArrayList<Stretch>> roster = new ArrayList<ArrayList<Stretch>>();
-    
-    int day = 0;
-    roster.add(new ArrayList<Stretch>());
-    roster.get(0).add(new Stretch(journeys[0].getDate()));
-    
-    // put the journeys into stretches
-    for (int j = 0; j < journeys.length; j++)
-    {
-      if (date.before(journeys[j].getDate()))
-      {
-        // start a new day by placing the current journey in the first stretch
-        // of the next day
-        date = (GregorianCalendar)journeys[j].getDate().clone();
-        day++;
-        roster.add(new ArrayList<Stretch>());
-        roster.get(day).add(new Stretch(journeys[j].getDate()));
-      }
-
-      boolean added = false;
-      for (int s = 0; s < roster.get(day).size(); s++)
-      {
-        Stretch stretch = roster.get(day).get(s);
-        if (journeys[j].startTime() > stretch.endTime() &&
-            (stretch.duration() + journeys[j].duration() + 
-            (journeys[j].startTime() - stretch.endTime())) <= (5*60))
-        {
-          stretch.addJourney(journeys[j]);
-          added = true;
-          break;
-        }
-
-        if (!added)
-        {
-          roster.get(day).add(new Stretch(journeys[j].getDate()));
-          roster.get(day).get(roster.get(day).size()-1).addJourney(journeys[j]);
-        }
-      }
-    }
-    
-    return roster;
-    
-  }
-  
-  /**
-   * Returns a (long!) string representation of a roster in a heirarchical form
-   * (day/stretch/journey) showing stretches in each day, the driver, bus and 
-   * length of each stretch and the times of each journey in each stretch.
-   *
-   * NOTE: should be moved to the Roster class!
-   * 
-   * @param  roster  a 2D array list of stretches
-   * @param          string representation of roster
-   */
-  public static String print_roster(ArrayList<ArrayList<Stretch>> roster)
-  {
-    String string = "";
-    
-    // for each day in the roster...
-    for (int d = 0; d < roster.size(); d++)
-    {
-      // print out the date and the number of stretches on that date
-      GregorianCalendar date = roster.get(d).get(0).getDate();
-      string += Timetable.dateToString(date) + " has " + roster.get(d).size() + 
-                 " stretches.\n";
-      
-      // for each stretch in the day...
-      for (int s = 0; s < roster.get(d).size(); s++)
-      {
-        // print the details of the stretch
-        Stretch stretch = roster.get(d).get(s);
-        string += "   Stretch " + (s+1) + ": ";
-        string += "Driver: " + stretch.getDriver() + ", ";
-        string += "Bus: " + stretch.getBus() + ", ";
-        string += Timetable.minutesToDuration(stretch.duration()) + "\n";
-        
-        // print out the details of each journey in the stretch
-        Journey[] journys = stretch.getJourneys();
-        for (int j = 0; j < journys.length; j++)
-        {
-          Service service = journys[j].getService();
-          string += "      Service " + service + ": ";
-          string += Timetable.minutesToTime(service.startTime()) + " - ";
-          string += Timetable.minutesToTime(service.endTime()) + "\n";
-        } // for (journey)
-        
-      } // for (each stretch)
-      
-    } // for (each day)
-    
-    return string;
-    
-  } // method (print roster)
-  
-  
-  /**
-   * Recovers the details of a roster from the database for the given time
-   * period.
-   *
-   * NOTE: should be moved to the Roster class!
-   * 
-   * @param  start_date  the desired start date
-   * @param  end_date    the desired end date
-   * @param              a 2D array list of stretches
-   */
-  public static ArrayList<ArrayList<Stretch>> load_roster(
-                       GregorianCalendar start_date, GregorianCalendar end_date)
-  {
-    // validate the input dates
-    if (start_date.after(end_date))
-      throw new IllegalArgumentException("Start date must precede end date.");
-    
-    ArrayList<ArrayList<Stretch>> roster = new ArrayList<ArrayList<Stretch>>();
-    int d = 0; // used to access each day of the "outer" ArrayList
-    
-    // iterate over each day between start date and end date
-    for (GregorianCalendar day = (GregorianCalendar)start_date.clone();
-         !day.after(end_date); day.add(GregorianCalendar.DAY_OF_MONTH, 1))
-    {
-      
-      // get the stretch ids for the current day's stretches and use them
-      // to instantiate stretch objects
-      int[] stretches = database.busDatabase.select_ids("stretch_id", "stretch", 
-                                                        "date", day.getTime(),
-                                                        "stretch_id");
-      // only continue if there are some stretches on this day
-      if (stretches.length > 0)
-      {
-        // create a list for the current day's stretches
-        roster.add(new ArrayList<Stretch>());
-        
-        // add each stretch to the list
-        for (int s = 0; s < stretches.length; s++)
-          roster.get(d).add(new Stretch(stretches[s]));
-        
-        // increment the day counter ready for the next day
-        d++;
-        
-      } // if (stretches were found for today)
-      
-    } // for (each day)
-    
-    // throw an error if no data was returned
-    if (roster.size() == 0)
-      throw new IllegalArgumentException("No roster information was found " +
-                                         "between the specified dates.");
-    
-    return roster;
-    
-  } // method (load roster)
-  
-  
-  /**
-   * Inserts the details of a roster into the database.
-   *
-   * NOTE: should be moved to the Roster class!
-   * 
-   * @param  roster  a 2D array list of stretches
-   * @param          true if success, false if failure
-   */
-  public static boolean save_roster(ArrayList<ArrayList<Stretch>> roster)
-  { 
-    // for each day in the roster...
-    for (int d = 0; d < roster.size(); d++)
-    {
-      // for each stretch in the day...
-      for (int s = 0; s < roster.get(d).size(); s++)
-      {
-        // insert stretch details and get back the stretch id created
-        Stretch stretch = roster.get(d).get(s);
-        
-        // if stretch doesn't have a bus/driver assigned, enter -1 in database
-        int bus_id = stretch.getBus() == null ? -1 : stretch.getBus().getID();
-        int driver_id = stretch.getDriver() == null ? -1 : stretch.getDriver().getID();
-        
-        int stretch_id = database.busDatabase.new_record_return_id("stretch",
-          new Object[][] {
-            { "date",      stretch.getDate().getTime() },
-            { "bus_id",    bus_id },
-            { "driver_id", driver_id } } );
-                
-        // insert each journey's details
-        Journey[] journeys = stretch.getJourneys();
-        for (int j = 0; j < journeys.length; j++)
-          database.busDatabase.new_record("journey",
-            new Object[][] {
-              { "stretch_id", stretch_id },
-              { "service_id", journeys[j].getService().toString() } } );
-          
-      } // for (each stretch)
-      
-    } // for (each day)
-    
-    return true;
-    
-  } // method (save roster)
-  
   /**
    * Returns an array of Journey objects to represent all the bus journeys to be
-   * made between the specified dates. This is the first stage of the rostering
-   * process.
+   * made between the specified dates on the specified route. This is the first
+   * stage of the rostering process.
    *
    * @param  start_date  the start date of the roster
    * @param  end_date    the final date of the roster
-   * @return Journey[]   array of journey objects
+   * @oaran  route       the route of the journeys to get
+   * @return             array of journey objects
    */
   public static Journey[] get_journeys(GregorianCalendar start_date, 
                                        GregorianCalendar end_date, Route route)
@@ -259,19 +33,14 @@ public class Timetable
     // know how many there'll be at the start
     ArrayList<Journey> journeys = new ArrayList<Journey>();
     
-  
-    
     // iterate over each day between start date and end date
     for (GregorianCalendar day = (GregorianCalendar)start_date.clone();
          !day.after(end_date); day.add(GregorianCalendar.DAY_OF_MONTH, 1))
     {
-      
-        // get the relevant service ids and create journey objects for them
-        int[] service_ids = 
-                TimetableInfo.getServices(route.getID(), day.getTime());
-        for (int service = 0; service < service_ids.length; service++)
-          journeys.add(new Journey(service_ids[service], day));
-      
+      // get the relevant service ids and create journey objects for them
+      int[] services = TimetableInfo.getServices(route.getID(), day.getTime());
+      for (int service = 0; service < services.length; service++)
+        journeys.add(new Journey(services[service], day));
     }
     
     // return journeys as an array
@@ -317,6 +86,9 @@ public class Timetable
  	{
  	  int hour = minutes/60;
     int min  = minutes - hour*60;
+    
+    if (hour > 23)
+      hour -= 24;
     
     if (hour < 10)
     {
@@ -423,12 +195,13 @@ public class Timetable
           if (printServiceNames)
           {
             int[] serviceNames = TimetableInfo.getServices(routes[route], kinds[kind]);
-          
+            System.out.print("                                                     ");
             for (int s = 0; s <serviceNames.length; s++)
-              System.out.print(serviceNames[s] + " ");
+              System.out.format("%5d  ", serviceNames[s]);
             System.out.println();
           }
           
+          int skipped = 0;
           for (int stop = 0; stop < stops.length; stop++)
           {
             System.out.format("  %2s: %-42s", (stop+1), 
@@ -438,29 +211,29 @@ public class Timetable
             else
               System.out.print("      ");
             
-            /*
-              if (stop == 0)
-                for (int service = 0; service < services.length; service++)
-                  System.out.format("%4s ", services[service]);
-              if (stop == 1)
-                for (int service = 0; service < services.length; service++)
-                  System.out.format("%4s ", times[service].length);
-            //}
-            //else */
             for (int service = 0; service < services.length; service++)
-              if (times[service].length > stop)
-              { 
-                int hours = times[service][stop] / 60;
-                int minutes = times[service][stop] - hours*60;
-                if (minutes >= 10)
-                  System.out.format("%2d:%2d ", hours, minutes);
+            {
+              if (times[service].length > stop - skipped)
+              {
+                if (BusStopInfo.isTimingPoint(stops[stop]))
+                { 
+                  //int hours = times[service][stop-skipped] / 60;
+                  //int minutes = times[service][stop-skipped] - hours*60;
+                  //if (minutes >= 10)
+                    //System.out.format("%2d:%2d  ", hours, minutes);
+                  //else
+                    //System.out.format("%2d:0%d  ", hours, minutes);
+                  System.out.format("%s  ", 
+                                   minutesToTime(times[service][stop-skipped]));
+                }
                 else
-                  System.out.format("%2d:0%d ", hours, minutes);
+                  System.out.print("       ");
               }
               else
-                System.out.format(" --  ");
-             
-            
+                System.out.format("  --   ");
+            }
+            if (!BusStopInfo.isTimingPoint(stops[stop]))
+              skipped++;  
             System.out.println();
           } // for (print timetable)
           
