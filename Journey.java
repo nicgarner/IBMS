@@ -14,8 +14,8 @@ public class Journey
 	
 	/**
 	 * Represents a journey in the system. 
-	 * @param serviceID the service's ID from the database (a column of a timetable)
-	 * @param date the journey's date
+	 * @param  serviceID  the service's ID from the database (a column of a timetable)
+	 * @param  date       the journey's date
 	 */
 	public Journey (int serviceID, GregorianCalendar journeyDate)
 	{
@@ -23,9 +23,17 @@ public class Journey
 		date = (GregorianCalendar) journeyDate.clone();
 	}// constructor
 	
+	/**
+	 * Instantiates a journey saved in the database.
+	 * @oaram  journeyID    the id of the journey record in the database
+	 * @oaram  journeyDate  the date of the journey
+	 * @param  value        distinguishes between the two otherwise identical
+	 *                      constructor signitures
+	 */
 	public Journey (int journeyID, GregorianCalendar journeyDate, boolean value)
 	{
-		this(database.busDatabase.find_id("service_id", "journey", "journey_id", journeyID), journeyDate);
+		this(database.busDatabase.find_id("service_id", "journey", 
+	                                    "journey_id", journeyID), journeyDate);
 	}// constructor
 	
 	/**
@@ -90,7 +98,8 @@ public class Journey
 	public String toFullString ()
 	{
 		return "Service: " + service.toFullString() + ", " +
-		       "Date: " + Timetable.dateToString(date);
+		       "Date: " + Timetable.dateToString(date) + ", " +
+		       "Duration " + Timetable.minutesToDuration(duration());
 	}// toString
 	
 }// class

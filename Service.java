@@ -91,8 +91,9 @@ public class Service {
   {
     String string = toString() + " (";
     for (int time = 0; time < times.length-1; time++)
-      string += times[time] + " ";
-    string += times[times.length-1] + ")";
+      string += Timetable.minutesToTime(times[time]) + " ";
+    string += Timetable.minutesToTime(times[times.length-1]) + ") ";
+    string += "Duration: " + Timetable.minutesToDuration(duration());
     return string;
   } // method (toString)
   
