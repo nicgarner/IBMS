@@ -249,11 +249,16 @@ public class Timetable
               Timetable.minutesToDuration(working_time - driving_time) + " (" +
               dp2.format(dead_time) + "%)\n";
     string += "Average stretch length: " + 
-              Timetable.minutesToDuration(working_time/total_stretches) + "\n";
-              
-    string += "\nTotal drivers used: " + drivers_used + "\n";
+              Timetable.minutesToDuration(working_time/total_stretches) + "\n";         
+    string += "Total drivers used: " + drivers_used + "\n\n";
+    
     for (int d = 0; d < days; d++)
-      string += "Drivers used day " + (d+1) + ": " + drivers_per_day[d] + "\n";
+    {
+      string += "Day " + (d+1) + ": ";
+      string += drivers_per_day[d] + (drivers_per_day[d] == 1 ? " driver," : " drivers, ");
+      string += stretches_per_day[d] + (stretches_per_day[d] == 1 ? " stretch," : " stretches, ");
+      string += journeys_per_day[d] + (journeys_per_day[d] == 1 ? " journey.\n" : " journeys.\n");
+    }
     string += "\n";
     string += "Average time worked by a driver: " +
               Timetable.minutesToDuration(working_time/drivers_used) + "\n";
