@@ -152,7 +152,14 @@ public class Stretch
 	 */
 	public int duration ()
 	{
-		return endTime () - startTime ();
+		int startTime = startTime();
+    int endTime = endTime();
+    
+    // if service crosses midnight can't do a simple subtraction
+    if (endTime < startTime)
+      return 1440 - startTime + endTime;
+    else
+      return endTime - startTime;
 	}// duration
 	
 	

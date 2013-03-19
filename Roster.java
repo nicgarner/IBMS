@@ -284,7 +284,7 @@ public class Roster
     
   } // method (print roster)
 
-public static ArrayList<ArrayList<Stretch>> load_roster(
+  public static ArrayList<ArrayList<Stretch>> load_roster(
                        GregorianCalendar start_date, GregorianCalendar end_date)
   {
     // validate the input dates
@@ -329,7 +329,9 @@ public static ArrayList<ArrayList<Stretch>> load_roster(
     return roster;
     
   } // method (load roster)
-public static boolean save_roster(ArrayList<ArrayList<Stretch>> roster)
+  
+  
+  public static boolean save_roster(ArrayList<ArrayList<Stretch>> roster)
   { 
     // for each day in the roster...
     for (int d = 0; d < roster.size(); d++)
