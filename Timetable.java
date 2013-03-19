@@ -1,6 +1,7 @@
 import java.util.Formatter;
 import java.util.GregorianCalendar;
 import java.util.ArrayList;
+import java.text.DecimalFormat;
 
 /**
  * Provides methods for working with timetables. Not for instantiating.
@@ -114,10 +115,16 @@ public class Timetable
  	 */
  	public static String minutesToDuration(int minutes)
  	{
- 	  int hour = minutes/60;
-    int min  = minutes - hour*60;
+ 	  int day  = minutes / 1440;
+ 	  int hour = (minutes - day*1440) / 60;
+    int min  = minutes - day*1440 - hour*60;
     
-    return hour + "h " + min + "m";
+    if (day > 0)
+      return day + "d " + hour + "h " + min + "m";
+    else if (hour > 0)
+      return hour + "h " + min + "m";
+    else
+      return min + "m ";
  	}
   
   /**
@@ -155,6 +162,107 @@ public class Timetable
  	  return date;
   }
   
+  /**
+   * Generates some statistics about a roster.
+   *
+   * @param  roster  the roster to be inspected
+   * @return         a string containing the statistics
+   */
+  public static String roster_statistics(ArrayList<ArrayList<Stretch>> roster)
+  {
+    int total_drivers = 70;
+  
+    int days = roster.size();
+    
+    int[] stretches_per_day = new int[days];
+    int[] journeys_per_day = new int[days];
+    int[] drivers_per_day = new int[days];
+    
+    // hours worked in this roster by each driver
+    int[] drivers = new int[total_drivers];
+    
+    int total_stretches = 0;
+    int total_journeys = 0;
+    int driving_time = 0;
+    int working_time = 0;
+    
+    for (int d = 0; d < days; d++)
+    {
+      ArrayList<Stretch> stretches = roster.get(d);
+      stretches_per_day[d] = stretches.size();
+      total_stretches += stretches.size();
+      
+      // to count number of unique drivers used today
+      int[] daily_drivers = new int[total_drivers];
+      
+      for (int s = 0; s < stretches.size(); s++)
+      {
+        Stretch stretch = stretches.get(s);
+        Journey[] journeys = stretch.getJourneys();
+        journeys_per_day[d] += journeys.length;
+        total_journeys += journeys.length;
+        working_time += stretch.duration();
+        
+        for (int j = 0; j < journeys.length; j++)
+          driving_time += journeys[j].duration();
+        
+        int driver = stretch.getDriver().key() - 2012;
+        drivers[driver] += stretch.duration();
+        daily_drivers[driver] = 1;
+        
+      }
+      
+      for (int dr = 0; dr < total_drivers; dr++)
+        drivers_per_day[d] += daily_drivers[dr];
+    }
+    
+    // count total number of drivers used (assigned some work) and min and
+    // max hours worked
+    int drivers_used = 0;
+    int max_time = drivers[0];
+    int min_time = Integer.MAX_VALUE;
+    
+    for (int dr = 0; dr < drivers.length; dr++)
+    {
+      if (drivers[dr] > 0)
+      {
+        drivers_used++;
+        if (drivers[dr] < min_time)
+          min_time = drivers[dr];
+      }
+      if (drivers[dr] > max_time)
+        max_time = drivers[dr];
+    }
+        
+    double dead_time = (double)(working_time - driving_time)*100 / working_time;
+    DecimalFormat dp2 = new DecimalFormat("0.0");
+    
+    
+    // generate output
+    String string = "This " + days + " day roster contains " + total_journeys + 
+                    " journeys in " + total_stretches + " stretches.\n";
+    string += "Total work time: " +
+              Timetable.minutesToDuration(working_time) + "\n";
+    string += "Total driving time: " +
+              Timetable.minutesToDuration(driving_time) + "\n";
+    string += "Total dead time: " +
+              Timetable.minutesToDuration(working_time - driving_time) + " (" +
+              dp2.format(dead_time) + "%)\n";
+    string += "Average stretch length: " + 
+              Timetable.minutesToDuration(working_time/total_stretches) + "\n";
+              
+    string += "\nTotal drivers used: " + drivers_used + "\n";
+    for (int d = 0; d < days; d++)
+      string += "Drivers used day " + (d+1) + ": " + drivers_per_day[d] + "\n";
+    string += "\n";
+    string += "Average time worked by a driver: " +
+              Timetable.minutesToDuration(working_time/drivers_used) + "\n";
+    string += "Most hours worked by one driver: " + 
+              Timetable.minutesToDuration(max_time) + "\n";
+    string += "Fewest hours worked by one driver: " + 
+              Timetable.minutesToDuration(min_time) + "\n";
+    return string;
+  }
   
   /**
    * Outputs full timetable information for all routes.

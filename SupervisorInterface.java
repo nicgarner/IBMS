@@ -49,8 +49,8 @@ public class SupervisorInterface extends JFrame implements ActionListener
   	setTitle ("Supervisor interface");
 
   	contents.setLayout (new BorderLayout());
-		contents.setMaximumSize(new Dimension(570,490));
-		contents.setPreferredSize(new Dimension(570,490));
+		contents.setMaximumSize(new Dimension(610,490));
+		contents.setPreferredSize(new Dimension(610,490));
   	
   	// Create a menu panel on the top part of the window
   	JPanel menuPanel = new JPanel (new GridLayout (2, 1));
@@ -253,8 +253,8 @@ public class SupervisorInterface extends JFrame implements ActionListener
 		
 		  // Results panel on the right side
 		  resultScrollPanel = new JScrollPane(resultTextArea);
-		  resultScrollPanel.setMaximumSize(new Dimension(380,400));
-		  resultScrollPanel.setPreferredSize(new Dimension(380,400));
+		  resultScrollPanel.setMaximumSize(new Dimension(410,400));
+		  resultScrollPanel.setPreferredSize(new Dimension(410,400));
 		  rosterPanel.add(resultScrollPanel, BorderLayout.EAST);
 		  resultTextArea.setEnabled (false);
       resultTextArea.setDisabledTextColor (Color.black);
@@ -280,7 +280,8 @@ public class SupervisorInterface extends JFrame implements ActionListener
       GregorianCalendar end = Timetable.parseDate(endString);
       
       ArrayList<ArrayList<Stretch>> roster = Roster.load_roster(start, end);
-      resultTextArea.setText(Roster.print_roster(roster));
+      String stats = Timetable.roster_statistics(roster);
+      resultTextArea.setText(stats + "\n\n" + Roster.print_roster(roster));
     }
     catch (Exception e)
     {
@@ -310,7 +311,8 @@ public class SupervisorInterface extends JFrame implements ActionListener
       GregorianCalendar end = Timetable.parseDate(endString);
       
       generatedRoster = Roster.generate_roster(start, end);
-      resultTextArea.setText(Roster.print_roster(generatedRoster));
+      String stats = Timetable.roster_statistics(generatedRoster);
+      resultTextArea.setText(stats + "\n\n" + Roster.print_roster(generatedRoster));
       
       // enable the approve button
       approveRosterButton.setEnabled(true);
