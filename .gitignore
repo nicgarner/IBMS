@@ -1,5 +1,12 @@
 *.class
 
+# Nic's stuff to ignore
+classpath
+javadoc
+package-list
+testing.java
+timetable
+
 # Package Files #
 *.jar
 *.war
