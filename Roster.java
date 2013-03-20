@@ -208,25 +208,24 @@ Journey[] b = Timetable.get_journeys(new GregorianCalendar (2013,04,02), new Gre
         
       }//for journey length
     }//while has journeys
-    
+   for(int i = 0; i < b.length; i++) 
+    if(!assigned2[i])
+    System.out.println(i) ;
    for(int i = 0 ; i < b.length; i++)
    {         
        if(!assigned2[i])
        {
-           roster.get(day).add(new Stretch(a[i].getDate()));
-           roster.get(day).get(roster.get(day).size()-1).addJourney(a[i]);
-           Stretch stretch2 = roster.get(day).get(roster.get(day).size()-1) ;	        
+           roster.get(day).add(new Stretch(b[i].getDate()));
+           roster.get(day).get(roster.get(day).size()-1).addJourney(b[i]);
+           Stretch stretch3 = roster.get(day).get(roster.get(day).size()-1) ;	        
 
-           stretch2.addJourney(b[i]);
+           stretch3.addJourney(b[i]);
            assigned2[i] = true ;
                  
         }
      }//for
 
-   for(int i = 0; i < b.length; i++)
-      System.out.println(assigned2[i]) ;
-    return roster;
-
+   return roster ;
   } //roster
 
   public static String print_roster(ArrayList<ArrayList<Stretch>> roster)
