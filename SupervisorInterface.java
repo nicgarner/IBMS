@@ -287,6 +287,7 @@ public class SupervisorInterface extends JFrame implements ActionListener
     {
       resultTextArea.setText("");
   		viewMessage.setText("<html>"+e.getMessage()+"</html>");
+  		e.printStackTrace();
   		
   		// disable approve button
   		approveRosterButton.setEnabled(false);
@@ -321,6 +322,7 @@ public class SupervisorInterface extends JFrame implements ActionListener
     {
       resultTextArea.setText("");
   		generateRosterMessage.setText("<html>"+e.getMessage()+"</html>");
+  		e.printStackTrace();
   		
   		// disable approve button
   		approveRosterButton.setEnabled(false);
@@ -350,6 +352,7 @@ public class SupervisorInterface extends JFrame implements ActionListener
     {
       resultTextArea.setText("");
   		generateRosterMessage.setText("<html>"+e.getMessage()+"</html>");
+  		e.printStackTrace();
   		
   		// enable approve button
   		approveRosterButton.setEnabled(true);
