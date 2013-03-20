@@ -10,14 +10,14 @@ import java.util.* ;
 */
 public class Roster
 {   
-  /*public static void main(String args[]) {
+  public static void main(String args[]) {
    database.openBusDatabase() ;  
    //generate_roster(new GregorianCalendar (2013,04,02), new GregorianCalendar (2013,04,05)) ; 
    Journey[] a = Timetable.get_journeys(new GregorianCalendar (2013,04,02), new GregorianCalendar(2013,04,05), new Route(68));
 Journey[] b = Timetable.get_journeys(new GregorianCalendar (2013,04,02), new GregorianCalendar(2013,04,05), new Route(67));
   rostering(a,b) ;
 
- } */
+ } 
  
  /**
    * Adds the stretches from one roster into another, so that stretches on
@@ -115,20 +115,21 @@ Journey[] b = Timetable.get_journeys(new GregorianCalendar (2013,04,02), new Gre
            {
              
              if(!assigned2[i] && a[j-1].getDate().compareTo(b[i].getDate())==0)
-        	 {
+             {
             	 System.out.println("after "+ j+ " amount of journeys") ;
                  //date = (GregorianCalendar)a[j-1].getDate().clone();
                  System.out.println("date set:" + Timetable.dateToString(a[i].getDate())) ;
                  //day++ ;
-                 roster.get(day).add(new Stretch(a[i].getDate()));
-                 roster.get(day).get(roster.get(day).size()-1).addJourney(a[i]);
-                 Stretch stretch = roster.get(day).get(roster.get(day).size()-1) ;	        
+                 
+                 roster.get(day).add(new Stretch(b[i].getDate()));
+                 roster.get(day).get(roster.get(day).size()-1).addJourney(b[i]);
+                 Stretch stretch2 = roster.get(day).get(roster.get(day).size()-1) ;	        
 
                  System.out.println(i) ;
-            	 stretch.addJourney(b[i]);
+            	 stretch2.addJourney(b[i]);
             	 assigned2[i] = true ;
-                 
-        	  }
+                 System.out.println(stretch2.toString()) ;
+             }
 
             }//for
            
@@ -214,9 +215,9 @@ Journey[] b = Timetable.get_journeys(new GregorianCalendar (2013,04,02), new Gre
        {
            roster.get(day).add(new Stretch(a[i].getDate()));
            roster.get(day).get(roster.get(day).size()-1).addJourney(a[i]);
-           Stretch stretch = roster.get(day).get(roster.get(day).size()-1) ;	        
+           Stretch stretch2 = roster.get(day).get(roster.get(day).size()-1) ;	        
 
-           stretch.addJourney(b[i]);
+           stretch2.addJourney(b[i]);
            assigned2[i] = true ;
                  
         }
