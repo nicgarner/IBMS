@@ -1,57 +1,25 @@
-//import java.util.GregorianCalendar;
-//import java.util.ArrayList ;
-//import java.util.Formatter;
+import java.util.GregorianCalendar;
+import java.util.ArrayList ;
+import java.util.Formatter;
+import java.util.* ;
 /**
  * Creates stretches for IBMS rostering
- * A class that groups Journeys together to make Stretches
+ * A class that groups Journeys together to make Stretches. 
+ * Not for instantiating!
  * Implemented by Kris & Nic
 */
 public class Roster
-{
-  public static void main(String args[])
-  {
-    database.openBusDatabase();
-    Journey[] journeysA = Timetable.get_journeys(new GregorianCalendar(2013,02,18), 
-                                      new GregorianCalendar(2013,02,18),
-                                      new Route(67));
-    
-    Journey[] journeysB = Timetable.get_journeys(new GregorianCalendar(2013,02,18), 
-                                      new GregorianCalendar(2013,02,18),
-                                      new Route(68));
+{   
+  /*public static void main(String args[]) {
+   database.openBusDatabase() ;  
+   //generate_roster(new GregorianCalendar (2013,04,02), new GregorianCalendar (2013,04,05)) ; 
+   Journey[] a = Timetable.get_journeys(new GregorianCalendar (2013,04,02), new GregorianCalendar(2013,04,05), new Route(68));
+Journey[] b = Timetable.get_journeys(new GregorianCalendar (2013,04,02), new GregorianCalendar(2013,04,05), new Route(67));
+  rostering(a,b) ;
 
-    Journey[] journeysC = Timetable.get_journeys(new GregorianCalendar(2013,02,18), 
-                                      new GregorianCalendar(2013,02,18),
-                                      new Route(66));
-
-   Journey[] journeysD = Timetable.get_journeys(new GregorianCalendar(2013,02,18), 
-                                      new GregorianCalendar(2013,02,18),
-                                      new Route(65));
-
-    System.out.println(journeysA.length + " journeys were created.");
-    for (int j = 0; j < journeysA.length; j++)
-      System.out.println(journeysA[j].toFullString());   
-
-   System.out.println(journeysB.length + " journeys were created.");
-    for (int j = 0; j < journeysB.length; j++)
-      System.out.println(journeysB[j].toFullString());   
-
-	/*System.out.println(journeysC.length + " journeys were created.");
-    for (int j = 0; j < journeysC.length; j++)
-      System.out.println(journeysC[j]);   
-
-  System.out.println(journeysD.length + " journeys were created.");
-    for (int j = 0; j < journeysD.length; j++)
-      System.out.println(journeysD[j]); 
-  */
-    
-  rostering(journeysB, journeysA) ;
-  rostering(journeysC, journeysC) ;
-  
-   
-
-  }//main
-   
-  /**
+ } */
+ 
+ /**
    * Adds the stretches from one roster into another, so that stretches on
    * the same day are in the same list. The two rosters must correspond to
    * the same period of time; that is they must be the same length and the
@@ -143,6 +111,27 @@ public class Roster
       {
         if (date.before(a[j].getDate()))
         {
+           for(int i = 0 ; i < b.length; i++)
+           {
+             
+             if(!assigned2[i] && a[j-1].getDate().compareTo(b[i].getDate())==0)
+        	 {
+            	 System.out.println("after "+ j+ " amount of journeys") ;
+                 //date = (GregorianCalendar)a[j-1].getDate().clone();
+                 System.out.println("date set:" + Timetable.dateToString(a[i].getDate())) ;
+                 //day++ ;
+                 roster.get(day).add(new Stretch(a[i].getDate()));
+                 roster.get(day).get(roster.get(day).size()-1).addJourney(a[i]);
+                 Stretch stretch = roster.get(day).get(roster.get(day).size()-1) ;	        
+
+                 System.out.println(i) ;
+            	 stretch.addJourney(b[i]);
+            	 assigned2[i] = true ;
+                 
+        	  }
+
+            }//for
+           
           //start a new day by placing the current journey in the first stretch
           //of the next day
           date = (GregorianCalendar)a[j].getDate().clone();
@@ -173,8 +162,8 @@ public class Roster
             for(int i = 0; i < b.length; i++)
             {
 	      //check if adding the current journey complies with the rules
-              if (!assigned2[i] && b[i].startTime() >= 
-              stretch.endTime() &&
+              if (!assigned2[i] && a[j].getDate().compareTo(b[i].getDate())==0  
+                  && b[i].startTime() >= stretch.endTime() &&
               (stretch.duration() + b[i].duration() + 
               (b[i].startTime() - stretch.endTime())) <= (5*60))
               {
@@ -203,8 +192,8 @@ public class Roster
           
           for(int i = 0; i < b.length; i++)
           {
-	    if (!assigned2[i] && b[i].startTime() >= 
-            stretch.endTime() &&
+	    if (!assigned2[i] && a[j].getDate().compareTo(b[i].getDate())==0 
+               && b[i].startTime() >= stretch.endTime() &&
             (stretch.duration() + b[i].duration() + 
             (b[i].startTime() - stretch.endTime())) <= (5*60))
             {
@@ -218,14 +207,23 @@ public class Roster
         
       }//for journey length
     }//while has journeys
-   /*for(int i = 0; i < b.length; i++)
-    {
-      if(!assigned2[i])
-	  {
-	    stretch.addJourney(journeys[i]);
-	    busNum++;
-	  }
-    } */    
+    
+   for(int i = 0 ; i < b.length; i++)
+   {         
+       if(!assigned2[i])
+       {
+           roster.get(day).add(new Stretch(a[i].getDate()));
+           roster.get(day).get(roster.get(day).size()-1).addJourney(a[i]);
+           Stretch stretch = roster.get(day).get(roster.get(day).size()-1) ;	        
+
+           stretch.addJourney(b[i]);
+           assigned2[i] = true ;
+                 
+        }
+     }//for
+
+   for(int i = 0; i < b.length; i++)
+      System.out.println(assigned2[i]) ;
     return roster;
 
   } //roster
