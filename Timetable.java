@@ -206,9 +206,12 @@ public class Timetable
         for (int j = 0; j < journeys.length; j++)
           driving_time += journeys[j].duration();
         
-        int driver = stretch.getDriver().key() - 2012;
-        drivers[driver] += stretch.duration();
-        daily_drivers[driver] = 1;
+        if (stretch.getDriver() != null)
+        {
+          int driver = stretch.getDriver().key() - 2012;
+          drivers[driver] += stretch.duration();
+          daily_drivers[driver] = 1;
+        }
         
       }
       
