@@ -35,92 +35,60 @@ public class DriverScheduler
 	 * list of stretches on that day.
 	 * @param roster the array list of days and stretches on that day
 	 */
-	public static void generateSchedule 
-	(ArrayList<ArrayList<Stretch>> roster)
+	public static void generateSchedule (ArrayList<ArrayList<Stretch>> roster)
 	{
-		drivers.clear();
 		populateTable ();
-		DriverComparator comparator;
+		DriverComparator comparator = new DriverComparator ();
 		for (int day = 0; day < roster.size(); day++)
-		{	
-		System.out.println("day " + day);
-			
-			
-			
-			System.out.println ("****************Before sort*******************");
-			Iterator <DriverEntry<Driver, Integer[]>>driveIt = 
-					drivers.iterator();
-					int counter = 0;
-				while (driveIt.hasNext ())
-				{				
-				DriverEntry<Driver, Integer[]> driver = driveIt.next();	
-				Integer [] values = driver.getValue ();	
-				counter++;
-			System.out.print 
-								(values[2] + " ");	
-				}
-				System.out.println();
-				System.out.println (counter + "\n");
-								
-								
-								
-			Collections.sort (drivers, new DriverComparator ());		 
-			
-			System.out.println ("****************After sort*******************");
-			Iterator <DriverEntry<Driver, Integer[]>>drivIt = 
-					drivers.iterator();
-					counter = 0;
-				while (drivIt.hasNext ())
-				{				
-				DriverEntry<Driver, Integer[]> driver = drivIt.next();	
-				Integer [] values = driver.getValue ();	
-				counter++;
-			System.out.print 
-								(values[2] + " ");	
-				}
-				System.out.println();
-				System.out.println (counter + "\n");
-			
-			
-			
-			
-			
+		{
+		
+		  // reset driver busy time and stretches worked to 0
+		  Iterator <DriverEntry<Driver, Integer[]>>driverIt = drivers.iterator();
+		  while (driverIt.hasNext ())
+		  {
+			  DriverEntry<Driver, Integer[]> driver = driverIt.next();	
+			  Integer [] values = driver.getValue ();
+			  values[1] = values[0] = 0;
+		  }// for
+		
+		  // sort drivers by time worked so far						
+		  Collections.sort (drivers, comparator);		 
+		  
+		  // assign a driver to each stretch in the current day
 			for (int s = 0; s < roster.get(day).size(); s++)
 			{
 				Stretch stretch = roster.get(day).get(s);
-				Iterator <DriverEntry<Driver, Integer[]>>driverIt = 
-					drivers.iterator();
-					counter = 0;
+				driverIt = drivers.iterator();
 				while (driverIt.hasNext ())
 				{
+				  // get drivers details into local vars to access more easily
 					DriverEntry<Driver, Integer[]> driver = driverIt.next();	
+					Integer [] values = driver.getValue ();
+					Driver theDriver = driver.getKey();
 					
-					Integer [] values = driver.getValue ();	
-					counter++;
-					if (values[1] < stretch.startTime() && 
-						values[0] < 2 &&					
-						((stretch.startTime() - values[1] >= 60) ||
-						(values[0] == 0))
-					 	)
+					// check if this driver can work this stretch
+					if (values[1] < stretch.startTime() && // not currently driving
+   						values[0] < 2 &&  // worked less than two stretches today
+   						theDriver.available(stretch.getDate()) &&	// not on holiday!
+    					((values[0] == 0) || // either driver hasn't worked yet today or
+    					(stretch.startTime() - values[1] >= 60))) // had a break
 					{	
-						stretch.setDriver (driver.getKey ());
-						values[1] = stretch.endTime ();		
+					  // assign driver to stretch and update values
+						stretch.setDriver (driver.getKey ());		
 						values[0]++;
-						
-						values[2] += stretch.duration ();		 	
-						System.out.print (values[2]+" ");					
-						break;
+						values[1] = stretch.endTime ();
+						values[2] += stretch.duration ();					
+						break; // don't need to consider more drivers
 					}// if
-				}// for
+				}// while
 			}// for
 		}// for
 
 	}// generateSchedule
 	
 	
-	/**
-	 * Populates the table of drivers
-	 */
+	
+	// helper method to populate drivers table
 	private static void populateTable ()
 	{
 		Driver[] allDrivers = Driver.get_drivers ();
@@ -134,7 +102,8 @@ public class DriverScheduler
 		}// for
 	}// populateTable
 	
-
+  
+  // comparator for sorting drivers by time worked
 	private static class DriverComparator implements Comparator
 	{
 		/**
@@ -152,38 +121,11 @@ public class DriverScheduler
 		}
 		
 	}// class
-	
-	/*final class DriverEntry<Driver, Integer[]> 
-	            implements Map.Entry<Driver, Integer[]> {
-    private final Driver key;
-    private Integer[] value;
-
-    public DriverEntry(Driver key, Integer[] value) {
-        this.key = key;
-        this.value = value;
-    }
-
-    @Override
-    public Driver getKey() {
-        return key;
-    }
-
-    @Override
-    public Integer[] getValue() {
-        return value;
-    }
-
-    @Override
-    public Integer[] setValue(Integer[] value) {
-        Integer[] old = this.value;
-        this.value = value;
-        return old;
-    }
-}*/
-
-// Code is from http://stackoverflow.com/questions/3110547/java-how-to-create-new-entry-key-value
-
-final static class DriverEntry<K, V> implements Map.Entry<K, V> {
+  
+  
+  // Code is from:
+  // http://stackoverflow.com/questions/3110547/java-how-to-create-new-entry-key-value
+  final static class DriverEntry<K, V> implements Map.Entry<K, V> {
     private final K key;
     private V value;
 
@@ -208,29 +150,6 @@ final static class DriverEntry<K, V> implements Map.Entry<K, V> {
         this.value = value;
         return old;
     }
-}
-	
-	/*public static void main (String[] args)
-	{
-	database.openBusDatabase ();
-		Route[] routes = Route.getAllRoutes();
-    GregorianCalendar start = new GregorianCalendar (2013, 8, 01);
-    GregorianCalendar end = new GregorianCalendar (2013, 8, 02);
-    
-    Journey[] a = Timetable.get_journeys(start, end, routes[0]);
-    Journey[] b = Timetable.get_journeys(start, end, routes[1]);
-    
-    ArrayList<ArrayList<Stretch>> roster = Roster.rostering(a, b);
-    
-    a = Timetable.get_journeys(start, end, routes[2]);
-    b = Timetable.get_journeys(start, end, routes[3]);
-    
-    ArrayList<ArrayList<Stretch>> roster2 = Roster.rostering(a, b);
-    
-    Roster.merge_rosters(roster, roster2);
-    
-    BusScheduler.generateSchedule(roster);
-    DriverScheduler.generateSchedule(roster);
-	}*/
+  }
 }// class
 
