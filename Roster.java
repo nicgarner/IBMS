@@ -136,7 +136,7 @@ rostering(d,d) ;
                  System.out.println(stretch2.toString()) ;
                  k++ ;
                  for(int l = 0 ; l < b.length; l++)
-           {             
+              {             
               if (!assigned2[l] && a[j-1].getDate().compareTo(b[l].getDate())==0 &&  
                   b[l].startTime() >= stretch2.endTime() &&
               ((stretch2.duration() == 0) || ((stretch2.duration() + b[l].duration() 
@@ -145,6 +145,7 @@ rostering(d,d) ;
 	        stretch2.addJourney(b[l]);
 	        assigned2[l] = true ;
                 n++ ;
+                 break ;
 	      }//if complies with rules
              }
              }
@@ -242,6 +243,20 @@ rostering(d,d) ;
 
            stretch3.addJourney(b[i]);
            assigned2[i] = true ;
+           
+           for(int l = 0 ; l < b.length; l++)
+              {             
+              if (!assigned2[l] &&  
+                  b[l].startTime() >= stretch3.endTime() &&
+              ((stretch3.duration() == 0) || ((stretch3.duration() + b[l].duration() 
+                           + (b[l].startTime() - stretch3.endTime())) <= (5*60))))
+              {
+	        stretch3.addJourney(b[l]);
+	        assigned2[l] = true ;
+                n++ ;
+                 break ;
+	      }//if complies with rules
+             }
                  
         }
      }//for
