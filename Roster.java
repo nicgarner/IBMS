@@ -13,10 +13,14 @@ public class Roster
   public static void main(String args[]) {
    database.openBusDatabase() ;  
    //generate_roster(new GregorianCalendar (2013,04,02), new GregorianCalendar (2013,04,05)) ; 
-   Journey[] a = Timetable.get_journeys(new GregorianCalendar (2013,04,02), new GregorianCalendar(2013,04,05), new Route(68));
-Journey[] b = Timetable.get_journeys(new GregorianCalendar (2013,04,02), new GregorianCalendar(2013,04,05), new Route(67));
+  /* Journey[] a = Timetable.get_journeys(new GregorianCalendar (2013,04,01), new GregorianCalendar(2013,04,05), new Route(68));
+Journey[] b = Timetable.get_journeys(new GregorianCalendar (2013,04,01), new GregorianCalendar(2013,04,05), new Route(67));
   rostering(a,b) ;
+*/
+Journey[] c = Timetable.get_journeys(new GregorianCalendar (2013,04,01), new GregorianCalendar(2013,04,05), new Route(65));
+Journey[] d = Timetable.get_journeys(new GregorianCalendar (2013,04,01), new GregorianCalendar(2013,04,05), new Route(66));
 
+rostering(d,d) ;
  } 
  
  /**
@@ -55,10 +59,10 @@ Journey[] b = Timetable.get_journeys(new GregorianCalendar (2013,04,02), new Gre
     
     ArrayList<ArrayList<Stretch>> roster = rostering(a, b);
     
-    a = Timetable.get_journeys(start, end, routes[2]);
-    b = Timetable.get_journeys(start, end, routes[3]);
+    Journey[] c = Timetable.get_journeys(start, end, routes[2]);
+    Journey[] d = Timetable.get_journeys(start, end, routes[3]);
     
-    ArrayList<ArrayList<Stretch>> roster2 = rostering(a, b);
+    ArrayList<ArrayList<Stretch>> roster2 = rostering(c, d);
     
     merge_rosters(roster, roster2);
     
@@ -99,6 +103,8 @@ Journey[] b = Timetable.get_journeys(new GregorianCalendar (2013,04,02), new Gre
     ArrayList<ArrayList<Stretch>> roster = new ArrayList<ArrayList<Stretch>>();
       
     int day = 0;
+    int k = 0 ;
+    int n = 0 ;
     roster.add(new ArrayList<Stretch>());
     roster.get(0).add(new Stretch(a[0].getDate()));
          
@@ -112,8 +118,7 @@ Journey[] b = Timetable.get_journeys(new GregorianCalendar (2013,04,02), new Gre
         if (date.before(a[j].getDate()))
         {
            for(int i = 0 ; i < b.length; i++)
-           {
-             
+           {            
              if(!assigned2[i] && a[j-1].getDate().compareTo(b[i].getDate())==0)
              {
             	 System.out.println("after "+ j+ " amount of journeys") ;
@@ -122,13 +127,26 @@ Journey[] b = Timetable.get_journeys(new GregorianCalendar (2013,04,02), new Gre
                  //day++ ;
                  
                  roster.get(day).add(new Stretch(b[i].getDate()));
-                 roster.get(day).get(roster.get(day).size()-1).addJourney(b[i]);
+                 //roster.get(day).get(roster.get(day).size()-1).addJourney(b[i]);
                  Stretch stretch2 = roster.get(day).get(roster.get(day).size()-1) ;	        
 
                  System.out.println(i) ;
             	 stretch2.addJourney(b[i]);
             	 assigned2[i] = true ;
                  System.out.println(stretch2.toString()) ;
+                 k++ ;
+                 for(int l = 0 ; l < b.length; l++)
+           {             
+              if (!assigned2[l] && a[j-1].getDate().compareTo(b[l].getDate())==0 &&  
+                  b[l].startTime() >= stretch2.endTime() &&
+              ((stretch2.duration() == 0) || ((stretch2.duration() + b[l].duration() 
+                           + (b[l].startTime() - stretch2.endTime())) <= (5*60))))
+              {
+	        stretch2.addJourney(b[l]);
+	        assigned2[l] = true ;
+                n++ ;
+	      }//if complies with rules
+             }
              }
 
             }//for
@@ -211,12 +229,15 @@ Journey[] b = Timetable.get_journeys(new GregorianCalendar (2013,04,02), new Gre
    for(int i = 0; i < b.length; i++) 
     if(!assigned2[i])
     System.out.println(i) ;
+
+   System.out.println(k) ;
+   System.out.println(n) ;
    for(int i = 0 ; i < b.length; i++)
    {         
        if(!assigned2[i])
        {
            roster.get(day).add(new Stretch(b[i].getDate()));
-           roster.get(day).get(roster.get(day).size()-1).addJourney(b[i]);
+           //roster.get(day).get(roster.get(day).size()-1).addJourney(b[i]);
            Stretch stretch3 = roster.get(day).get(roster.get(day).size()-1) ;	        
 
            stretch3.addJourney(b[i]);
