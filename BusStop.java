@@ -61,6 +61,17 @@ public class BusStop {
       string += " *";
     return string;
   }
+
+  /**
+   * Returns the name of the bus stop
+   * @return name the bus stop's name
+   */
+
+  public String getName ()
+  {
+       return name;
+  }
+  
   
   /*
   // main method for testing only

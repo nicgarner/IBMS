@@ -55,7 +55,17 @@ public class Route {
   {
     return id;
   }
-  
+
+  /**
+   * Returns the name of the route
+   * @return name the name of the route
+   */
+  public String getName ()
+  {
+      return name;
+  }
+
+
   /**
    * Returns a string representation of the route.
    *
