@@ -80,6 +80,19 @@ public class BusStop {
        return id;
   }
   
+  /**
+   * Returns true if other bus stop is in the same vicinity as this stop.
+   * I.e. you can get between them without catching a bus.
+   *
+   * @param other the other bus stop
+   * @return      true if names (inc. area) are equal and ids are different
+   */
+  public boolean inVicinity(BusStop other)
+  {
+    return (this.getName().equals(other.getName()) && 
+            this.getId() != other.getId());
+  }
+  
   @Override
   public boolean equals(Object other)
   {
