@@ -15,13 +15,19 @@
  */
 
 public class JourneyPlanner extends javax.swing.JFrame {
-
+    // Define the variables necessary for the inteface
     private Passenger passenger;
     private Area[] allAreas = Area.getAllAreas();
     private String selectedService;
     private String[] allAreaNames = new String[allAreas.length];
-    private String selectedArea;   
-    /** Creates new form JourneyPlanner */
+    private String selectedArea;
+
+    /**
+     * Creates new form JourneyPlanner, given the passenger parameter
+     * from the menu so its visibility can be set to true if the user
+     * presses the 'back' button.
+     * @param pass the Passenger instance from the menu
+     */
     public JourneyPlanner(Passenger pass) {
        
         for (int i = 0; i < allAreas.length; i++)
@@ -288,6 +294,9 @@ public class JourneyPlanner extends javax.swing.JFrame {
         setBounds((screenSize.width-786)/2, (screenSize.height-546)/2, 786, 546);
     }// </editor-fold>//GEN-END:initComponents
 
+    /**
+     * If the user presses the 'back' button, go back to the menu
+     */
     private void backButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backButtonActionPerformed
         // TODO add your handling code here:
         passenger.setVisible(true);
@@ -295,6 +304,9 @@ public class JourneyPlanner extends javax.swing.JFrame {
         
     }//GEN-LAST:event_backButtonActionPerformed
 
+    /**
+     * Plan the journey if the button is pressed
+     */
     private void planButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_planButtonActionPerformed
         // TODO add your handling code here:
         plannerTableScrollPane.setVisible (true);
@@ -307,14 +319,17 @@ public class JourneyPlanner extends javax.swing.JFrame {
 
     private void originAreaBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_originAreaBoxActionPerformed
         // TODO add your handling code here:
+        // Obtain the selected item from the list
         selectedArea = (String) originAreaBox.getSelectedItem();
-        
+
+        // If no item is selected, don't display any relevant bus stops
         if (originAreaBox.getSelectedItem() == "Select...")
         {
             originBusStopBox.removeAllItems();
             originBusStopBox.addItem("(Select an area...)");
         }
 
+        // Else display the bus stops of the selected area
         else
         {
             Area area = new Area (selectedArea);
@@ -338,6 +353,7 @@ public class JourneyPlanner extends javax.swing.JFrame {
 
     }//GEN-LAST:event_originAreaBoxActionPerformed
 
+    // Do the same for the destination area and collection of bus stops
     private void destinationAreaBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_destinationAreaBoxActionPerformed
         // TODO add your handling code here:
         selectedArea = (String) destinationAreaBox.getSelectedItem();
