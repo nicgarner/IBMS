@@ -64,6 +64,15 @@ public class Route {
   {
       return name;
   }
+  
+  /**
+   * Returns the bus stops on this route
+   * @return BusStop[] the bus stops on this route
+   */
+  public BusStop[] getStops()
+  {
+    return route;
+  }
 
 
   /**

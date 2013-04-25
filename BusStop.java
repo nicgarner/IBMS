@@ -66,10 +66,37 @@ public class BusStop {
    * Returns the name of the bus stop
    * @return name the bus stop's name
    */
-
   public String getName ()
   {
        return name;
+  }
+  
+  /**
+   * Returns the database id number of the bus stop
+   * @return the bus stop's id
+   */
+  public int getId ()
+  {
+       return id;
+  }
+  
+  @Override
+  public boolean equals(Object other)
+  {
+    boolean result = false;
+    if (other instanceof BusStop)
+    {
+      BusStop that = (BusStop) other;
+      result = (this.getName().equals(that.getName()) && 
+                this.getId() == that.getId());
+    }
+    return result;
+  }
+  
+  @Override
+  public int hashCode()
+  {
+    return (41 * (41 + getId()) + name.hashCode());
   }
   
   
