@@ -1,5 +1,4 @@
-//package org.jgrapht;
-//import org.jgrapht.*;
+import org.jgrapht.*;
 import org.jgrapht.graph.DirectedWeightedMultigraph;
 import org.jgrapht.alg.DijkstraShortestPath;
 import java.util.*;
@@ -19,7 +18,7 @@ public class Network
     int destination = Integer.parseInt(args[1]);
     
     double length = network.find_path(new BusStop(origin), new BusStop(destination));
-    System.out.println(length);
+    //System.out.println(length);
   }
   
   public Network()
@@ -43,7 +42,7 @@ public class Network
         network.addVertex(stops[stop]);
         
         if (stop > 0)
-          network.addEdge(stops[stop-1], stops[stop], new Edge(routes[route].getID(), stops[stop-1], stops[stop]));
+          network.addEdge(stops[stop-1], stops[stop], new Edge(routes[route].getID()));
         
         // add edges between stops with the same area and name
         Set<BusStop> allStops = (Set<BusStop>)network.vertexSet();
@@ -55,19 +54,43 @@ public class Network
           {
             //if (verbose)
               //System.out.println("        Matches " + busStop.getId() + " " + busStop.getName());
-            network.addEdge(stops[stop], busStop, new Edge(-1, stops[stop], busStop));
-            network.addEdge(busStop, stops[stop], new Edge(-1, busStop, stops[stop]));
+            network.addEdge(stops[stop], busStop, new Edge(-1));
+            network.addEdge(busStop, stops[stop], new Edge(-1));
           }
         } // while (nodes in graph)
       } // for (stops on route)
     } // for (routes)
+    if (verbose)
+      System.out.println();
   } // constructor
   
   public double find_path(BusStop origin, BusStop destination)
   {
+    System.out.println("Paths between " + origin + " and " + destination);
+   
     DijkstraShortestPath<BusStop,Edge> path = 
         new DijkstraShortestPath<BusStop,Edge>(network, origin, destination);
-    System.out.println(path.getPath());
+    
+    
+    GraphPath<BusStop,Edge> graphPath = path.getPath();
+    Graph<BusStop,Edge> graph = graphPath.getGraph();
+    ArrayList<Edge> legs = (ArrayList<Edge>)graphPath.getEdgeList();
+    Iterator<Edge> iterator = legs.iterator();
+    
+    BusStop stop = graphPath.getStartVertex();
+    
+    while (iterator.hasNext())
+    {
+      Edge leg = iterator.next();
+      BusStop opposite = Graphs.getOppositeVertex(graph, leg, stop);
+      System.out.println(stop + " to " + opposite + " (" + leg.getRoute() +")");
+      stop = opposite;
+    }
+      
+    
+    System.out.println();
+    
+    
     double length = path.getPathLength();
     if (length == Double.POSITIVE_INFINITY)
       return -1.0;
@@ -78,18 +101,21 @@ public class Network
   public class Edge
   {
     public final int route;
-    public final BusStop origin;
-    public final BusStop destination;
-    public Edge(int route_id, BusStop o, BusStop d)
+    //public final int start;
+    //public final int duration;
+    
+    public Edge(int route_id)
     {
       route = route_id;
-      origin = o;
-      destination = d;
     }
     @Override
     public String toString()
     {
-      return origin + " to " + destination + " ("+route+")";
+      return ""+route;
+    }
+    public int getRoute()
+    {
+      return route;
     }
   }
   
