@@ -72,6 +72,11 @@ public class Service {
       return endTime - startTime;
   } // method (duration)
   
+  public int[] getTimes()
+  {
+    return times;
+  }
+  
   /**
    * Returns a short string representation of the service.
    *
