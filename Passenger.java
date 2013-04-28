@@ -12,7 +12,6 @@ public class Passenger extends javax.swing.JFrame {
 
    private static Passenger passenger;
    public static JourneyPlanner journeyPlanner;
-   public static Timetables timetables;
    public static RealTimeInfo realTimeInfo;
     /** Creates new form Passenger */
     public Passenger() {
@@ -116,7 +115,7 @@ public class Passenger extends javax.swing.JFrame {
 
     private void timetablesButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_timetablesButtonActionPerformed
         // TODO add your handling code here:
-        displayTimetables ();
+       
     }//GEN-LAST:event_timetablesButtonActionPerformed
 
     /**
@@ -137,14 +136,7 @@ public class Passenger extends javax.swing.JFrame {
         //passenger.setVisible (false);
         passenger.setVisible(false);
         journeyPlanner.setVisible (true);
-    }
-
-    private void displayTimetables ()
-    {
-        timetables = new Timetables ();
-        passenger.setVisible (false);
-        timetables.setVisible (true);
-    }
+    }    
 
     private void displayRealTimeInfo ()
     {
