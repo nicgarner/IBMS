@@ -58,7 +58,7 @@ public class RealTimeInfo extends javax.swing.JFrame {
             }
         });
 
-        titleLabel.setFont(new java.awt.Font("DejaVu Sans", 1, 24)); // NOI18N
+        titleLabel.setFont(new java.awt.Font("DejaVu Sans", 1, 24));
         titleLabel.setText("Get real-time information");
 
         stopSelectLabel.setText("Select the area and the bus stop:");
@@ -73,14 +73,14 @@ public class RealTimeInfo extends javax.swing.JFrame {
             }
         });
 
-        areaLabel.setFont(new java.awt.Font("DejaVu Sans", 2, 13)); // NOI18N
+        areaLabel.setFont(new java.awt.Font("DejaVu Sans", 2, 13));
         areaLabel.setText("Area:");
 
-        stopLabel.setFont(new java.awt.Font("DejaVu Sans", 2, 13)); // NOI18N
+        stopLabel.setFont(new java.awt.Font("DejaVu Sans", 2, 13));
         stopLabel.setText("Bus stop:");
 
         busStopBox.setModel(new javax.swing.DefaultComboBoxModel());
-        busStopBox.addItem("(Select an area...)")
+        busStopBox.addItem("(Select an area...)");
 
         jButton1.setText("Get Info");
         jButton1.addActionListener(new java.awt.event.ActionListener() {

@@ -135,7 +135,7 @@ public class JourneyPlanner extends javax.swing.JFrame {
             }
         });
 
-        planJourneyLabel.setFont(new java.awt.Font("DejaVu Sans", 1, 24)); // NOI18N
+        planJourneyLabel.setFont(new java.awt.Font("DejaVu Sans", 1, 24));
         planJourneyLabel.setText("Plan a journey");
 
         instructionLabel2.setText("Select the origin and destination bus stop or area:");
@@ -153,7 +153,7 @@ public class JourneyPlanner extends javax.swing.JFrame {
             }
         });
 
-        originAreaLabel.setFont(new java.awt.Font("DejaVu Sans", 2, 13)); // NOI18N
+        originAreaLabel.setFont(new java.awt.Font("DejaVu Sans", 2, 13));
         originAreaLabel.setText("Origin area:");
 
         originLabel1.setFont(new java.awt.Font("DejaVu Sans", 2, 13));
@@ -175,7 +175,7 @@ public class JourneyPlanner extends javax.swing.JFrame {
         minuteTextField.setPreferredSize(new java.awt.Dimension(20, 27));
         minuteTextField.setText(splitTime[1]);
 
-        tablePanel.setVisible(false)
+        tablePanel.setVisible(false);
 
         plannerTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
