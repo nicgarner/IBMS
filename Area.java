@@ -10,6 +10,9 @@
  * Represents an Area in the IBMS System. An area is comprised of an ID, a name
  * and an array of bus stops in it.
  */
+
+import java.util.ArrayList;
+
 public class Area {
 
     private final int id;
@@ -98,6 +101,42 @@ public class Area {
     {
         return stopsInArea;
     }
+
+    /**
+     * Returns only the unique bus stops in the given area
+     * @return uniqueArray the unique bus stops
+     */
+    public BusStop[] getUniqueStops ()
+    {
+        BusStop[] allStops = getStopsInArea();
+        ArrayList <BusStop> uniqueStops = new ArrayList <BusStop> ();
+        BusStop[] uniqueArray = null;
+        int i = 0;
+
+        if (allStops.length != 0)
+        {
+            while (i != allStops.length - 1)
+            {
+                //System.out.println(allStops[i]);
+                if (!(allStops[i].getName().equals(allStops[i + 1].getName()))
+                        || allStops.length < 3)
+                                uniqueStops.add(allStops[i]);
+                i++;
+            }// while
+        if (allStops[allStops.length - 1].getName().equals
+                    (allStops[allStops.length - 2].getName()) && allStops.length > 2)
+            uniqueStops.add(allStops[allStops.length - 1]);      
+           
+        uniqueArray = uniqueStops.toArray(new BusStop[uniqueStops.size()]);              
+        }// if       
+
+        return uniqueArray;
+        
+
+
+        
+    }
+    
 
 
     public static Area[] getAllAreas()

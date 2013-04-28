@@ -80,11 +80,6 @@ public class Route {
     return string;
   }
   
-  public BusStop[] getStops()
-  {
-    return route;
-  }
-  
   /**
    * Returns an array containing all the routes in the database.
    *

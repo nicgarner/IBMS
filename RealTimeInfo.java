@@ -11,8 +11,10 @@
 
 /**
  *
- * @author nograda1
+ * @author Adam Nogradi
  */
+import java.awt.Color;
+
 public class RealTimeInfo extends javax.swing.JFrame {
 
     private Passenger passenger;
@@ -48,6 +50,9 @@ public class RealTimeInfo extends javax.swing.JFrame {
         stopLabel = new javax.swing.JLabel();
         busStopBox = new javax.swing.JComboBox();
         jButton1 = new javax.swing.JButton();
+        resultPanel = new javax.swing.JPanel();
+        areaScroolPane = new javax.swing.JScrollPane();
+        resultTextArea = new javax.swing.JTextArea();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -89,21 +94,45 @@ public class RealTimeInfo extends javax.swing.JFrame {
             }
         });
 
+        resultTextArea.setEnabled (false);
+        resultTextArea.setDisabledTextColor (Color.black);
+        resultTextArea.setColumns(20);
+        resultTextArea.setRows(5);
+        resultTextArea.setText("hello");
+        areaScroolPane.setViewportView(resultTextArea);
+
+        javax.swing.GroupLayout resultPanelLayout = new javax.swing.GroupLayout(resultPanel);
+        resultPanel.setLayout(resultPanelLayout);
+        resultPanelLayout.setHorizontalGroup(
+            resultPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 286, Short.MAX_VALUE)
+            .addGroup(resultPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(resultPanelLayout.createSequentialGroup()
+                    .addContainerGap()
+                    .addComponent(areaScroolPane, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+        );
+        resultPanelLayout.setVerticalGroup(
+            resultPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 242, Short.MAX_VALUE)
+            .addGroup(resultPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(resultPanelLayout.createSequentialGroup()
+                    .addContainerGap()
+                    .addComponent(areaScroolPane, javax.swing.GroupLayout.DEFAULT_SIZE, 218, Short.MAX_VALUE)
+                    .addContainerGap()))
+        );
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(backButton)
             .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(backButton)
+                    .addComponent(titleLabel)
+                    .addComponent(stopSelectLabel)
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(titleLabel))
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(stopSelectLabel))
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(areaLabel)
                             .addComponent(areaBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -111,34 +140,40 @@ public class RealTimeInfo extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(busStopBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(stopLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jButton1)))
-                .addContainerGap(435, Short.MAX_VALUE))
+                    .addComponent(jButton1))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 171, Short.MAX_VALUE)
+                .addComponent(resultPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(backButton)
-                .addGap(18, 18, 18)
-                .addComponent(titleLabel)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(stopSelectLabel)
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(areaLabel)
-                    .addComponent(stopLabel))
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(areaBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(busStopBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 37, Short.MAX_VALUE)
-                .addComponent(jButton1)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(resultPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(backButton)
+                        .addGap(18, 18, 18)
+                        .addComponent(titleLabel)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(stopSelectLabel)
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(areaLabel)
+                            .addComponent(stopLabel))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(areaBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(busStopBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 71, Short.MAX_VALUE)
+                        .addComponent(jButton1)))
                 .addContainerGap())
         );
 
+        resultPanel.setVisible(false);
+
         java.awt.Dimension screenSize = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
-        setBounds((screenSize.width-809)/2, (screenSize.height-287)/2, 809, 287);
+        setBounds((screenSize.width-831)/2, (screenSize.height-321)/2, 831, 321);
     }// </editor-fold>//GEN-END:initComponents
 
     private void backButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backButtonActionPerformed
@@ -160,37 +195,47 @@ public class RealTimeInfo extends javax.swing.JFrame {
         }
 
         // Else display the bus stops of the selected area
-        else {
+        else
+        {
             Area area = new Area(selectedArea);
-            BusStop[] busStopsInArea = area.getStopsInArea();
+            BusStop[] busStopsInArea = area.getUniqueStops();
 
             busStopBox.removeAllItems();
             //busStopsInArea = BusStopInfo.getBusStopsInArea(BusStopInfo.findAreaByName(selectedArea));
-            String[] busStopNamesInArea = new String[busStopsInArea.length];
 
-            if (busStopNamesInArea.length == 0)
+
+            if (busStopsInArea == null)
                 busStopBox.addItem("(No stops in this area)");
-            //System.out.println(busStopNamesInArea.length);
-            for (int i = 0; i < busStopNamesInArea.length; i++) {
+            else
+            {
+                String[] busStopNamesInArea = new String[busStopsInArea.length];
+                //System.out.println(busStopNamesInArea.length);
+                for (int i = 0; i < busStopNamesInArea.length; i++)
+                {
                 //int stopID = busStopsInArea[i];
                 //System.out.println(stopID);
                 busStopNamesInArea[i] = busStopsInArea[i].getName();
                 busStopBox.addItem(busStopNamesInArea[i]);
+                }
             }
         }
     }//GEN-LAST:event_areaBoxActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
+        resultPanel.setVisible(true);
     }//GEN-LAST:event_jButton1ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox areaBox;
     private javax.swing.JLabel areaLabel;
+    private javax.swing.JScrollPane areaScroolPane;
     private javax.swing.JButton backButton;
     private javax.swing.JComboBox busStopBox;
     private javax.swing.JButton jButton1;
+    private javax.swing.JPanel resultPanel;
+    private javax.swing.JTextArea resultTextArea;
     private javax.swing.JLabel stopLabel;
     private javax.swing.JLabel stopSelectLabel;
     private javax.swing.JLabel titleLabel;

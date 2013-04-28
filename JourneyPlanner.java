@@ -117,7 +117,7 @@ public class JourneyPlanner extends javax.swing.JFrame {
         timeLabel.setText("Time:");
 
         dateTextField.setText(dateFormatDate.format(date));
-        dateTextField.setPreferredSize(new java.awt.Dimension(70, 27));
+        dateTextField.setPreferredSize(new java.awt.Dimension(80, 27));
 
         destinationAreaLabel.setFont(new java.awt.Font("Tahoma", 2, 13));
         destinationAreaLabel.setText("Destination area:");
@@ -232,6 +232,7 @@ public class JourneyPlanner extends javax.swing.JFrame {
 
         //plannerTableScrollPane.setVisible (false);
 
+        jLabel1.setFont(new java.awt.Font("DejaVu Sans", 2, 13)); // NOI18N
         jLabel1.setText("dd/mm/yyyy");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -279,7 +280,7 @@ public class JourneyPlanner extends javax.swing.JFrame {
                                                 .addComponent(minuteTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                                             .addComponent(timeLabel)))
                                     .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 147, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 137, Short.MAX_VALUE)
                                 .addComponent(tablePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addComponent(backButton))
                 .addContainerGap())
@@ -376,21 +377,26 @@ public class JourneyPlanner extends javax.swing.JFrame {
         // Else display the bus stops of the selected area
         else {
             Area area = new Area(selectedArea);
-            BusStop[] busStopsInArea = area.getStopsInArea();
+            BusStop[] busStopsInArea = area.getUniqueStops();
 
             originBusStopBox.removeAllItems();
             //busStopsInArea = BusStopInfo.getBusStopsInArea(BusStopInfo.findAreaByName(selectedArea));
-            String[] busStopNamesInArea = new String[busStopsInArea.length];
+            
 
-            if (busStopNamesInArea.length == 0)
+            if (busStopsInArea == null)
                 originBusStopBox.addItem("(No stops in this area)");
-            //System.out.println(busStopNamesInArea.length);
-            for (int i = 0; i < busStopNamesInArea.length; i++) {
+            else
+            {
+                String[] busStopNamesInArea = new String[busStopsInArea.length];
+                //System.out.println(busStopNamesInArea.length);
+                for (int i = 0; i < busStopNamesInArea.length; i++) {
                 //int stopID = busStopsInArea[i];
                 //System.out.println(stopID);
                 busStopNamesInArea[i] = busStopsInArea[i].getName();
                 originBusStopBox.addItem(busStopNamesInArea[i]);
             }
+            }
+            
         }
     }//GEN-LAST:event_originAreaBoxActionPerformed
 
@@ -403,23 +409,28 @@ public class JourneyPlanner extends javax.swing.JFrame {
             destinationBusStopBox.addItem("(Select an area...)");
         }
 
-        else {
+        else
+        {
             Area area = new Area(selectedArea);
-            BusStop[] busStopsInArea = area.getStopsInArea();
+            BusStop[] busStopsInArea = area.getUniqueStops();           
 
             destinationBusStopBox.removeAllItems();
             //busStopsInArea = BusStopInfo.getBusStopsInArea(BusStopInfo.findAreaByName(selectedArea));
-            String[] busStopNamesInArea = new String[busStopsInArea.length];
 
-            if (busStopNamesInArea.length == 0)
+
+            if (busStopsInArea == null)
                 destinationBusStopBox.addItem("(No stops in this area)");
-            //System.out.println(busStopNamesInArea.length);
-            for (int i = 0; i < busStopNamesInArea.length; i++) {
+            else
+            {
+                String[] busStopNamesInArea = new String[busStopsInArea.length];
+                //System.out.println(busStopNamesInArea.length);
+                for (int i = 0; i < busStopNamesInArea.length; i++)
+                {
                 //int stopID = busStopsInArea[i];
-                //System.out.println(stopID);
+                System.out.println(busStopsInArea[i].getId());
                 busStopNamesInArea[i] = busStopsInArea[i].getName();
                 destinationBusStopBox.addItem(busStopNamesInArea[i]);
-
+                }
             }
         }
 }//GEN-LAST:event_destinationAreaBoxActionPerformed
