@@ -6,10 +6,12 @@ import java.util.*;
 
 public class Network
 {
-  private final DirectedWeightedMultigraph<BusStop,Route> network;
+  static boolean verbose = false;
+  private final DirectedWeightedMultigraph<BusStop,Edge> network;
   
   public static void main(String[] args)
   {
+    verbose = true;
     database.openBusDatabase();
     Network network = new Network();
     
@@ -22,76 +24,73 @@ public class Network
   
   public Network()
   {
-    network = new DirectedWeightedMultigraph<BusStop,Route>(Route.class);
+    network = new DirectedWeightedMultigraph<BusStop,Edge>(Edge.class);
     
     // build the network from the routes in the database
     Route[] routes = Route.getAllRoutes();
     for (int route = 0; route < routes.length; route++)
     {
-      System.out.println("Route: " + routes[route].getID());
+      if (verbose)
+        System.out.println("Route: " + routes[route].getID());
       
       BusStop[] stops = routes[route].getStops();
       for (int stop = 0; stop < stops.length; stop++)
       {
-        System.out.println("  Stop: " + stops[stop].getId() + " " + stops[stop].getName());
+        if (verbose)
+          System.out.println("  Stop: " + stops[stop].getId() + " " + stops[stop].getName());
+        
+        // add the stop, and connect it to the previous one on the route
         network.addVertex(stops[stop]);
+        
         if (stop > 0)
-          network.addEdge(stops[stop-1], stops[stop], new Route(routes[route].getID()));
-      }
-    }
-    
-    // add edges between stops in the same place
-    HashSet<BusStop> stops = (HashSet<BusStop>)network.vertexSet();
-    Iterator<BusStop> iterator = stops.iterator();
-    while (iterator.hasNext())
-    {
-      
-    }
-/*    
-    BusStop stop1 = new BusStop(770);
-    BusStop stop2 = new BusStop(771);
-    BusStop stop3 = new BusStop(772);
-    BusStop stop4 = new BusStop(773);
-    BusStop stop5 = new BusStop(774);
-    BusStop stop6 = new BusStop(775);
-    BusStop stop7 = new BusStop(776);
-    BusStop stop8 = new BusStop(777);
-    
-    Route route1 = new Route(65);
-    Route route2 = new Route(66);
-    Route route3 = new Route(66);
-    Route route4 = new Route(67);
-    Route route5 = new Route(66);
-    Route route6 = new Route(66);
-    Route route7 = new Route(66);
-    
-    network.addVertex(stop1);
-    network.addVertex(stop2);
-    network.addEdge(stop1, stop2, route1);
-    network.addVertex(stop3);
-    network.addEdge(stop2, stop3, route2);
-    network.addVertex(stop4);
-    network.addEdge(stop3, stop4, route3);
-    network.addVertex(stop5);
-    network.addEdge(stop1, stop5, route4);
-    network.addVertex(stop6);
-    network.addVertex(stop7);
-    network.addVertex(stop8);
-    network.addEdge(stop3, stop6, route5);
-    network.addEdge(stop6, stop7, route6);
-    network.addEdge(stop7, stop8, route7);
-*/   
+          network.addEdge(stops[stop-1], stops[stop], new Edge(routes[route].getID(), stops[stop-1], stops[stop]));
+        
+        // add edges between stops with the same area and name
+        Set<BusStop> allStops = (Set<BusStop>)network.vertexSet();
+        Iterator<BusStop> iterator = allStops.iterator();
+        while (iterator.hasNext())
+        {
+          BusStop busStop = iterator.next();
+          if (busStop.inVicinity(stops[stop]))
+          {
+            //if (verbose)
+              //System.out.println("        Matches " + busStop.getId() + " " + busStop.getName());
+            network.addEdge(stops[stop], busStop, new Edge(-1, stops[stop], busStop));
+            network.addEdge(busStop, stops[stop], new Edge(-1, busStop, stops[stop]));
+          }
+        } // while (nodes in graph)
+      } // for (stops on route)
+    } // for (routes)
   } // constructor
   
   public double find_path(BusStop origin, BusStop destination)
   {
-    DijkstraShortestPath<BusStop,Route> path = 
-          new DijkstraShortestPath<BusStop,Route>(network, origin, destination);
+    DijkstraShortestPath<BusStop,Edge> path = 
+        new DijkstraShortestPath<BusStop,Edge>(network, origin, destination);
+    System.out.println(path.getPath());
     double length = path.getPathLength();
     if (length == Double.POSITIVE_INFINITY)
       return -1.0;
     else
       return length;
+  }
+  
+  public class Edge
+  {
+    public final int route;
+    public final BusStop origin;
+    public final BusStop destination;
+    public Edge(int route_id, BusStop o, BusStop d)
+    {
+      route = route_id;
+      origin = o;
+      destination = d;
+    }
+    @Override
+    public String toString()
+    {
+      return origin + " to " + destination + " ("+route+")";
+    }
   }
   
 //  public void build_network()
