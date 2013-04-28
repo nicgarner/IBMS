@@ -13,14 +13,26 @@
  *
  * @author Adam Nogradi
  */
+import java.util.Date;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 public class JourneyPlanner extends javax.swing.JFrame {
     // Define the variables necessary for the inteface
     private Passenger passenger;
     private Area[] allAreas = Area.getAllAreas();
-    private String selectedService;
     private String[] allAreaNames = new String[allAreas.length];
     private String selectedArea;
+
+    private Date date = new Date();
+    private Calendar cal = Calendar.getInstance();
+    private DateFormat dateFormatDate = new SimpleDateFormat("dd/MM/yyyy");
+    private DateFormat dateFormatTime = new SimpleDateFormat("HH:mm");
+    private String currentTime = dateFormatTime.format (cal.getTime());
+    private String[] splitTime = currentTime.split(":");
+
+
 
     /**
      * Creates new form JourneyPlanner, given the passenger parameter
@@ -34,9 +46,7 @@ public class JourneyPlanner extends javax.swing.JFrame {
         {
             allAreaNames[i] = allAreas[i].getName();
         }
-
-        // All bus stops?
-        //for (int i = 0; i < )
+            //System.out.println(splitTime[0] + ":" + splitTime[1]);
                
         initComponents();
         passenger = pass;
@@ -52,8 +62,6 @@ public class JourneyPlanner extends javax.swing.JFrame {
     private void initComponents() {
 
         backButton = new javax.swing.JButton();
-        plannerTableScrollPane = new javax.swing.JScrollPane();
-        plannerTable = new javax.swing.JTable();
         planButton = new javax.swing.JButton();
         destinationSelectLabel1 = new javax.swing.JLabel();
         destinationBusStopBox = new javax.swing.JComboBox();
@@ -70,8 +78,12 @@ public class JourneyPlanner extends javax.swing.JFrame {
         originLabel1 = new javax.swing.JLabel();
         originBusStopBox = new javax.swing.JComboBox();
         hourTextField = new javax.swing.JTextField();
-        jLabel1 = new javax.swing.JLabel();
+        colonLabel = new javax.swing.JLabel();
         minuteTextField = new javax.swing.JTextField();
+        tablePanel = new javax.swing.JPanel();
+        plannerTableScrollPane = new javax.swing.JScrollPane();
+        plannerTable = new javax.swing.JTable();
+        jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Journey Planner");
@@ -82,6 +94,88 @@ public class JourneyPlanner extends javax.swing.JFrame {
                 backButtonActionPerformed(evt);
             }
         });
+
+        planButton.setText("Plan journey");
+        planButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                planButtonActionPerformed(evt);
+            }
+        });
+
+        destinationSelectLabel1.setFont(new java.awt.Font("Tahoma", 2, 13));
+        destinationSelectLabel1.setText("Destination bus stop:");
+
+        destinationBusStopBox.setModel(new javax.swing.DefaultComboBoxModel());
+        destinationBusStopBox.addItem("(Select an area...)");
+
+        dateAndTimeLabel.setText("Select the departure date and time:");
+
+        dateLabel.setFont(new java.awt.Font("Tahoma", 2, 13));
+        dateLabel.setText("Date:");
+
+        timeLabel.setFont(new java.awt.Font("Tahoma", 2, 13));
+        timeLabel.setText("Time:");
+
+        dateTextField.setText(dateFormatDate.format(date));
+        dateTextField.setPreferredSize(new java.awt.Dimension(70, 27));
+
+        destinationAreaLabel.setFont(new java.awt.Font("Tahoma", 2, 13));
+        destinationAreaLabel.setText("Destination area:");
+
+        destinationAreaBox.setModel(new javax.swing.DefaultComboBoxModel());
+        destinationAreaBox.addItem("Select...");
+        for (int i = 0; i < allAreaNames.length; i++)
+        {
+            destinationAreaBox.addItem(allAreaNames[i]);
+            //System.out.println (allAreaNames[i]);
+        }
+        destinationAreaBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                destinationAreaBoxActionPerformed(evt);
+            }
+        });
+
+        planJourneyLabel.setFont(new java.awt.Font("DejaVu Sans", 1, 24)); // NOI18N
+        planJourneyLabel.setText("Plan a journey");
+
+        instructionLabel2.setText("Select the origin and destination bus stop or area:");
+
+        originAreaBox.setModel(new javax.swing.DefaultComboBoxModel());
+        originAreaBox.addItem("Select...");
+        for (int i = 0; i < allAreaNames.length; i++)
+        {
+            originAreaBox.addItem(allAreaNames[i]);
+            //System.out.println (allAreaNames[i]);
+        }
+        originAreaBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                originAreaBoxActionPerformed(evt);
+            }
+        });
+
+        originAreaLabel.setFont(new java.awt.Font("DejaVu Sans", 2, 13)); // NOI18N
+        originAreaLabel.setText("Origin area:");
+
+        originLabel1.setFont(new java.awt.Font("DejaVu Sans", 2, 13));
+        originLabel1.setText("Origin bus stop:");
+
+        originBusStopBox.setModel(new javax.swing.DefaultComboBoxModel());
+        originBusStopBox.addItem("(Select an area...)");
+        originBusStopBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                originBusStopBoxActionPerformed(evt);
+            }
+        });
+
+        hourTextField.setPreferredSize(new java.awt.Dimension(20, 27));
+        hourTextField.setText(splitTime[0]);
+
+        colonLabel.setText(":");
+
+        minuteTextField.setPreferredSize(new java.awt.Dimension(20, 27));
+        minuteTextField.setText(splitTime[1]);
+
+        tablePanel.setVisible(false)
 
         plannerTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -115,91 +209,39 @@ public class JourneyPlanner extends javax.swing.JFrame {
         plannerTable.getColumnModel().getColumn(2).setResizable(false);
         plannerTable.getColumnModel().getColumn(3).setResizable(false);
 
-        planButton.setText("Plan journey");
-        planButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                planButtonActionPerformed(evt);
-            }
-        });
+        javax.swing.GroupLayout tablePanelLayout = new javax.swing.GroupLayout(tablePanel);
+        tablePanel.setLayout(tablePanelLayout);
+        tablePanelLayout.setHorizontalGroup(
+            tablePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 411, Short.MAX_VALUE)
+            .addGroup(tablePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(tablePanelLayout.createSequentialGroup()
+                    .addContainerGap()
+                    .addComponent(plannerTableScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 387, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+        );
+        tablePanelLayout.setVerticalGroup(
+            tablePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 116, Short.MAX_VALUE)
+            .addGroup(tablePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(tablePanelLayout.createSequentialGroup()
+                    .addContainerGap()
+                    .addComponent(plannerTableScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(23, Short.MAX_VALUE)))
+        );
 
-        destinationSelectLabel1.setFont(new java.awt.Font("Tahoma", 2, 13)); // NOI18N
-        destinationSelectLabel1.setText("Destination bus stop:");
+        //plannerTableScrollPane.setVisible (false);
 
-        destinationBusStopBox.setModel(new javax.swing.DefaultComboBoxModel());
-        destinationBusStopBox.addItem("(Select an area...)");
-
-        dateAndTimeLabel.setText("Select the departure date and time:");
-
-        dateLabel.setFont(new java.awt.Font("Tahoma", 2, 13)); // NOI18N
-        dateLabel.setText("Date:");
-
-        timeLabel.setFont(new java.awt.Font("Tahoma", 2, 13)); // NOI18N
-        timeLabel.setText("Time:");
-
-        dateTextField.setPreferredSize(new java.awt.Dimension(70, 27));
-
-        destinationAreaLabel.setFont(new java.awt.Font("Tahoma", 2, 13));
-        destinationAreaLabel.setText("Destination area:");
-
-        destinationAreaBox.setModel(new javax.swing.DefaultComboBoxModel());
-        destinationAreaBox.addItem("Select...");
-        for (int i = 0; i < allAreaNames.length; i++)
-        {
-            destinationAreaBox.addItem(allAreaNames[i]);
-            //System.out.println (allAreaNames[i]);
-        }
-        destinationAreaBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                destinationAreaBoxActionPerformed(evt);
-            }
-        });
-
-        planJourneyLabel.setFont(new java.awt.Font("DejaVu Sans", 1, 24));
-        planJourneyLabel.setText("Plan a journey");
-
-        instructionLabel2.setText("Select the origin and destination bus stop or area:");
-
-        originAreaBox.setModel(new javax.swing.DefaultComboBoxModel());
-        originAreaBox.addItem("Select...");
-        for (int i = 0; i < allAreaNames.length; i++)
-        {
-            originAreaBox.addItem(allAreaNames[i]);
-            //System.out.println (allAreaNames[i]);
-        }
-        originAreaBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                originAreaBoxActionPerformed(evt);
-            }
-        });
-
-        originAreaLabel.setFont(new java.awt.Font("DejaVu Sans", 2, 13));
-        originAreaLabel.setText("Origin area:");
-
-        originLabel1.setFont(new java.awt.Font("DejaVu Sans", 2, 13)); // NOI18N
-        originLabel1.setText("Origin bus stop:");
-
-        originBusStopBox.setModel(new javax.swing.DefaultComboBoxModel());
-        originBusStopBox.addItem("(Select an area...)");
-        originBusStopBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                originBusStopBoxActionPerformed(evt);
-            }
-        });
-
-        hourTextField.setPreferredSize(new java.awt.Dimension(20, 27));
-
-        jLabel1.setText(":");
-
-        minuteTextField.setPreferredSize(new java.awt.Dimension(20, 27));
+        jLabel1.setText("dd/mm/yyyy");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(planJourneyLabel)
                             .addComponent(instructionLabel2)
@@ -220,75 +262,77 @@ public class JourneyPlanner extends javax.swing.JFrame {
                                 .addGap(42, 42, 42)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(destinationBusStopBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(destinationSelectLabel1))))
-                        .addGap(18, 18, 18))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(dateLabel)
-                            .addComponent(dateTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 92, Short.MAX_VALUE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(destinationSelectLabel1)))
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(hourTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(4, 4, 4)
-                                .addComponent(jLabel1)
-                                .addGap(3, 3, 3)
-                                .addComponent(minuteTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(timeLabel))
-                        .addGap(124, 124, 124)))
-                .addComponent(plannerTableScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 426, Short.MAX_VALUE))
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(backButton)
-                .addContainerGap(676, Short.MAX_VALUE))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(dateLabel)
+                                            .addComponent(dateTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addGap(72, 72, 72)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addGroup(layout.createSequentialGroup()
+                                                .addComponent(hourTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addGap(4, 4, 4)
+                                                .addComponent(colonLabel)
+                                                .addGap(3, 3, 3)
+                                                .addComponent(minuteTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                            .addComponent(timeLabel)))
+                                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 147, Short.MAX_VALUE)
+                                .addComponent(tablePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                    .addComponent(backButton))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addGroup(layout.createSequentialGroup()
                 .addComponent(backButton)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(plannerTableScrollPane, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 463, Short.MAX_VALUE)
+                .addComponent(planJourneyLabel)
+                .addGap(18, 18, 18)
+                .addComponent(instructionLabel2)
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(originAreaLabel)
+                    .addComponent(originLabel1))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(originAreaBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(originBusStopBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(33, 33, 33)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(destinationAreaLabel)
+                    .addComponent(destinationSelectLabel1))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(destinationAreaBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(destinationBusStopBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(34, 34, 34)
+                .addComponent(dateAndTimeLabel)
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(planJourneyLabel)
-                        .addGap(18, 18, 18)
-                        .addComponent(instructionLabel2)
-                        .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(originAreaLabel)
-                            .addComponent(originLabel1))
-                        .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(originAreaBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(originBusStopBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(33, 33, 33)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(destinationAreaLabel)
-                            .addComponent(destinationSelectLabel1))
+                        .addComponent(dateLabel)
+                        .addGap(1, 1, 1)
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(dateTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(timeLabel)
                         .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(destinationAreaBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(destinationBusStopBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(34, 34, 34)
-                        .addComponent(dateAndTimeLabel)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(dateLabel)
-                                .addGap(18, 18, 18)
-                                .addComponent(dateTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(timeLabel)
-                                .addGap(18, 18, 18)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(hourTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel1)
-                                    .addComponent(minuteTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 70, Short.MAX_VALUE)
-                        .addComponent(planButton)))
+                            .addComponent(hourTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(colonLabel)
+                            .addComponent(minuteTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 58, Short.MAX_VALUE)
+                .addComponent(planButton)
                 .addContainerGap())
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(349, Short.MAX_VALUE)
+                .addComponent(tablePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(51, 51, 51))
         );
-
-        //plannerTableScrollPane.setVisible (false);
 
         java.awt.Dimension screenSize = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
         setBounds((screenSize.width-786)/2, (screenSize.height-546)/2, 786, 546);
@@ -309,7 +353,7 @@ public class JourneyPlanner extends javax.swing.JFrame {
      */
     private void planButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_planButtonActionPerformed
         // TODO add your handling code here:
-        plannerTableScrollPane.setVisible (true);
+        tablePanel.setVisible (true);
     }//GEN-LAST:event_planButtonActionPerformed
 
     private void originBusStopBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_originBusStopBoxActionPerformed
@@ -317,78 +361,73 @@ public class JourneyPlanner extends javax.swing.JFrame {
         
     }//GEN-LAST:event_originBusStopBoxActionPerformed
 
+    // Do the same for the destination area and collection of bus stops
     private void originAreaBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_originAreaBoxActionPerformed
         // TODO add your handling code here:
         // Obtain the selected item from the list
         selectedArea = (String) originAreaBox.getSelectedItem();
 
         // If no item is selected, don't display any relevant bus stops
-        if (originAreaBox.getSelectedItem() == "Select...")
-        {
+        if (originAreaBox.getSelectedItem() == "Select...") {
             originBusStopBox.removeAllItems();
             originBusStopBox.addItem("(Select an area...)");
         }
 
         // Else display the bus stops of the selected area
-        else
-        {
-            Area area = new Area (selectedArea);
+        else {
+            Area area = new Area(selectedArea);
             BusStop[] busStopsInArea = area.getStopsInArea();
-            
+
             originBusStopBox.removeAllItems();
             //busStopsInArea = BusStopInfo.getBusStopsInArea(BusStopInfo.findAreaByName(selectedArea));
-           String[] busStopNamesInArea = new String[busStopsInArea.length];
+            String[] busStopNamesInArea = new String[busStopsInArea.length];
 
             if (busStopNamesInArea.length == 0)
-                 originBusStopBox.addItem("(No stops in this area)");
+                originBusStopBox.addItem("(No stops in this area)");
             //System.out.println(busStopNamesInArea.length);
-            for (int i = 0; i < busStopNamesInArea.length; i++)
-            {
+            for (int i = 0; i < busStopNamesInArea.length; i++) {
                 //int stopID = busStopsInArea[i];
                 //System.out.println(stopID);
                 busStopNamesInArea[i] = busStopsInArea[i].getName();
                 originBusStopBox.addItem(busStopNamesInArea[i]);
             }
         }
-
     }//GEN-LAST:event_originAreaBoxActionPerformed
 
-    // Do the same for the destination area and collection of bus stops
     private void destinationAreaBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_destinationAreaBoxActionPerformed
         // TODO add your handling code here:
         selectedArea = (String) destinationAreaBox.getSelectedItem();
 
-        if (destinationAreaBox.getSelectedItem() == "Select...")
-        {
+        if (destinationAreaBox.getSelectedItem() == "Select...") {
             destinationBusStopBox.removeAllItems();
             destinationBusStopBox.addItem("(Select an area...)");
         }
 
-        else
-        {
-            Area area = new Area (selectedArea);
+        else {
+            Area area = new Area(selectedArea);
             BusStop[] busStopsInArea = area.getStopsInArea();
 
             destinationBusStopBox.removeAllItems();
             //busStopsInArea = BusStopInfo.getBusStopsInArea(BusStopInfo.findAreaByName(selectedArea));
-           String[] busStopNamesInArea = new String[busStopsInArea.length];
+            String[] busStopNamesInArea = new String[busStopsInArea.length];
 
             if (busStopNamesInArea.length == 0)
-                 destinationBusStopBox.addItem("(No stops in this area)");
+                destinationBusStopBox.addItem("(No stops in this area)");
             //System.out.println(busStopNamesInArea.length);
-            for (int i = 0; i < busStopNamesInArea.length; i++)
-            {
+            for (int i = 0; i < busStopNamesInArea.length; i++) {
                 //int stopID = busStopsInArea[i];
                 //System.out.println(stopID);
                 busStopNamesInArea[i] = busStopsInArea[i].getName();
                 destinationBusStopBox.addItem(busStopNamesInArea[i]);
+
             }
         }
-    }//GEN-LAST:event_destinationAreaBoxActionPerformed
+}//GEN-LAST:event_destinationAreaBoxActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton backButton;
+    private javax.swing.JLabel colonLabel;
     private javax.swing.JLabel dateAndTimeLabel;
     private javax.swing.JLabel dateLabel;
     private javax.swing.JTextField dateTextField;
@@ -408,6 +447,7 @@ public class JourneyPlanner extends javax.swing.JFrame {
     private javax.swing.JLabel planJourneyLabel;
     private javax.swing.JTable plannerTable;
     private javax.swing.JScrollPane plannerTableScrollPane;
+    private javax.swing.JPanel tablePanel;
     private javax.swing.JLabel timeLabel;
     // End of variables declaration//GEN-END:variables
 

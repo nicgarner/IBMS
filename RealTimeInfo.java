@@ -15,9 +15,20 @@
  */
 public class RealTimeInfo extends javax.swing.JFrame {
 
+    private Passenger passenger;
+    private Area[] allAreas = Area.getAllAreas();
+    private String[] allAreaNames = new String[allAreas.length];
+    private String selectedArea;
+
     /** Creates new form RealTimeInfo */
-    public RealTimeInfo() {
+    public RealTimeInfo(Passenger pass) {
+        passenger = pass;
+        for (int i = 0; i < allAreas.length; i++)
+        {
+            allAreaNames[i] = allAreas[i].getName();
+        }
         initComponents();
+
     }
 
     /** This method is called from within the constructor to
@@ -29,24 +40,160 @@ public class RealTimeInfo extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        backButton = new javax.swing.JButton();
+        titleLabel = new javax.swing.JLabel();
+        stopSelectLabel = new javax.swing.JLabel();
+        areaBox = new javax.swing.JComboBox();
+        areaLabel = new javax.swing.JLabel();
+        stopLabel = new javax.swing.JLabel();
+        busStopBox = new javax.swing.JComboBox();
+        jButton1 = new javax.swing.JButton();
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        backButton.setText("Back to menu");
+        backButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                backButtonActionPerformed(evt);
+            }
+        });
+
+        titleLabel.setFont(new java.awt.Font("DejaVu Sans", 1, 24)); // NOI18N
+        titleLabel.setText("Get real-time information");
+
+        stopSelectLabel.setText("Select the area and the bus stop:");
+
+        areaBox.setModel(new javax.swing.DefaultComboBoxModel());
+        areaBox.addItem("Select...");
+        for (int i = 0; i < allAreaNames.length; i++)
+        areaBox.addItem(allAreaNames[i]);
+        areaBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                areaBoxActionPerformed(evt);
+            }
+        });
+
+        areaLabel.setFont(new java.awt.Font("DejaVu Sans", 2, 13)); // NOI18N
+        areaLabel.setText("Area:");
+
+        stopLabel.setFont(new java.awt.Font("DejaVu Sans", 2, 13)); // NOI18N
+        stopLabel.setText("Bus stop:");
+
+        busStopBox.setModel(new javax.swing.DefaultComboBoxModel());
+        busStopBox.addItem("(Select an area...)")
+
+        jButton1.setText("Get Info");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(backButton)
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(titleLabel))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(stopSelectLabel))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(areaLabel)
+                            .addComponent(areaBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(95, 95, 95)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(busStopBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(stopLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jButton1)))
+                .addContainerGap(435, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(backButton)
+                .addGap(18, 18, 18)
+                .addComponent(titleLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(stopSelectLabel)
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(areaLabel)
+                    .addComponent(stopLabel))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(areaBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(busStopBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 37, Short.MAX_VALUE)
+                .addComponent(jButton1)
+                .addContainerGap())
         );
 
-        pack();
+        java.awt.Dimension screenSize = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
+        setBounds((screenSize.width-809)/2, (screenSize.height-287)/2, 809, 287);
     }// </editor-fold>//GEN-END:initComponents
+
+    private void backButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backButtonActionPerformed
+        // TODO add your handling code here:
+        passenger.setVisible(true);
+        dispose();
+
+    }//GEN-LAST:event_backButtonActionPerformed
+
+    private void areaBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_areaBoxActionPerformed
+        // TODO add your handling code here:
+        // Obtain the selected item from the list
+        selectedArea = (String) areaBox.getSelectedItem();
+
+        // If no item is selected, don't display any relevant bus stops
+        if (areaBox.getSelectedItem() == "Select...") {
+            busStopBox.removeAllItems();
+            busStopBox.addItem("(Select an area...)");
+        }
+
+        // Else display the bus stops of the selected area
+        else {
+            Area area = new Area(selectedArea);
+            BusStop[] busStopsInArea = area.getStopsInArea();
+
+            busStopBox.removeAllItems();
+            //busStopsInArea = BusStopInfo.getBusStopsInArea(BusStopInfo.findAreaByName(selectedArea));
+            String[] busStopNamesInArea = new String[busStopsInArea.length];
+
+            if (busStopNamesInArea.length == 0)
+                busStopBox.addItem("(No stops in this area)");
+            //System.out.println(busStopNamesInArea.length);
+            for (int i = 0; i < busStopNamesInArea.length; i++) {
+                //int stopID = busStopsInArea[i];
+                //System.out.println(stopID);
+                busStopNamesInArea[i] = busStopsInArea[i].getName();
+                busStopBox.addItem(busStopNamesInArea[i]);
+            }
+        }
+    }//GEN-LAST:event_areaBoxActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton1ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JComboBox areaBox;
+    private javax.swing.JLabel areaLabel;
+    private javax.swing.JButton backButton;
+    private javax.swing.JComboBox busStopBox;
+    private javax.swing.JButton jButton1;
+    private javax.swing.JLabel stopLabel;
+    private javax.swing.JLabel stopSelectLabel;
+    private javax.swing.JLabel titleLabel;
     // End of variables declaration//GEN-END:variables
 
 }

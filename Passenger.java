@@ -53,6 +53,7 @@ public class Passenger extends javax.swing.JFrame {
         buttonsPanel.add(planJourneyButton);
 
         timetablesButton.setText("Timetables");
+        timetablesButton.setEnabled(false);
         timetablesButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 timetablesButtonActionPerformed(evt);
@@ -68,11 +69,11 @@ public class Passenger extends javax.swing.JFrame {
         });
         buttonsPanel.add(realTimeButton);
 
-        welcomeLabel.setFont(new java.awt.Font("DejaVu Sans", 0, 24)); // NOI18N
+        welcomeLabel.setFont(new java.awt.Font("DejaVu Sans", 0, 24));
         welcomeLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         welcomeLabel.setText("Welcome!");
 
-        welcomeLabel2.setFont(new java.awt.Font("DejaVu Sans", 0, 18)); // NOI18N
+        welcomeLabel2.setFont(new java.awt.Font("DejaVu Sans", 0, 18));
         welcomeLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         welcomeLabel2.setText("Please select an option from the menu below:");
 
@@ -82,10 +83,9 @@ public class Passenger extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(welcomeLabel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 446, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(welcomeLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 434, Short.MAX_VALUE)
-                .addContainerGap())
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(buttonsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 434, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(welcomeLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 434, Short.MAX_VALUE)
+                    .addComponent(buttonsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 434, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -148,7 +148,7 @@ public class Passenger extends javax.swing.JFrame {
 
     private void displayRealTimeInfo ()
     {
-        realTimeInfo = new RealTimeInfo ();
+        realTimeInfo = new RealTimeInfo (this);
         passenger.setVisible (false);
         realTimeInfo.setVisible (true);
     }
