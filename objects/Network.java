@@ -5,6 +5,7 @@ import objects.Journey;
 import objects.Timetable;
 import objects.Service;
 import objects.Route;
+import objects.PassengerJourney;
 import wrapper.database;
 import wrapper.BusStopInfo;
 
@@ -92,19 +93,28 @@ public class Network
   public void journeys(BusStop origin, BusStop destination, int time,
                        GregorianCalendar date)
   {
+    // get possible routes for the journey
     KShortestPaths<BusStop,Edge> pathsCalculator = 
                            new KShortestPaths<BusStop,Edge>(network, origin, 3);
     ArrayList<GraphPath<BusStop,Edge>> paths = 
       (ArrayList<GraphPath<BusStop,Edge>>)pathsCalculator.getPaths(destination);
     
-    
+    // work out the first stop and its route
     BusStop first = first_stop(paths.get(0));
     Route route = new Route(BusStopInfo.getRoutes(first.getId())[0]);
+    int[] times = timesAtStop(first, date, time, 60);
     
-    for (int g = 0; g < paths.size(); g++)
-      print_path(paths.get(g));
+    for (int p = 0; p < paths.size(); p++)
+      print_path(paths.get(p));
+    
+    // get times for the journeys
+    for (int t = 0; t < times.length; t++)
+      for (int p = 0; p < paths.size(); p++)
+      {
+        PassengerJourney journey = new PassengerJourney();
+        
+      }
   }
-  
   
   public void print_path(GraphPath<BusStop,Edge> path)
   {
@@ -227,10 +237,7 @@ public class Network
   // represents an edge in a graph representing the network
   public class Edge extends DefaultWeightedEdge
   {
-    public final int route;
-    //public final int start;
-    //public final int duration;
-    
+    private final int route;
     public Edge(int route_id)
     {
       route = route_id;
@@ -245,8 +252,6 @@ public class Network
       return route;
     }
   }
-  
-//  public void build_network()
 
   
 }

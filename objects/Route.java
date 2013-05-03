@@ -97,6 +97,24 @@ public class Route {
     return route;
   }
   
+  @Override
+  public boolean equals(Object other)
+  {
+    boolean result = false;
+    if (other instanceof Route)
+    {
+      Route that = (Route) other;
+      result = this.getID() == that.getID();
+    }
+    return result;
+  }
+  
+  @Override
+  public int hashCode()
+  {
+    return (41 * (41 + getID()));
+  }
+  
   /**
    * Returns an array containing all the routes in the database.
    *
