@@ -88,6 +88,16 @@ public class Route {
   }
   
   /**
+   * Returns the stops on this route.
+   *
+   * @result  array of bus stops on this route
+   */
+  public BusStop[] getStops()
+  {
+    return route;
+  }
+  
+  /**
    * Returns an array containing all the routes in the database.
    *
    * @return Route[] the routes in the database
