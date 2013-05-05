@@ -23,6 +23,7 @@ public class Area {
     private final int id;
     private final String name;
     private final BusStop[] stopsInArea;
+    private static boolean isEmpty;
 
     /**
      * Create an area given an ID.
@@ -38,10 +39,18 @@ public class Area {
             int[] stops = BusStopInfo.getBusStopsInArea(areaID);
             stopsInArea = new BusStop[stops.length];
 
-            for (int i = 0; i < stops.length; i++)
+            if (stops.length != 0)
             {
-                stopsInArea[i] = new BusStop(stops[i]);
+                for (int i = 0; i < stops.length; i++)
+                {
+                    stopsInArea[i] = new BusStop(stops[i]);
+                }
+                isEmpty = false;
             }
+
+            else
+                isEmpty = true;
+
         }
 
         catch (InvalidQueryException e)
@@ -154,6 +163,23 @@ public class Area {
             areas[i] = new Area (areaIDs[i]);
         }
         return areas;
+    }
+
+    public static Area[] getNonEmptyAreas()
+    {
+        int[] areaIDs = BusStopInfo.getAreas();
+        Area[] areas = new Area[areaIDs.length];
+        ArrayList<Area> nonEmptyAreas = new ArrayList<Area>();
+
+        for (int i = 0; i < areaIDs.length; i++)
+        {
+            areas[i] = new Area (areaIDs[i]);
+
+            if (!(areas[i].isEmpty))
+                nonEmptyAreas.add(areas[i]);
+        }
+        Area[] nonEmptyArray = nonEmptyAreas.toArray(new Area[nonEmptyAreas.size()]);
+        return nonEmptyArray;
     }
 
 

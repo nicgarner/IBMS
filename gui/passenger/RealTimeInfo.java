@@ -22,7 +22,7 @@ import java.awt.Color;
 public class RealTimeInfo extends javax.swing.JFrame {
 
     private Passenger passenger;
-    private Area[] allAreas = Area.getAllAreas();
+    private Area[] allAreas = Area.getNonEmptyAreas();
     private String[] allAreaNames = new String[allAreas.length];
     private String selectedArea;
 
@@ -205,13 +205,8 @@ public class RealTimeInfo extends javax.swing.JFrame {
             BusStop[] busStopsInArea = area.getUniqueStops();
 
             busStopBox.removeAllItems();
-            //busStopsInArea = BusStopInfo.getBusStopsInArea(BusStopInfo.findAreaByName(selectedArea));
-
-
-            if (busStopsInArea == null)
-                busStopBox.addItem("(No stops in this area)");
-            else
-            {
+            //busStopsInArea = BusStopInfo.getBusStopsInArea(BusStopInfo.findAreaByName(selectedArea));           
+            
                 String[] busStopNamesInArea = new String[busStopsInArea.length];
                 //System.out.println(busStopNamesInArea.length);
                 for (int i = 0; i < busStopNamesInArea.length; i++)
@@ -221,7 +216,7 @@ public class RealTimeInfo extends javax.swing.JFrame {
                 busStopNamesInArea[i] = busStopsInArea[i].getName();
                 busStopBox.addItem(busStopNamesInArea[i]);
                 }
-            }
+            
         }
     }//GEN-LAST:event_areaBoxActionPerformed
 

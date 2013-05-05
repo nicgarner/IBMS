@@ -25,7 +25,7 @@ import java.util.Calendar;
 public class JourneyPlanner extends javax.swing.JFrame {
     // Define the variables necessary for the inteface
     private Passenger passenger;
-    private Area[] allAreas = Area.getAllAreas();
+    private Area[] allAreas = Area.getNonEmptyAreas();
     private String[] allAreaNames = new String[allAreas.length];
     private String selectedArea;
 
@@ -420,22 +420,17 @@ public class JourneyPlanner extends javax.swing.JFrame {
 
             destinationBusStopBox.removeAllItems();
             //busStopsInArea = BusStopInfo.getBusStopsInArea(BusStopInfo.findAreaByName(selectedArea));
-
-
-            if (busStopsInArea == null)
-                destinationBusStopBox.addItem("(No stops in this area)");
-            else
-            {
+            
                 String[] busStopNamesInArea = new String[busStopsInArea.length];
                 //System.out.println(busStopNamesInArea.length);
                 for (int i = 0; i < busStopNamesInArea.length; i++)
                 {
                 //int stopID = busStopsInArea[i];
-                System.out.println(busStopsInArea[i].getId());
+                //System.out.println(busStopsInArea[i].getId());
                 busStopNamesInArea[i] = busStopsInArea[i].getName();
                 destinationBusStopBox.addItem(busStopNamesInArea[i]);
                 }
-            }
+            
         }
 }//GEN-LAST:event_destinationAreaBoxActionPerformed
 

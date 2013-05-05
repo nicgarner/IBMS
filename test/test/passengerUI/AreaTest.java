@@ -143,6 +143,18 @@ public class AreaTest {
     }
 
     /**
+     * Test of getNonEmptyAreas method, of class Area.
+     */
+    @Test
+    public void testGetNonEmptyAreas() {
+        System.out.println("getNonEmptyAreas");
+        int expResult = 11;
+        Area[] resultAreas = Area.getNonEmptyAreas();
+        int result = resultAreas.length;
+        assertEquals(expResult, result);
+    }
+
+    /**
      * Test of toString method, of class Area.
      
     @Test

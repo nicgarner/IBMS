@@ -1,5 +1,4 @@
 #!/bin/sh
-export CLASSPATH=$CLASSPATH:./jgrapht-jdk1.6.jar
 javac ./wrapper/*.java
 javac ./objects/*.java
 javac ./static_classes/*.java
