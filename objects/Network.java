@@ -43,16 +43,17 @@ public class Network
                        " and " + destination.getName() + "\nleaving on " + 
                        Timetable.dateToString(day) + " between " + 
                        Timetable.minutesToTime(time) + " and " + 
-                       Timetable.minutesToTime(time + 60));
+                       Timetable.minutesToTime(time + 60) + "\n");
     for (int j = 0; j < journeys.length; j++)
     {
-      System.out.println("\n"+journeys[j]+"\n");
+      //System.out.println("\n"+journeys[j]+"\n");
       String[][] journey = journeys[j].getJourney();
       for (int l = 0; l < journey.length; l++)
         System.out.println(journey[l][0] +  "\t" + journey[l][1] + " \t" +
                            journey[l][2] + " \t" + journey[l][3] + " \t" +
                            journey[l][4] + " \t" + journey[l][5] + " \t" +
                            journey[l][6]);
+      System.out.println("Total duration: " + Timetable.minutesToDuration(journeys[j].getDuration()));
       System.out.println();
     }
   }
@@ -150,35 +151,44 @@ public class Network
       // get times for the journeys
       time: for (int t = 0; t < times.length; t++)
       {
-        int lastTime = times[t];
-        
+        int lastTime = times[t]; // keep track of the time we got to each stop 
+        boolean start = false;   // we don't count the first stops if they're
+                                 // "walking" stops
         PassengerJourney journey = new PassengerJourney();
-        boolean start = false;
         
-        for (int s = 0; s < edges.size(); s++)
+        // get the time for each stop
+        stops: for (int s = 0; s < stops.size(); s++)
         {
           if (!start)
-          {
+            // skip over the first stop(s) if they're walking stops
             if (stops.get(s).equals(first) && edges.get(s).getRoute() != -1)
-            {
-              //journey.addStop(stops.get(s), times[t], edges.get(s).getRoute());
               start = true;
-            }
-          }
           if (start)
           {
-            BusStop stop = stops.get(s);
-            int time = timeAtStop(stop, date, lastTime);
+            // get the time of the next bus at this stop
+            int time = nextTimeAtStop(stops.get(s), date, lastTime);
             if (time < 0)
             {
+              // reject the whole journey if we didn't find the time
               System.out.println("  Time " + t + " rejected as impossible");
               continue time;
             }
-            journey.addStop(stop, time, edges.get(s).getRoute());
-            if (edges.get(s).getRoute() == -1)
-              lastTime = time + 10; // allow ten minutes to change buses
+            // System.out.println("    Stop " + stops.get(s).getId() + " " + 
+               //                stops.get(s).getName() + " (" + s + "/" + 
+               //                stops.size() + ") added");
+            if (s >= edges.size())
+              journey.addStop(stops.get(s), time, -1);
             else
-              lastTime = time;
+            {
+              journey.addStop(stops.get(s), time, edges.get(s).getRoute());
+              if (edges.get(s).getRoute() == -1)
+                lastTime = time + 10; // allow ten minutes to change buses
+              else
+                lastTime = time;
+            }
+            if (stops.get(s).inVicinity(destination))
+              // don't count final stops if they're "walking" stops
+              start = false;
           }
         }
         System.out.println("  Time " + t + " completed");
@@ -187,11 +197,11 @@ public class Network
       System.out.println();
     }
     
-    // convert to array and return
+    // sort, convert to array and return
     PassengerJourney[] result = new PassengerJourney[journeys.size()];
     for (int i = 0; i < result.length; i++)
       result[i] = journeys.get(i);
-      
+    Arrays.sort(result);
     return result;
   }
   
@@ -217,7 +227,7 @@ public class Network
    * @param  date
    * @param  time
    */
-  public int timeAtStop(BusStop stop, GregorianCalendar date, int time)
+  public int nextTimeAtStop(BusStop stop, GregorianCalendar date, int time)
   {
     Route route = new Route(BusStopInfo.getRoutes(stop.getId())[0]);
     int stopPosition = stopPositionInRoute(stop);

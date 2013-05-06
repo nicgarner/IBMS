@@ -20,7 +20,7 @@ import java.util.*;
  *
  * Implemented by Nic.
  */
-public class PassengerJourney
+public class PassengerJourney implements Comparable<PassengerJourney>
 {
   private ArrayList<BusStop> stops;
   private ArrayList<Integer> routes;
@@ -128,6 +128,16 @@ public class PassengerJourney
     return string;
   }
   
+  @Override
+  public int compareTo(PassengerJourney that)
+  {
+    if (this == that) return 0;
+    if (this.getStartTime() < that.getStartTime()) return -1;
+    if (this.getStartTime() > that.getStartTime()) return 1;
+    if (this.getDuration() == that.getDuration()) return 0;
+    return this.getDuration() < that.getDuration() ? -1 : 1;
+  }
+  
   public int getStartTime()
   {
     return times.get(0);
@@ -152,6 +162,8 @@ public class PassengerJourney
   {
     return stops.get(times.size()-1);
   }
+  
+  
   
   // helper method to take midnight into account when working out
   // journey duration
