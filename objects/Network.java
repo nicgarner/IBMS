@@ -13,9 +13,10 @@ import org.jgrapht.*;
 import org.jgrapht.graph.DirectedWeightedMultigraph;
 import org.jgrapht.alg.DijkstraShortestPath;
 import org.jgrapht.alg.KShortestPaths;
+import org.jgrapht.graph.DefaultWeightedEdge;
+
 import java.util.*;
 import java.util.GregorianCalendar;
-import org.jgrapht.graph.DefaultWeightedEdge;
 
 public class Network
 {
@@ -30,14 +31,34 @@ public class Network
     
     BusStop origin = new BusStop(Integer.parseInt(args[0]));
     BusStop destination = new BusStop(Integer.parseInt(args[1]));
-    GregorianCalendar day = new GregorianCalendar(2013, 3, 29);
+    GregorianCalendar day = new GregorianCalendar(2013, 4, 7);
     int time = 840; // 14:00
+    time = 1380; // 23:00
+    time = 360; // 06:00
+    time = 410; // 06:50
     
-    network.journeys(origin, destination, time, day);
+    PassengerJourney[] journeys = network.journeys(origin, destination, time, day);
+    
+    System.out.println("Showing journeys between " + origin.getName() + 
+                       " and " + destination.getName() + "\nleaving on " + 
+                       Timetable.dateToString(day) + " between " + 
+                       Timetable.minutesToTime(time) + " and " + 
+                       Timetable.minutesToTime(time + 60));
+    for (int j = 0; j < journeys.length; j++)
+    {
+      System.out.println("\n"+journeys[j]+"\n");
+      String[][] journey = journeys[j].getJourney();
+      for (int l = 0; l < journey.length; l++)
+        System.out.println(journey[l][0] +  "\t" + journey[l][1] + " \t" +
+                           journey[l][2] + " \t" + journey[l][3] + " \t" +
+                           journey[l][4] + " \t" + journey[l][5] + " \t" +
+                           journey[l][6]);
+      System.out.println();
+    }
   }
   
   /**
-   * Builds a graph representing the network with no edge weights.
+   * Builds a graph representing the network.
    */
   public Network()
   {
@@ -61,9 +82,9 @@ public class Network
         
         if (stop > 0)
         {
-          network.addEdge(stops[stop-1], stops[stop], new Edge(routes[route].getID()));
-          Edge edge = network.getEdge(stops[stop-1], stops[stop]);
-          network.setEdgeWeight(edge, 0.0);
+          Edge edge = new Edge(routes[route].getID());
+          network.addEdge(stops[stop-1], stops[stop], edge);
+          network.setEdgeWeight(edge, 10.0);
         }
         
         // add edges between stops with the same area and name
@@ -74,14 +95,12 @@ public class Network
           BusStop busStop = iterator.next();
           if (busStop.inVicinity(stops[stop]))
           {
-            //if (verbose)
-              //System.out.println("        Matches " + busStop.getId() + " " + busStop.getName());
-            network.addEdge(stops[stop], busStop, new Edge(-1));
-            Edge edge = network.getEdge(stops[stop], busStop);
-            network.setEdgeWeight(edge, 5.0);
-            network.addEdge(busStop, stops[stop], new Edge(-1));
-            edge = network.getEdge(busStop, stops[stop]);
-            network.setEdgeWeight(edge, 5.0);
+            Edge edge = new Edge(-1);
+            network.addEdge(stops[stop], busStop, edge);
+            network.setEdgeWeight(edge, 30.0);
+            edge = new Edge(-1);
+            network.addEdge(busStop, stops[stop], edge);
+            network.setEdgeWeight(edge, 30.0);
           }
         } // while (nodes in graph)
       } // for (stops on route)
@@ -90,36 +109,141 @@ public class Network
       System.out.println();
   } // constructor
   
-  public void journeys(BusStop origin, BusStop destination, int time,
-                       GregorianCalendar date)
+  /**
+   * Builds a graph representing the network with no same named stops.
+   */
+  public Network(boolean flag)
   {
+    network = new DirectedWeightedMultigraph<BusStop,Edge>(Edge.class);
+    
+    // build the network from the routes in the database
+    Route[] routes = Route.getAllRoutes();
+    for (int route = 0; route < routes.length; route++)
+    {
+      if (verbose)
+        System.out.println("Route: " + routes[route].getID());
+      
+      BusStop[] stops = routes[route].getStops();
+      for (int stop = 0; stop < stops.length; stop++)
+      {
+        if (verbose)
+          System.out.print("  Stop: " + stops[stop].getId() + " " + stops[stop].getName());
+        
+        // add the stop, and connect it to the previous one on the route
+        if (network.addVertex(stops[stop]))
+          System.out.print(" +");
+        
+        
+        if (stop > 0)
+        {
+          Edge edge = new Edge(routes[route].getID());
+          if (network.addEdge(stops[stop-1], stops[stop], edge))
+          {
+            System.out.print(" ->");
+            network.setEdgeWeight(edge, 1.0);
+          }
+        }
+        System.out.println();
+      } // for (stops on route)
+    } // for (routes)
+    if (verbose)
+      System.out.println();
+  } // constructor
+  
+  public PassengerJourney[] journeys(BusStop origin, BusStop destination,
+                                         int startTime, GregorianCalendar date)
+  {
+    assert(network.containsVertex(origin));
+    
     // get possible routes for the journey
     KShortestPaths<BusStop,Edge> pathsCalculator = 
-                           new KShortestPaths<BusStop,Edge>(network, origin, 3);
-    ArrayList<GraphPath<BusStop,Edge>> paths = 
-      (ArrayList<GraphPath<BusStop,Edge>>)pathsCalculator.getPaths(destination);
-    
-    // work out the first stop and its route
-    BusStop first = first_stop(paths.get(0));
-    Route route = new Route(BusStopInfo.getRoutes(first.getId())[0]);
-    int[] times = timesAtStop(first, date, time, 60);
+                           new KShortestPaths<BusStop,Edge>(network, origin, 2);
+    ArrayList<GraphPath<BusStop,Edge>> paths = (ArrayList<GraphPath<BusStop,Edge>>)pathsCalculator.getPaths(destination);
     
     for (int p = 0; p < paths.size(); p++)
       print_path(paths.get(p));
     
-    // get times for the journeys
-    for (int t = 0; t < times.length; t++)
-      for (int p = 0; p < paths.size(); p++)
-      {
-        PassengerJourney journey = new PassengerJourney();
+    ArrayList<PassengerJourney> journeys = new ArrayList<PassengerJourney>();
+    
+    for (int p = 0; p < paths.size(); p++)
+    { 
+      // reject path if it's the same as the previous path
+      if (p > 0)
+        if (comparePaths(paths.get(p), paths.get(p-1)))
+        {
+          System.out.println("Path " + p + " rejected as duplicate");
+          continue;
+        }
         
+      System.out.print("Path " + p + ": ");
+      
+      ArrayList<Edge> edges = (ArrayList<Edge>)paths.get(p).getEdgeList();
+      ArrayList<BusStop> stops = (ArrayList<BusStop>)Graphs.getPathVertexList(paths.get(p));
+      
+      // work out the first stop and its route
+      BusStop first = first_stop(paths.get(0));
+      Route route = new Route(BusStopInfo.getRoutes(first.getId())[0]);
+      int[] times = timesAtStop(first, date, startTime, 60);
+      
+      for (int t = 0; t < times.length; t++)
+        System.out.print(Timetable.minutesToTime(times[t]) + ", ");
+      System.out.println();
+      
+      // get times for the journeys
+      time: for (int t = 0; t < times.length; t++)
+      {
+        int lastTime = times[t];
+        
+        PassengerJourney journey = new PassengerJourney();
+        boolean start = false;
+        
+        for (int s = 0; s < edges.size(); s++)
+        {
+          if (!start)
+          {
+            if (stops.get(s).equals(first) && edges.get(s).getRoute() != -1)
+            {
+              //journey.addStop(stops.get(s), times[t], edges.get(s).getRoute());
+              start = true;
+            }
+          }
+          if (start)
+          {
+            BusStop stop = stops.get(s);
+            int time = timeAtStop(stop, date, lastTime);
+            if (time < 0)
+            {
+              System.out.println("  Time " + t + " rejected as impossible");
+              continue time;
+            }
+            journey.addStop(stop, time, edges.get(s).getRoute());
+            if (edges.get(s).getRoute() == -1)
+              lastTime = time + 10; // allow ten minutes to change buses
+            else
+              lastTime = time;
+          }
+        }
+        System.out.println("  Time " + t + " completed");
+        journeys.add(journey);
       }
+      System.out.println();
+    }
+    
+    // convert to array and return
+    PassengerJourney[] result = new PassengerJourney[journeys.size()];
+    for (int i = 0; i < result.length; i++)
+      result[i] = journeys.get(i);
+      
+    return result;
   }
   
-  public void print_path(GraphPath<BusStop,Edge> path)
+  // helper method to print a journey's stops in detail
+  private void print_path(GraphPath<BusStop,Edge> path)
   {
     ArrayList<Edge> edges = (ArrayList<Edge>)path.getEdgeList();
     ArrayList<BusStop> stops = (ArrayList<BusStop>)Graphs.getPathVertexList(path);
+    
+    System.out.println("Weight: " + path.getWeight());
     for (int s = 0; s < edges.size(); s++)
     {
       System.out.print(stops.get(s).getId() + " " + stops.get(s).getName());
@@ -128,6 +252,29 @@ public class Network
     System.out.println(stops.get(stops.size()-1).getId() + " " + stops.get(stops.size()-1).getName() + "\n");
   }
   
+  /**
+   * Gets the time that a bus is next scheduled to arrive at a bus stop.
+   *
+   * @param  stop
+   * @param  date
+   * @param  time
+   */
+  public int timeAtStop(BusStop stop, GregorianCalendar date, int time)
+  {
+    Route route = new Route(BusStopInfo.getRoutes(stop.getId())[0]);
+    int stopPosition = stopPositionInRoute(stop, route);
+    
+    Journey[] journeys = Timetable.get_journeys(date, date, route);
+    for (int j = 0; j < journeys.length; j++)
+    {
+      Service service = journeys[j].getService();
+      int[] times = service.getTimes();
+      if (stopPosition < times.length)
+        if (times[stopPosition] >= time)
+          return times[stopPosition];
+    }
+    return -1;
+  }
   
   /**
    * Gets the times that buses are scheduled to arrive at a bus stop during
@@ -152,10 +299,8 @@ public class Network
       Service service = journeys[j].getService();
       int[] times = service.getTimes();
       if (stopPosition < times.length)
-      {
-        if (times[stopPosition] > time && times[stopPosition] < time + duration)
+        if (times[stopPosition] >= time && times[stopPosition] <= time + duration)
           possibleTimes.add(times[stopPosition]);
-      }
     }
     
     // convert to array and return
@@ -177,9 +322,14 @@ public class Network
   {
     // work out where the stop is in the service
     BusStop[] stops = route.getStops();
+    int s = 0;
     int stopPosition = 0;
-    while (!stops[stopPosition].equals(stop))
-      stopPosition++;
+    while (!stops[s].equals(stop))
+    {
+      if (stops[s].isTimingPoint())
+        stopPosition++;
+      s++;
+    }
     return stopPosition;
   }
   
@@ -202,7 +352,48 @@ public class Network
       return graphPath.getStartVertex();
   }
   
-  public double find_path(BusStop origin, BusStop destination)
+  // compares two paths to see if they are equal when walking between stops
+  // at the start and end is discounted
+  private boolean comparePaths(GraphPath<BusStop,Edge> a, GraphPath<BusStop,Edge> b)
+  {
+    ArrayList<Edge> edgesA = (ArrayList<Edge>)a.getEdgeList();
+    ArrayList<Edge> edgesB = (ArrayList<Edge>)b.getEdgeList();
+    
+    int startA, startB, endA, endB;
+    startA = startB = endA = endB = -1;
+    
+    for (int s = 0; s < edgesA.size(); s++)
+      if (edgesA.get(s).getRoute() > -1)
+      {
+        startA = s;
+        break;
+      }
+    for (int s = 0; s < edgesB.size(); s++)
+      if (edgesB.get(s).getRoute() > -1)
+      {
+        startB = s;
+        break;
+      }
+    for (int s = edgesA.size() - 1; s >= 0 ; s--)
+      if (edgesA.get(s).getRoute() > -1)
+      {
+        endA = s + 1;
+        break;
+      }
+    for (int s = edgesB.size() - 1; s >= 0 ; s--)
+      if (edgesB.get(s).getRoute() > -1)
+      {
+        endB = s + 1;
+        break;
+      }
+    
+    ArrayList<BusStop> stopsA = (ArrayList<BusStop>)Graphs.getPathVertexList(a);
+    ArrayList<BusStop> stopsB = (ArrayList<BusStop>)Graphs.getPathVertexList(b);
+    
+    return stopsA.subList(startA, endA).equals(stopsB.subList(startB, endB));
+  }
+  
+  private double find_path(BusStop origin, BusStop destination)
   {
     System.out.println("Paths between " + origin + " and " + destination);
    

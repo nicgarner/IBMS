@@ -29,9 +29,9 @@ public class Timetable
                                        GregorianCalendar end_date, Route route)
   {
     // validate the input dates
-    GregorianCalendar today = new GregorianCalendar();
-    if (start_date.before(today))
-      throw new IllegalArgumentException("Dates must be in the future.");
+    //GregorianCalendar today = new GregorianCalendar();
+    //if (start_date.before(today))
+      //throw new IllegalArgumentException("Dates must be in the future.");
     if (start_date.after(end_date))
       throw new IllegalArgumentException("Start date must precede end date.");
     

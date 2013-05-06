@@ -107,8 +107,7 @@ public class BusStop {
     if (other instanceof BusStop)
     {
       BusStop that = (BusStop) other;
-      result = (this.getName().equals(that.getName()) && 
-                this.getId() == that.getId());
+      result = (this.getName().equals(that.getName()) && this.getId() == that.getId());
     }
     return result;
   }

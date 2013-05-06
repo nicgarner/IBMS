@@ -40,7 +40,7 @@ public class PassengerJourney
    * @param time   the time the bus gets to this stop
    * @param route  the id of the route the bus is on (-1 for walking)
    */
-  public void addLink(BusStop stop, int time, int route)
+  public void addStop(BusStop stop, int time, int route)
   {
     stops.add(stop);
     times.add(time);
@@ -48,42 +48,45 @@ public class PassengerJourney
   }
   
   /**
-   * Gets the journey details in format for displaying in GUI tab;e
+   * Gets the journey details in format for displaying in GUI table
    *
-   * @return nested array of strings corresponding to the legs in the journey,
-   *         each array contains start bus stop, start time, end bus stop,
+   * @return 2D array of string arrays corresponding to the legs in the journey,
+   *         each array contains: start bus stop, start time, end bus stop,
    *         end time, route numbers, duration and number of stops
    */
-  public String[][] getJourneys()
+  public String[][] getJourney()
   {
     ArrayList<String[]> legs = new ArrayList<String[]>();
+    
     int lastRoute = -1;
-    int stopCounter = 0;
+    int stopCounter = 1;
     int startTime = 0;
+    
     for (int i = 0; i < stops.size(); i++)
     {
-      if (routes.get(i) == -1)
+      if (i > 0 && (routes.get(i) == -1 || i == stops.size()-1))
       {
         // end current leg
         String[] leg = legs.get(legs.size()-1);
         leg[2] = stops.get(i).getName();
-        leg[3] = ""+times.get(i);
-        leg[5] = ""+duration(startTime, times.get(i));
+        leg[3] = ""+Timetable.minutesToTime(times.get(i));
+        leg[5] = ""+Timetable.minutesToDuration(duration(startTime, times.get(i)));
         leg[6] = ""+stopCounter;
       }
       else if (routes.get(i) != lastRoute)
       {
         // start a new leg
         Route route = new Route(routes.get(i));
+          
         lastRoute = route.getID();
         legs.add(new String[7]);
         
         // populate start stop and time, and service number of the new leg
         String[] leg = legs.get(legs.size()-1);
         leg[0] = stops.get(i).getName();
-        leg[1] = ""+times.get(i);
+        leg[1] = ""+Timetable.minutesToTime(times.get(i));
         leg[4] = route.getName();
-        stopCounter = 0;
+        stopCounter = 1;
         startTime = times.get(i);
       }
       else
@@ -99,6 +102,32 @@ public class PassengerJourney
     return result;
   }
   
+  @Override
+  public String toString()
+  {
+    String string = "Stop:\t";
+    for (int s = 0; s < stops.size(); s++)
+      string += stops.get(s).getId() + "\t";
+    string += "\nBus:\t";
+    for (int r = 0; r < routes.size(); r++)
+    {
+      if (r == routes.size() - 1)
+        string += "arrived";
+      else if (routes.get(r) == -1)
+        string += "walk\t";
+      else
+      {
+        Route route = new Route(routes.get(r));
+        string += route.getName() + "\t";
+      }
+    }
+    string += "\nTime:\t";
+    for (int t = 0; t < times.size(); t++)
+      string += Timetable.minutesToTime(times.get(t)) + "\t";
+    
+    return string;
+  }
+  
   public int getStartTime()
   {
     return times.get(0);
@@ -107,6 +136,11 @@ public class PassengerJourney
   public int getEndTime()
   {
     return times.get(times.size()-1);
+  }
+  
+  public int getDuration()
+  {
+    return duration(getStartTime(), getEndTime());
   }
   
   public BusStop getOrigin()

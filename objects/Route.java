@@ -42,11 +42,15 @@ public class Route {
       for (int stop = 0; stop < stops.length; stop++)
       {
         route[stop] = new BusStop(stops[stop]);
-        if (timingPoint < timingPoints.length &&
+        /*if (timingPoint < timingPoints.length &&
             stops[stop] == timingPoints[timingPoint])
         {
           route[stop].setTimingPoint(true);
           timingPoint++;
+        }*/
+        if (BusStopInfo.isTimingPoint(stops[stop]))
+        {
+          route[stop].setTimingPoint(true);
         }
       }
     }
