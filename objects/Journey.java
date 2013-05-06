@@ -7,7 +7,7 @@ import java.util.GregorianCalendar;
 /** 
  * Creates a journey for IBMS rostering. A journey is a combination of a date 
  * and a service. The combination of a service and a date will give a unique 
- * pair, called a journey. Implemented by Adam and Nic.
+ * pair, called a journey. Implemented by Adam, Nic and Kris
 */
 
 public class Journey
@@ -40,6 +40,42 @@ public class Journey
 	}// constructor
 	
 	/**
+         * Method for selecting relevant bus stop to display real time info
+         * and applying delays, cancellations
+         */
+        public static Journey[] getJourneys(BusStop stop, GregorianCalendar date,
+                                            Route route)
+        {
+          int minute, hour, pastMidnight ;
+          GregorianCalendar curTime = new GregorianCalendar() ;
+          minute = curTime.get(Calendar.MINUTE) ;
+          hour = curTime.get(Calendar.HOUR) ;
+          pastMidnight = (hour * 60) + minute ;
+
+          ArrayList<Journey> journeys = new ArrayList<Journey>();
+          
+          GregorianCalendar day = (GregorianCalendar)date.clone()
+         
+          //iterate over current day 
+          while(!day.after(date))
+          {
+            int[] services = TimetableInfo.getServices(route.getID(), day.getTime());
+            for (int service = 0; service < services.length; service++)
+                journeys.add(new Journey(services[service], day));
+          }
+          
+          Journey[] journeys_array = new Journey[journeys.size()];
+          journeys.toArray(journeys_array);
+        
+          int stopPosition = Network.stopPositionInRoute(stop) ;
+          for (int i = 0; i < journeys_array.length; i++)
+          {
+             journeys_array[i].getService; 
+          }
+}
+          
+        
+        /**
 	 * Gets the service ID of the journey
 	 * @return the service ID of the journey
 	 */	
@@ -61,28 +97,28 @@ public class Journey
 	 * Gets the start time of the journey.
 	 * @return the start time of the journey
 	 */
-  public int startTime()
-  {
-    return service.startTime();
-  }
+        public int startTime()
+        {
+          return service.startTime();
+        }
 	
 	/**
 	 * Gets the end time of the journey.
 	 * @return the end time of the journey
 	 */
-  public int endTime()
-  {
-    return service.endTime();
-  }
+        public int endTime()
+        {
+          return service.endTime();
+        }
 	
 	/**
 	 * Gets the duration of the journey in minutes.
 	 * @return the duration of the journey in minutes
 	 */
-  public int duration()
-  {
-    return service.duration();
-  }
+        public int duration()
+        {
+          return service.duration();
+        }
 	
 	/**
 	 * Returns a string representation of the journey.

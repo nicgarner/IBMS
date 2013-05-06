@@ -55,6 +55,102 @@ public class Timetable
   }
   
   /**
+   * Method that simulates to impose delays, cancellations of services.
+   * ~60% of journeys on time, ~10% cancelled, ~30% late. Possible delays have
+   * a bound from 1 to 30 minutes. Delays, cancellations selected randomly.
+   */   
+   public static int sim()
+   {
+     int delayTime = 1 + (int)(Math.random() * ((68 - 1) + 1)) ;
+     
+     return delayTime ;
+     
+   }//sim
+   
+   /**
+    * Method that simulates times of an array of Journeys
+    * and applying delays, cancellations
+    */
+   public static Journey[] getAlterTimes(BusStop stop, GregorianCalendar date, Route route)
+   {
+     int minute, hour, pastMidnight ;
+     GregorianCalendar curTime = new GregorianCalendar() ;
+     minute = curTime.get(Calendar.MINUTE) ;
+     hour = curTime.get(Calendar.HOUR) ;
+     pastMidnight = (hour * 60) + minute ;
+
+     ArrayList<Journey> simJourneys = new ArrayList<Journey>();
+     
+     //Array storing the original journeys and times 
+     Journey[] journeys = get_journeys(date, date, route) ;
+          
+     //iterate over all the journeys on the selected day
+     for (int i = 0; i < journeys.length; i++)
+     {
+        //select the journeys we want to apply simulation to
+        //Only journeys that have already started can have data changed
+        if (journeys[i].startTime() < pastMidnight)
+        {
+           Service curService = journeys[i].getService() ;
+           //get times for current journey
+           int[] origTimes = curService.getTimes() ;
+           int simForJourney = sim() ;
+           
+           //Check if journey cancelled and alter starting time, so we can
+           //later identify the cancelled journeys. Stored in an array list
+           if (simForJourney > 30 && simForJourney < 34)
+           {
+              origTimes[0] = 2000 ;
+              simJourneys.add(journeys[i]) ;
+           }//if
+           
+           //If the journey is late, apply the delay to every timing point
+           //and add the new times to the journey, store it in an array list
+           else if (simForJourney < 31)
+           {
+              for (int j = 0; j < origTimes.length(); j++)
+              { 
+                origTimes[j] = origTimes[j] + simForJourney ;
+              }//for
+              simJourneys.add(journeys[i]) ;
+           }//else
+           
+           //if journey on time, don't simulate, just add original times to
+           //the array list
+           else 
+             simJourneys.add(journeys[i]) ;
+
+          }//if
+     }//for
+   
+    // return journeys as an array
+    Journey[] journeys_array = new Journey[journeys.size()];
+    return simJourneys.toArray(journeys_array);
+   }//getAlterTimes
+   
+  /*
+    public static Journey[] getJourneys(BusStop stop, GregorianCalendar date,
+                                            Route route)
+        {
+          int minute, hour, pastMidnight ;
+          GregorianCalendar curTime = new GregorianCalendar() ;
+          minute = curTime.get(Calendar.MINUTE) ;
+          hour = curTime.get(Calendar.HOUR) ;
+          pastMidnight = (hour * 60) + minute ;
+
+          ArrayList<Journey> journeys = new ArrayList<Journey>();
+          
+          GregorianCalendar day = (GregorianCalendar)date.clone()
+         
+          //iterate over current day 
+          while(!day.after(date))
+          {
+            int[] services = TimetableInfo.getServices(route.getID(), day.getTime());
+            for (int service = 0; service < services.length; service++)
+                journeys.add(new Journey(services[service], day));
+          }
+  */
+  /**
    * Returns the services for the the given route for the given day.
    *
    * @param  route     the route the timetable is for
