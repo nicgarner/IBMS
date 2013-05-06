@@ -220,7 +220,7 @@ public class Network
   public int timeAtStop(BusStop stop, GregorianCalendar date, int time)
   {
     Route route = new Route(BusStopInfo.getRoutes(stop.getId())[0]);
-    int stopPosition = stopPositionInRoute(stop, route);
+    int stopPosition = stopPositionInRoute(stop);
     
     Journey[] journeys = Timetable.get_journeys(date, date, route);
     for (int j = 0; j < journeys.length; j++)
@@ -247,7 +247,7 @@ public class Network
   public int[] timesAtStop(BusStop stop, GregorianCalendar date, int time, int duration)
   {
     Route route = new Route(BusStopInfo.getRoutes(stop.getId())[0]);
-    int stopPosition = stopPositionInRoute(stop, route);
+    int stopPosition = stopPositionInRoute(stop);
     
     // get the times from the journeys based on the stop position
     ArrayList<Integer> possibleTimes = new ArrayList<Integer>();
@@ -273,12 +273,12 @@ public class Network
    * Finds the position of a bus stop in a route. The first position is 0.
    *
    * @param  stop   the bus stop
-   * @param  route  the route to look in
    * @return        the position of the stop on the route
    */
-  public static int stopPositionInRoute(BusStop stop, Route route)
+  public static int stopPositionInRoute(BusStop stop)
   {
     // work out where the stop is in the service
+    Route route = new Route(BusStopInfo.getRoutes(stop.getId())[0]);
     BusStop[] stops = route.getStops();
     int s = 0;
     int stopPosition = 0;
