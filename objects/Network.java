@@ -29,13 +29,13 @@ public class Network
     database.openBusDatabase();
     Network network = new Network();
     
+    if (args.length == 0)
+      System.exit(0);
+    
     BusStop origin = new BusStop(Integer.parseInt(args[0]));
     BusStop destination = new BusStop(Integer.parseInt(args[1]));
-    GregorianCalendar day = new GregorianCalendar(2013, 4, 7);
-    int time = 840; // 14:00
-    time = 1380; // 23:00
-    time = 360; // 06:00
-    time = 410; // 06:50
+    GregorianCalendar day = new GregorianCalendar(Integer.parseInt(args[4]), Integer.parseInt(args[3]) - 1, Integer.parseInt(args[2]));
+    int time = Integer.parseInt(args[5]);
     
     PassengerJourney[] journeys = network.journeys(origin, destination, time, day);
     
@@ -69,7 +69,7 @@ public class Network
     for (int route = 0; route < routes.length; route++)
     {
       if (verbose)
-        System.out.println("Route: " + routes[route].getID());
+        System.out.println("Route: " + routes[route].getName() + " (id: " + routes[route].getID() + ")");
       
       BusStop[] stops = routes[route].getStops();
       for (int stop = 0; stop < stops.length; stop++)
@@ -109,47 +109,6 @@ public class Network
       System.out.println();
   } // constructor
   
-  /**
-   * Builds a graph representing the network with no same named stops.
-   */
-  public Network(boolean flag)
-  {
-    network = new DirectedWeightedMultigraph<BusStop,Edge>(Edge.class);
-    
-    // build the network from the routes in the database
-    Route[] routes = Route.getAllRoutes();
-    for (int route = 0; route < routes.length; route++)
-    {
-      if (verbose)
-        System.out.println("Route: " + routes[route].getID());
-      
-      BusStop[] stops = routes[route].getStops();
-      for (int stop = 0; stop < stops.length; stop++)
-      {
-        if (verbose)
-          System.out.print("  Stop: " + stops[stop].getId() + " " + stops[stop].getName());
-        
-        // add the stop, and connect it to the previous one on the route
-        if (network.addVertex(stops[stop]))
-          System.out.print(" +");
-        
-        
-        if (stop > 0)
-        {
-          Edge edge = new Edge(routes[route].getID());
-          if (network.addEdge(stops[stop-1], stops[stop], edge))
-          {
-            System.out.print(" ->");
-            network.setEdgeWeight(edge, 1.0);
-          }
-        }
-        System.out.println();
-      } // for (stops on route)
-    } // for (routes)
-    if (verbose)
-      System.out.println();
-  } // constructor
-  
   public PassengerJourney[] journeys(BusStop origin, BusStop destination,
                                          int startTime, GregorianCalendar date)
   {
@@ -180,9 +139,8 @@ public class Network
       ArrayList<Edge> edges = (ArrayList<Edge>)paths.get(p).getEdgeList();
       ArrayList<BusStop> stops = (ArrayList<BusStop>)Graphs.getPathVertexList(paths.get(p));
       
-      // work out the first stop and its route
-      BusStop first = first_stop(paths.get(0));
-      Route route = new Route(BusStopInfo.getRoutes(first.getId())[0]);
+      // work out the first stop and the times buses depart it
+      BusStop first = first_stop(paths.get(p));
       int[] times = timesAtStop(first, date, startTime, 60);
       
       for (int t = 0; t < times.length; t++)
