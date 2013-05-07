@@ -186,20 +186,6 @@ public class RealTimeInfo extends javax.swing.JFrame {
         setBounds((screenSize.width-831)/2, (screenSize.height-321)/2, 831, 321);
     }// </editor-fold>//GEN-END:initComponents
 
-    public static String view_RT_info(BusStop stop, GregorianCalendar date,
-                                      Route route)
-    {
-      Journey[] journeys = Timetable.getAlterTime(stop, date, route) ;
-      int stopPosition = Network.stopPositionInRoute(BusStop stop) ;
-      
-      for (int i = 0; i < journeys.length; i++)
-      {
-         Service curService = journeys[i].getService() ;
-         //get times for current journey
-         int[] altTimes = curService.getTimes() ;
-         
-      
-   
     private void backButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backButtonActionPerformed
         // TODO add your handling code here:
         passenger.setVisible(true);
