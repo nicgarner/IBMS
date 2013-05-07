@@ -1,6 +1,7 @@
 package gui.passenger;
 import objects.*;
 import wrapper.*;
+import java.util.GregorianCalendar;
 
 /*
  * To change this template, choose Tools | Templates
@@ -184,6 +185,21 @@ public class RealTimeInfo extends javax.swing.JFrame {
         java.awt.Dimension screenSize = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
         setBounds((screenSize.width-831)/2, (screenSize.height-321)/2, 831, 321);
     }// </editor-fold>
+
+    public static String view_RT_info(BusStop stop, GregorianCalendar date,
+                                      Route route)
+    {
+      Journey[] journeys = Timetable.getAlterTimes(stop, date, route) ;
+      int stopPosition = Network.stopPositionInRoute(stop) ;
+
+      for (int i = 0; i < journeys.length; i++)
+      {
+         Service curService = journeys[i].getService() ;
+         //get times for current journey
+         int[] altTimes = curService.getTimes() ;
+      }
+      return "";
+    }
 
     private void backButtonActionPerformed(java.awt.event.ActionEvent evt) {
         // TODO add your handling code here:
