@@ -33,7 +33,6 @@ public class Passenger extends javax.swing.JFrame {
 
         buttonsPanel = new javax.swing.JPanel();
         planJourneyButton = new javax.swing.JButton();
-        timetablesButton = new javax.swing.JButton();
         realTimeButton = new javax.swing.JButton();
         welcomeLabel = new javax.swing.JLabel();
         welcomeLabel2 = new javax.swing.JLabel();
@@ -53,15 +52,6 @@ public class Passenger extends javax.swing.JFrame {
             }
         });
         buttonsPanel.add(planJourneyButton);
-
-        timetablesButton.setText("Timetables");
-        timetablesButton.setEnabled(false);
-        timetablesButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                timetablesButtonActionPerformed(evt);
-            }
-        });
-        buttonsPanel.add(timetablesButton);
 
         realTimeButton.setText("Get real-time info");
         realTimeButton.addActionListener(new java.awt.event.ActionListener() {
@@ -99,7 +89,7 @@ public class Passenger extends javax.swing.JFrame {
                 .addComponent(welcomeLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(buttonsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(42, Short.MAX_VALUE))
         );
 
         java.awt.Dimension screenSize = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
@@ -115,11 +105,6 @@ public class Passenger extends javax.swing.JFrame {
         // TODO add your handling code here:
         displayJourneyPlanner ();
     }//GEN-LAST:event_planJourneyButtonActionPerformed
-
-    private void timetablesButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_timetablesButtonActionPerformed
-        // TODO add your handling code here:
-       
-    }//GEN-LAST:event_timetablesButtonActionPerformed
 
     /**
     * @param args the command line arguments
@@ -152,7 +137,6 @@ public class Passenger extends javax.swing.JFrame {
     private javax.swing.JPanel buttonsPanel;
     private javax.swing.JButton planJourneyButton;
     private javax.swing.JButton realTimeButton;
-    private javax.swing.JButton timetablesButton;
     private javax.swing.JLabel welcomeLabel;
     private javax.swing.JLabel welcomeLabel2;
     // End of variables declaration//GEN-END:variables

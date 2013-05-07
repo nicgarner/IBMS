@@ -10,8 +10,8 @@ import wrapper.*;
  *
  * @author Adam Nogradi
  *
- * Represents an Area in the IBMS System. An area is comprised of an ID, a name
- * and an array of bus stops in it.
+ * Represents an Area in the IBMS System. An area is comprised of an ID, a name,
+ * an array of bus stops in it and a flag to sign if there are bus stops in it.
  */
 
 import wrapper.InvalidQueryException;
@@ -20,6 +20,7 @@ import java.util.ArrayList;
 
 public class Area {
 
+    // Area properties
     private final int id;
     private final String name;
     private final BusStop[] stopsInArea;
@@ -144,15 +145,15 @@ public class Area {
         uniqueArray = uniqueStops.toArray(new BusStop[uniqueStops.size()]);              
         }// if       
 
-        return uniqueArray;
-        
-
-
-        
+        return uniqueArray;       
     }
     
 
 
+    /**
+     * Get all the areas from the database
+     * @return areas and Area array containing all the areas from the database
+     */
     public static Area[] getAllAreas()
     {
         int[] areaIDs = BusStopInfo.getAreas();
@@ -165,6 +166,10 @@ public class Area {
         return areas;
     }
 
+    /**
+     * Get all the areas that have bus stops in them from the database
+     * @return nonEmptyArray an Area array of the non-empty areas from the database
+     */
     public static Area[] getNonEmptyAreas()
     {
         int[] areaIDs = BusStopInfo.getAreas();

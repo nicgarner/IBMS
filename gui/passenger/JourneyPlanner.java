@@ -17,6 +17,12 @@ import wrapper.*;
  *
  * @author Adam Nogradi
  */
+
+/**
+ * The journey planner interface for the passenger. User selects an origin and
+ * destination area, then bus stops and time and a choice of journeys appear
+ * as a result.
+ */
 import java.util.Date;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -366,7 +372,8 @@ public class JourneyPlanner extends javax.swing.JFrame {
         
     }//GEN-LAST:event_originBusStopBoxActionPerformed
 
-    // Do the same for the destination area and collection of bus stops
+    // User selects an area and the bus stops in the area become available
+    // in the origin bus stop selection drowdown.
     private void originAreaBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_originAreaBoxActionPerformed
         // TODO add your handling code here:
         // Obtain the selected item from the list
@@ -386,24 +393,20 @@ public class JourneyPlanner extends javax.swing.JFrame {
             originBusStopBox.removeAllItems();
             //busStopsInArea = BusStopInfo.getBusStopsInArea(BusStopInfo.findAreaByName(selectedArea));
             
-
-            if (busStopsInArea == null)
-                originBusStopBox.addItem("(No stops in this area)");
-            else
-            {
                 String[] busStopNamesInArea = new String[busStopsInArea.length];
                 //System.out.println(busStopNamesInArea.length);
-                for (int i = 0; i < busStopNamesInArea.length; i++) {
+                for (int i = 0; i < busStopNamesInArea.length; i++)
+                {
                 //int stopID = busStopsInArea[i];
                 //System.out.println(stopID);
                 busStopNamesInArea[i] = busStopsInArea[i].getName();
-                originBusStopBox.addItem(busStopNamesInArea[i]);
-            }
-            }
+                originBusStopBox.addItem(busStopNamesInArea[i]);            
+                }
             
         }
     }//GEN-LAST:event_originAreaBoxActionPerformed
 
+    // Works in the same way as origin boxes
     private void destinationAreaBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_destinationAreaBoxActionPerformed
         // TODO add your handling code here:
         selectedArea = (String) destinationAreaBox.getSelectedItem();

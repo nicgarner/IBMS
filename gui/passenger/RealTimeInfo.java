@@ -17,6 +17,12 @@ import wrapper.*;
  *
  * @author Adam Nogradi
  */
+
+/**
+ * Real time information interface for the passenger. User selects an area and
+ * bus stop and the system returns the service information for the given stop
+ * within an hour.
+ */
 import java.awt.Color;
 
 public class RealTimeInfo extends javax.swing.JFrame {
@@ -187,6 +193,8 @@ public class RealTimeInfo extends javax.swing.JFrame {
 
     }//GEN-LAST:event_backButtonActionPerformed
 
+    // User selects an area and the bus stops in that area become available
+    // in the bus stop dropdown.
     private void areaBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_areaBoxActionPerformed
         // TODO add your handling code here:
         // Obtain the selected item from the list
