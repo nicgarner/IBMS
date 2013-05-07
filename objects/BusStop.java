@@ -118,7 +118,6 @@ public class BusStop {
     return (41 * (41 + getId()) + name.hashCode());
   }
   
-  
   /*
   // main method for testing only
   public static void main(String args[])

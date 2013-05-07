@@ -411,6 +411,4 @@ public class Network
       return route;
     }
   }
-
-  
 }

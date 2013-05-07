@@ -27,6 +27,7 @@ import java.util.Date;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 public class JourneyPlanner extends javax.swing.JFrame {
     // Define the variables necessary for the inteface
@@ -359,7 +360,36 @@ public class JourneyPlanner extends javax.swing.JFrame {
      * Plan the journey if the button is pressed
      */
     private void planButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_planButtonActionPerformed
-        // TODO add your handling code here:       
+        Network network = new Network();
+
+        BusStopCombo originCombo = (BusStopCombo)originBusStopBox.getSelectedItem();
+        BusStop origin = originCombo.getBusStop();
+        BusStopCombo destinationCombo = (BusStopCombo)destinationBusStopBox.getSelectedItem();
+        BusStop destination = destinationCombo.getBusStop();
+        GregorianCalendar day = Timetable.parseDate(dateTextField.getText());
+        int time = Timetable.parseTime(Integer.parseInt(hourTextField.getText()),
+                                       Integer.parseInt(minuteTextField.getText()));
+
+        PassengerJourney[] journeys = network.journeys(origin, destination, time, day);
+
+        System.out.println("Showing journeys between " + origin.getName() +
+                           " and " + destination.getName() + "\nleaving on " +
+                           Timetable.dateToString(day) + " between " +
+                           Timetable.minutesToTime(time) + " and " +
+                           Timetable.minutesToTime(time + 60) + "\n");
+        for (int j = 0; j < journeys.length; j++)
+        {
+          //System.out.println("\n"+journeys[j]+"\n");
+          String[][] journey = journeys[j].getJourney();
+          for (int l = 0; l < journey.length; l++)
+            System.out.println(journey[l][0] +  "\t" + journey[l][1] + " \t" +
+                               journey[l][2] + " \t" + journey[l][3] + " \t" +
+                               journey[l][4] + " \t" + journey[l][5] + " \t" +
+                               journey[l][6]);
+          System.out.println("Total duration: " + Timetable.minutesToDuration(journeys[j].getDuration()));
+          System.out.println();
+        }
+
         resultPanel.setVisible (true);
 
     }//GEN-LAST:event_planButtonActionPerformed
@@ -386,20 +416,10 @@ public class JourneyPlanner extends javax.swing.JFrame {
         else {
             Area area = new Area(selectedArea);
             BusStop[] busStopsInArea = area.getUniqueStops();
-
             originBusStopBox.removeAllItems();
-            //busStopsInArea = BusStopInfo.getBusStopsInArea(BusStopInfo.findAreaByName(selectedArea));
-            
-                String[] busStopNamesInArea = new String[busStopsInArea.length];
-                //System.out.println(busStopNamesInArea.length);
-                for (int i = 0; i < busStopNamesInArea.length; i++)
-                {
-                //int stopID = busStopsInArea[i];
-                //System.out.println(stopID);
-                busStopNamesInArea[i] = busStopsInArea[i].getName();
-                originBusStopBox.addItem(busStopNamesInArea[i]);            
-                }
-            
+
+            for (int i = 0; i < busStopsInArea.length; i++)
+                originBusStopBox.addItem(new BusStopCombo(busStopsInArea[i]));
         }
     }//GEN-LAST:event_originAreaBoxActionPerformed
 
@@ -417,20 +437,10 @@ public class JourneyPlanner extends javax.swing.JFrame {
         {
             Area area = new Area(selectedArea);
             BusStop[] busStopsInArea = area.getUniqueStops();           
-
             destinationBusStopBox.removeAllItems();
-            //busStopsInArea = BusStopInfo.getBusStopsInArea(BusStopInfo.findAreaByName(selectedArea));
             
-                String[] busStopNamesInArea = new String[busStopsInArea.length];
-                //System.out.println(busStopNamesInArea.length);
-                for (int i = 0; i < busStopNamesInArea.length; i++)
-                {
-                //int stopID = busStopsInArea[i];
-                //System.out.println(busStopsInArea[i].getId());
-                busStopNamesInArea[i] = busStopsInArea[i].getName();
-                destinationBusStopBox.addItem(busStopNamesInArea[i]);
-                }
-            
+            for (int i = 0; i < busStopsInArea.length; i++)
+                destinationBusStopBox.addItem(new BusStopCombo(busStopsInArea[i]));
         }
 }//GEN-LAST:event_destinationAreaBoxActionPerformed
 

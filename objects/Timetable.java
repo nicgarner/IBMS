@@ -75,8 +75,8 @@ public class Timetable
    {
      int minute, hour, pastMidnight ;
      GregorianCalendar curTime = new GregorianCalendar() ;
-     minute = curTime.get(Calendar.MINUTE) ;
-     hour = curTime.get(Calendar.HOUR) ;
+     minute = curTime.get(GregorianCalendar.MINUTE) ;
+     hour = curTime.get(GregorianCalendar.HOUR) ;
      pastMidnight = (hour * 60) + minute ;
 
      ArrayList<Journey> simJourneys = new ArrayList<Journey>();
@@ -124,7 +124,7 @@ public class Timetable
      }//for
    
     // return journeys as an array
-    Journey[] journeys_array = new Journey[journeys.size()];
+    Journey[] journeys_array = new Journey[simJourneys.size()];
     return simJourneys.toArray(journeys_array);
    }//getAlterTimes
    
@@ -237,30 +237,41 @@ public class Timetable
   public static GregorianCalendar parseDate(String string)
   {
     // check the input string isn't too long to be a date
-    if (string.length > 10)
- 			throw new IllegalArgumentException 
- 			                     ("Invalid date format, please check and try again.");
- 	  
- 	  // split on / and check there's exactly three parts
- 		String[] dateComponents = string.split ("/");
- 		if (dateComponents.length != 3)
- 			throw new IllegalArgumentException 
- 			                     ("Invalid date format, please check and try again.");	
- 	  
- 	  // parse the parts as ints
- 	  int day = Integer.parseInt(dateComponents[0]);
- 	  int month = Integer.parseInt(dateComponents[1]);
- 	  int year = Integer.parseInt(dateComponents[2]);
- 	  
- 	  // do some sanity checking on the ints (this isn't perfect!)
- 	  if (day < 1 || day > 31 || month < 1 || month > 12)
- 	    throw new IllegalArgumentException 
- 			                     ("Invalid date format, please check and try again.");
- 	  
- 	  // create the date
- 	  GregorianCalendar date = new GregorianCalendar (year, month-1, day);
- 	  
- 	  return date;
+    if (string.length() > 10)
+      throw new IllegalArgumentException("Invalid date format, please check and try again.");
+
+    // split on / and check there's exactly three parts
+    String[] dateComponents = string.split ("/");
+    if (dateComponents.length != 3)
+      throw new IllegalArgumentException("Invalid date format, please check and try again.");
+
+    // parse the parts as ints
+    int day = Integer.parseInt(dateComponents[0]);
+    int month = Integer.parseInt(dateComponents[1]);
+    int year = Integer.parseInt(dateComponents[2]);
+
+    // do some sanity checking on the ints (this isn't perfect!)
+    if (day < 1 || day > 31 || month < 1 || month > 12)
+      throw new IllegalArgumentException("Invalid date format, please check and try again.");
+
+    // create the date
+    GregorianCalendar date = new GregorianCalendar (year, month-1, day);
+    return date;
+  }
+
+  /**
+   * Returns an integer number of minutes past midnight from hour and minutes.
+   *
+   * @param  hours    the hours in the time
+   * @param  minutes  the minutes in the time
+   * @return          number of minutes past midnight that represents this time
+   */
+  public static int parseTime(int hours, int minutes)
+  {
+    // check hours and minutes within limits
+    if (hours < 0 || hours > 23 || minutes < 0 || minutes > 59)
+      throw new IllegalArgumentException("Invalid time format, please check and try again.");
+    return hours*60 + minutes;
   }
   
   /**
