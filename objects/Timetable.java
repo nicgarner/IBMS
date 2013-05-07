@@ -71,7 +71,7 @@ public class Timetable
     * Method that simulates times of an array of Journeys
     * and applying delays, cancellations
     */
-   public static Journey[] getAlterTimes(BusStop stop, GregorianCalendar date, Route route)
+   public static Journey[] getAlterTimes(GregorianCalendar date, Route route)
    {
      int minute, hour, pastMidnight ;
      GregorianCalendar curTime = new GregorianCalendar() ;
@@ -108,7 +108,7 @@ public class Timetable
            //and add the new times to the journey, store it in an array list
            else if (simForJourney < 31)
            {
-              for (int j = 0; j < origTimes.length(); j++)
+              for (int j = 0; j < origTimes.length; j++)
               { 
                 origTimes[j] = origTimes[j] + simForJourney ;
               }//for
@@ -237,7 +237,7 @@ public class Timetable
   public static GregorianCalendar parseDate(String string)
   {
     // check the input string isn't too long to be a date
-    if (string.length() > 10)
+    if (string.length > 10)
  			throw new IllegalArgumentException 
  			                     ("Invalid date format, please check and try again.");
  	  

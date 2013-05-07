@@ -42,7 +42,7 @@ public class Journey
 	/**
          * Method for selecting relevant bus stop to display real time info
          * and applying delays, cancellations
-         */
+         
         public static Journey[] getJourneys(BusStop stop, GregorianCalendar date,
                                             Route route)
         {
@@ -74,7 +74,7 @@ public class Journey
           }
 }
           
-        
+     */   
         /**
 	 * Gets the service ID of the journey
 	 * @return the service ID of the journey
