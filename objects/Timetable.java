@@ -66,30 +66,36 @@ public class Timetable
      return delayTime ;
      
    }//sim
-   
-   /**
-    * Method that simulates times of an array of Journeys
-    * and applying delays, cancellations
-    */
-   public static Journey[] getAlterTimes(GregorianCalendar date, Route route)
+
+   public static int getCurTime()
    {
      int minute, hour, pastMidnight ;
      GregorianCalendar curTime = new GregorianCalendar() ;
      minute = curTime.get(GregorianCalendar.MINUTE) ;
      hour = curTime.get(GregorianCalendar.HOUR) ;
      pastMidnight = (hour * 60) + minute ;
+     return pastMidnight ;
+   }
+   /**
+    * Method that simulates times of an array of Journeys
+    * and applying delays, cancellations
+    */
+   public static LiveJourney[] getAlterTimes(Route route)
+   {
+     GregorianCalendar curTime = new GregorianCalendar() ;
+     getCurTime() ;
 
-     ArrayList<Journey> simJourneys = new ArrayList<Journey>();
+     ArrayList<LiveJourney> simJourneys = new ArrayList<LiveJourney>();
      
      //Array storing the original journeys and times 
-     Journey[] journeys = get_journeys(date, date, route) ;
+     Journey[] journeys = get_journeys(curTime, curTime, route) ;
           
      //iterate over all the journeys on the selected day
      for (int i = 0; i < journeys.length; i++)
      {
         //select the journeys we want to apply simulation to
         //Only journeys that have already started can have data changed
-        if (journeys[i].startTime() < pastMidnight)
+        if (journeys[i].startTime() < getCurTime())
         {
            Service curService = journeys[i].getService() ;
            //get times for current journey
@@ -100,31 +106,37 @@ public class Timetable
            //later identify the cancelled journeys. Stored in an array list
            if (simForJourney > 30 && simForJourney < 34)
            {
-              origTimes[0] = 2000 ;
-              simJourneys.add(journeys[i]) ;
+              //origTimes[0] = 2000 ;
+              LiveJourney journey = new LiveJourney(journeys[i], -1);
+              simJourneys.add(journey) ;
            }//if
            
            //If the journey is late, apply the delay to every timing point
            //and add the new times to the journey, store it in an array list
            else if (simForJourney < 31)
            {
-              for (int j = 0; j < origTimes.length; j++)
-              { 
-                origTimes[j] = origTimes[j] + simForJourney ;
-              }//for
-              simJourneys.add(journeys[i]) ;
-           }//else
+              LiveJourney journey2 = new LiveJourney(journeys[i], simForJourney) ;
+              simJourneys.add(journey2) ;
+           }//else if
            
            //if journey on time, don't simulate, just add original times to
            //the array list
-           else 
-             simJourneys.add(journeys[i]) ;
+           else
+           {
+              LiveJourney journey3 = new LiveJourney(journeys[i], 0 );
+              simJourneys.add(journey3) ;
+           }//else
+        }//if
 
-          }//if
+        else if (journeys[i].startTime() < (getCurTime() + 90))
+        {
+           LiveJourney journey4 = new LiveJourney(journeys[i], 0 );
+           simJourneys.add(journey4) ;
+        }
      }//for
    
     // return journeys as an array
-    Journey[] journeys_array = new Journey[simJourneys.size()];
+    LiveJourney[] journeys_array = new LiveJourney[simJourneys.size()];
     return simJourneys.toArray(journeys_array);
    }//getAlterTimes
    

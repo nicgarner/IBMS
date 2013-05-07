@@ -1,7 +1,7 @@
 package gui.passenger;
 import objects.*;
 import wrapper.*;
-import java.util.GregorianCalendar;
+import java.util.ArrayList;
 
 /*
  * To change this template, choose Tools | Templates
@@ -186,19 +186,29 @@ public class RealTimeInfo extends javax.swing.JFrame {
         setBounds((screenSize.width-831)/2, (screenSize.height-321)/2, 831, 321);
     }// </editor-fold>
 
-    public static String view_RT_info(BusStop stop, GregorianCalendar date,
-                                      Route route)
+    public static String view_RT_info(BusStop stop,Route route)
     {
-      Journey[] journeys = Timetable.getAlterTimes(stop, date, route) ;
+      LiveJourney[] liveJourneys = Timetable.getAlterTimes(route) ;
       int stopPosition = Network.stopPositionInRoute(stop) ;
+      ArrayList<Integer> relevantTimes = new ArrayList<Integer>() ;
 
-      for (int i = 0; i < journeys.length; i++)
+      for (int i = 0; i < liveJourneys.length; i++)
       {
-         Service curService = journeys[i].getService() ;
+         LiveJourney liveJourney = liveJourneys[i];
+         Service curService = liveJourney.getService() ;
          //get times for current journey
-         int[] altTimes = curService.getTimes() ;
+         int[] times = curService.getTimes();
+         relevantTimes.add(times[stopPosition]);
       }
-      return "";
+      
+      Integer[] relTimes = new Integer[relevantTimes.size()];
+      relevantTimes.toArray(relTimes);
+      
+      for(int i = 0; i < relTimes.length; i++)
+      {
+         if ((Timetable.getCurTime()+60) > relTimes[i])
+             
+      }
     }
 
     private void backButtonActionPerformed(java.awt.event.ActionEvent evt) {
