@@ -33,9 +33,7 @@ public class JourneyPlanner extends javax.swing.JFrame {
     private Passenger passenger;
     private Area[] allAreas = Area.getNonEmptyAreas();
     private String[] allAreaNames = new String[allAreas.length];
-    private String selectedArea;
-    private String selectedOriginStop;
-    private String selectedDestStop;
+    private String selectedArea;  
 
     private Date date = new Date();
     private Calendar cal = Calendar.getInstance();
@@ -75,8 +73,6 @@ public class JourneyPlanner extends javax.swing.JFrame {
     private void initComponents() {
 
         backButton = new javax.swing.JButton();
-        plannerTableScrollPane = new javax.swing.JScrollPane();
-        plannerTable = new javax.swing.JTable();
         planButton = new javax.swing.JButton();
         destinationSelectLabel1 = new javax.swing.JLabel();
         destinationBusStopBox = new javax.swing.JComboBox();
@@ -93,8 +89,11 @@ public class JourneyPlanner extends javax.swing.JFrame {
         originLabel1 = new javax.swing.JLabel();
         originBusStopBox = new javax.swing.JComboBox();
         hourTextField = new javax.swing.JTextField();
-        jLabel1 = new javax.swing.JLabel();
+        colonLabel = new javax.swing.JLabel();
         minuteTextField = new javax.swing.JTextField();
+        resultPanel = new javax.swing.JPanel();
+        plannerTableScrollPane = new javax.swing.JScrollPane();
+        plannerTable = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Journey Planner");
@@ -105,38 +104,6 @@ public class JourneyPlanner extends javax.swing.JFrame {
                 backButtonActionPerformed(evt);
             }
         });
-
-        plannerTable.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
-            },
-            new String [] {
-                "Departure Stop", "Departure time", "Arrival stop", "Arrival time"
-            }
-        ) {
-            Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
-            };
-            boolean[] canEdit = new boolean [] {
-                false, false, false, false
-            };
-
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
-            }
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
-        plannerTableScrollPane.setViewportView(plannerTable);
-        plannerTable.getColumnModel().getColumn(0).setResizable(false);
-        plannerTable.getColumnModel().getColumn(1).setResizable(false);
-        plannerTable.getColumnModel().getColumn(2).setResizable(false);
-        plannerTable.getColumnModel().getColumn(3).setResizable(false);
 
         planButton.setText("Plan journey");
         planButton.addActionListener(new java.awt.event.ActionListener() {
@@ -216,67 +183,118 @@ public class JourneyPlanner extends javax.swing.JFrame {
 
         hourTextField.setPreferredSize(new java.awt.Dimension(20, 27));
 
-        jLabel1.setText(":");
+        colonLabel.setText(":");
 
         minuteTextField.setPreferredSize(new java.awt.Dimension(20, 27));
+
+        resultPanel.setVisible(false);
+
+        javax.swing.GroupLayout resultPanelLayout = new javax.swing.GroupLayout(resultPanel);
+        resultPanel.setLayout(resultPanelLayout);
+        resultPanelLayout.setHorizontalGroup(
+            resultPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 331, Short.MAX_VALUE)
+        );
+        resultPanelLayout.setVerticalGroup(
+            resultPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 497, Short.MAX_VALUE)
+        );
+
+        plannerTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Departure Stop", "Departure time", "Arrival stop", "Arrival time"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        plannerTableScrollPane.setViewportView(plannerTable);
+        plannerTable.getColumnModel().getColumn(0).setResizable(false);
+        plannerTable.getColumnModel().getColumn(1).setResizable(false);
+        plannerTable.getColumnModel().getColumn(2).setResizable(false);
+        plannerTable.getColumnModel().getColumn(3).setResizable(false);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(planJourneyLabel)
-                            .addComponent(instructionLabel2)
-                            .addComponent(dateAndTimeLabel)
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(originAreaBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(originAreaLabel))
-                                .addGap(48, 48, 48)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(originBusStopBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(originLabel1)))
-                            .addComponent(planButton, javax.swing.GroupLayout.PREFERRED_SIZE, 264, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(planJourneyLabel)
+                                    .addComponent(instructionLabel2)
+                                    .addComponent(dateAndTimeLabel)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(originAreaBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(originAreaLabel))
+                                        .addGap(48, 48, 48)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(originBusStopBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(originLabel1)))
+                                    .addComponent(planButton, javax.swing.GroupLayout.PREFERRED_SIZE, 264, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(destinationAreaLabel)
+                                            .addComponent(destinationAreaBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addGap(42, 42, 42)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(destinationBusStopBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(destinationSelectLabel1))))
+                                .addGap(18, 18, 18))
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(destinationAreaLabel)
-                                    .addComponent(destinationAreaBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(42, 42, 42)
+                                    .addComponent(dateLabel)
+                                    .addComponent(dateTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(92, 92, 92)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(destinationBusStopBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(destinationSelectLabel1))))
-                        .addGap(18, 18, 18))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(hourTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(4, 4, 4)
+                                        .addComponent(colonLabel)
+                                        .addGap(3, 3, 3)
+                                        .addComponent(minuteTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(timeLabel))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 106, Short.MAX_VALUE)))
+                        .addGap(90, 90, 90))
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(dateLabel)
-                            .addComponent(dateTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 142, Short.MAX_VALUE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(hourTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(4, 4, 4)
-                                .addComponent(jLabel1)
-                                .addGap(3, 3, 3)
-                                .addComponent(minuteTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(timeLabel))
-                        .addGap(124, 124, 124)))
-                .addComponent(plannerTableScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 387, Short.MAX_VALUE))
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(backButton)
-                .addContainerGap(655, Short.MAX_VALUE))
+                        .addComponent(backButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 232, Short.MAX_VALUE)))
+                .addGap(22, 22, 22)
+                .addComponent(plannerTableScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 307, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(189, 189, 189)
+                .addComponent(resultPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(5, 5, 5))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addComponent(backButton)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(plannerTableScrollPane, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 497, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
+                        .addComponent(backButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(planJourneyLabel)
                         .addGap(18, 18, 18)
                         .addComponent(instructionLabel2)
@@ -309,10 +327,15 @@ public class JourneyPlanner extends javax.swing.JFrame {
                                 .addGap(18, 18, 18)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                     .addComponent(hourTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel1)
+                                    .addComponent(colonLabel)
                                     .addComponent(minuteTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 118, Short.MAX_VALUE)
-                        .addComponent(planButton)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 75, Short.MAX_VALUE)
+                        .addComponent(planButton))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(12, 12, 12)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(plannerTableScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 335, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(resultPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap())
         );
 
@@ -336,16 +359,14 @@ public class JourneyPlanner extends javax.swing.JFrame {
      * Plan the journey if the button is pressed
      */
     private void planButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_planButtonActionPerformed
-        // TODO add your handling code here:
-        int originStop =
-        tablePanel.setVisible (true);
+        // TODO add your handling code here:       
+        resultPanel.setVisible (true);
 
     }//GEN-LAST:event_planButtonActionPerformed
 
     private void originBusStopBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_originBusStopBoxActionPerformed
         // TODO add your handling code here:
-        // Obtain the selected bus stop from the list
-       selectedOriginStop = (String) originBusStopBox.getSelectedItem();
+        // Obtain the selected bus stop from the list       
     }//GEN-LAST:event_originBusStopBoxActionPerformed
 
     // User selects an area and the bus stops in the area become available
@@ -414,13 +435,13 @@ public class JourneyPlanner extends javax.swing.JFrame {
 }//GEN-LAST:event_destinationAreaBoxActionPerformed
 
     private void destinationBusStopBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_destinationBusStopBoxActionPerformed
-        // TODO add your handling code here:
-        selectedDestStop = (String) destinationBusStopBox.getSelectedItem();
+        // TODO add your handling code here:       
     }//GEN-LAST:event_destinationBusStopBoxActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton backButton;
+    private javax.swing.JLabel colonLabel;
     private javax.swing.JLabel dateAndTimeLabel;
     private javax.swing.JLabel dateLabel;
     private javax.swing.JTextField dateTextField;
@@ -430,7 +451,6 @@ public class JourneyPlanner extends javax.swing.JFrame {
     private javax.swing.JLabel destinationSelectLabel1;
     private javax.swing.JTextField hourTextField;
     private javax.swing.JLabel instructionLabel2;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JTextField minuteTextField;
     private javax.swing.JComboBox originAreaBox;
     private javax.swing.JLabel originAreaLabel;
@@ -440,6 +460,7 @@ public class JourneyPlanner extends javax.swing.JFrame {
     private javax.swing.JLabel planJourneyLabel;
     private javax.swing.JTable plannerTable;
     private javax.swing.JScrollPane plannerTableScrollPane;
+    private javax.swing.JPanel resultPanel;
     private javax.swing.JLabel timeLabel;
     // End of variables declaration//GEN-END:variables
 
