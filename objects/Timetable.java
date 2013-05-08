@@ -61,7 +61,7 @@ public class Timetable
    */   
    public static int sim()
    {
-     int delayTime = 1 + (int)(Math.random() * ((68 - 1) + 1)) ;
+     int delayTime = 1 + (int)(Math.random() * (  (19 - 1) + 1  )   ) ;
      
      return delayTime ;
      
@@ -94,33 +94,29 @@ public class Timetable
    {
      GregorianCalendar curTime = new GregorianCalendar() ;
      getCurTime() ;
-     System.out.println(curTime) ;
-
+   
      ArrayList<LiveJourney> simJourneys = new ArrayList<LiveJourney>();
      
      //Array storing the original journeys and times 
      Journey[] journeys = get_journeys(curTime, curTime, route) ;
-          
+
      //iterate over all the journeys on the selected day
      for (int i = 0; i < journeys.length; i++)
      {
-                  System.out.println(journeys[i].startTime() + " and " + getCurTime()) ;
-
         //select the journeys we want to apply simulation to
         //Only journeys that have already started can have data changed
-        if (journeys[i].startTime() < getCurTime())
+        if ((journeys[i].startTime())  < getCurTime())
         {
-           System.out.println(journeys[i].startTime() + " and " + getCurTime()) ;
-           Service curService = journeys[i].getService() ;
            //get times for current journey
-           int[] origTimes = curService.getTimes() ;
+           
            int simForJourney = sim() ;
+           simForJourney = simForJourney*2 ;
            
            //Check if journey cancelled and alter starting time, so we can
            //later identify the cancelled journeys. Stored in an array list
            if (simForJourney > 30 && simForJourney < 34)
            {
-              //origTimes[0] = 2000 ;
+              System.out.println("cancel") ;
               LiveJourney journey = new LiveJourney(journeys[i], -1);
               simJourneys.add(journey) ;
            }//if
@@ -129,6 +125,7 @@ public class Timetable
            //and add the new times to the journey, store it in an array list
            else if (simForJourney < 31)
            {
+              System.out.println("late") ;
               LiveJourney journey2 = new LiveJourney(journeys[i], simForJourney) ;
               simJourneys.add(journey2) ;
            }//else if
@@ -137,6 +134,9 @@ public class Timetable
            //the array list
            else
            {
+      
+               
+               System.out.println("on time") ;
               LiveJourney journey3 = new LiveJourney(journeys[i], 0 );
               simJourneys.add(journey3) ;
            }//else
@@ -144,11 +144,15 @@ public class Timetable
 
         else if (journeys[i].startTime() < (getCurTime() + 90))
         {
+           
            LiveJourney journey4 = new LiveJourney(journeys[i], 0 );
            simJourneys.add(journey4) ;
         }
-     }//for
-   
+
+
+
+     }//
+
     // return journeys as an array
     LiveJourney[] journeys_array = new LiveJourney[simJourneys.size()];
     return simJourneys.toArray(journeys_array);

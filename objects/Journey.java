@@ -84,44 +84,45 @@ public class Journey
 	{
 		return service;
 	}// getJourneyID
-	
-	 public static String view_RT_info(BusStop stop,Route route)
+
+    public static String view_RT_info(BusStop stop,Route route)
     {
-      printtest() ;
       LiveJourney[] liveJourneys = Timetable.getAlterTimes(route) ;
       int stopPosition = Network.stopPositionInRoute(stop) ;
-      ArrayList<Integer> relevantTimes = new ArrayList<Integer>() ;
-      System.out.println("test") ;
+      String string = "" ;
+
       for (int i = 0; i < liveJourneys.length; i++)
       {
          LiveJourney liveJourney = liveJourneys[i];
          Service curService = liveJourney.getService() ;
          //get times for current journey
          int[] times = curService.getTimes();
-         relevantTimes.add(times[stopPosition]);
-         System.out.println("test2") ;
-      }//for
-      
-      Integer[] relTimes = new Integer[relevantTimes.size()];
-      relevantTimes.toArray(relTimes);
-      
-      for(int i = 0; i < relTimes.length; i++)
-      {
-         System.out.println(i) ;
-         if ((Timetable.getCurTime()+60) > relTimes[i])
+         int late ;
+
+         if (((stopPosition < times.length) && ((Timetable.getCurTime()+60) > times[stopPosition])) && (Timetable.getCurTime() < times[stopPosition]))
          {
+            
             int status = liveJourneys[i].getStatus() ;
-            if (status == -1) 
-             return "The " + route.getName() + " service is cancelled due to " +
-                    "forcasted snow and icy conditions! We apologize for the inconvenience." ;
-            else
-             return "The " + route.getName() + " service is scheduled to arrive at " +
-                     (relTimes[i] + liveJourneys[i].getStatus()) ;
-             
+            if (status == -1) {
+             System.out.println("check2") ;
+               string +=  "The " + route.getName() + " service is cancelled due to " +
+                    "forcasted snow and icy conditions! We apologize for the inconvenience.\n" ; }
+            else if (status == 0)
+            {
+               
+               string += "The " + route.getName() + " service is scheduled to arrive at " +
+                     (Timetable.minutesToTime(times[stopPosition])) + "\n" ;
+            }
+                else
+            {
+              late = times[stopPosition] + liveJourneys[i].getStatus() ;
+              string += "The " + route.getName() + " service is late by " + liveJourneys[i].getStatus() + " minutes due to cows crossing the road and is due to arrive at " +
+                     Timetable.minutesToTime(late) + " We apologize for the inconvenience! \n" ;
+            }
          }//if
        }//for
-      return "" ;
-    }
+      return string ;
+    }//view_RT_info
 
        public static void printtest()
   {
