@@ -123,22 +123,6 @@ public class Service {
     return services;
   }
   
-  public int getId()
-  {
-      return id;
-  }
-
-  @Override
-  public boolean equals(Object other)
-  {
-    boolean result = false;
-    if (other instanceof Service)
-    {
-      Service that = (Service) other;
-      result = (this.getId() == that.getId());
-    }
-    return result;
-  }
   
   /*
   // main method for testing only

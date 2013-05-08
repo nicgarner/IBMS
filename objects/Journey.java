@@ -90,6 +90,7 @@ public class Journey
       LiveJourney[] liveJourneys = Timetable.getAlterTimes(route) ;
       int stopPosition = Network.stopPositionInRoute(stop) ;
       String string = "" ;
+      boolean added = false ;
 
       for (int i = 0; i < liveJourneys.length; i++)
       {
@@ -101,7 +102,7 @@ public class Journey
 
          if (((stopPosition < times.length) && ((Timetable.getCurTime()+60) > times[stopPosition])) && (Timetable.getCurTime() < times[stopPosition]))
          {
-            
+            added = true ;
             int status = liveJourneys[i].getStatus() ;
             if (status == -1) {
              System.out.println("check2") ;
@@ -121,7 +122,9 @@ public class Journey
             }
          }//if
        }//for
-      return string ;
+      if(!added)
+       return "No journeys are scheduled to arrive at this bus stop in the next hour" ;
+      return "" ;
     }//view_RT_info
 
        public static void printtest()

@@ -4,7 +4,6 @@ javac ./objects/*.java
 javac ./static_classes/*.java
 javac ./gui/staff/*.java
 javac ./gui/passenger/*.java
-javac ./org/jgrapht/graph/*.java
 
 echo 
 echo java gui/passenger/Passenger
