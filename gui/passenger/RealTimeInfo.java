@@ -61,6 +61,7 @@ public class RealTimeInfo extends javax.swing.JFrame {
         busStopBox = new javax.swing.JComboBox();
         infoButton = new javax.swing.JButton();
         resultPanel = new javax.swing.JPanel();
+        optionsPanel = new javax.swing.JPanel();
         areaScrollPane = new javax.swing.JScrollPane();
         resultTextArea = new javax.swing.JTextArea();
 
@@ -80,8 +81,9 @@ public class RealTimeInfo extends javax.swing.JFrame {
 
         routeBox.setModel(new javax.swing.DefaultComboBoxModel());
         routeBox.addItem("Select...");
-        for (int i = 0; i < allRoutes.length; i++)
-        routeBox.addItem(allRouteCombos[i]);
+        for (int i = 0; i < allRoutes.length; i++) {
+            routeBox.addItem(allRouteCombos[i]);
+        }
         routeBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 routeBoxActionPerformed(evt);
@@ -106,9 +108,10 @@ public class RealTimeInfo extends javax.swing.JFrame {
 
         resultTextArea.setEnabled (false);
         resultTextArea.setDisabledTextColor (Color.black);
-        resultTextArea.setColumns(20);
-        resultTextArea.setRows(5);
-        resultTextArea.setText("hello");
+        resultTextArea.setColumns(55);
+        resultTextArea.setRows(4);
+        resultTextArea.setFont(new java.awt.Font("DejaVu Sans", 1, 13));
+        resultTextArea.setText("");
         areaScrollPane.setViewportView(resultTextArea);
 
         javax.swing.GroupLayout resultPanelLayout = new javax.swing.GroupLayout(resultPanel);
@@ -128,12 +131,12 @@ public class RealTimeInfo extends javax.swing.JFrame {
             .addGroup(resultPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(resultPanelLayout.createSequentialGroup()
                     .addContainerGap()
-                    .addComponent(areaScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 218, Short.MAX_VALUE)
+                    .addComponent(areaScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 418, Short.MAX_VALUE)
                     .addContainerGap()))
         );
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(optionsPanel);
+        optionsPanel.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(backButton)
@@ -145,22 +148,20 @@ public class RealTimeInfo extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(routeLabel)
-                            .addComponent(routeBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(routeBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(infoButton))
                         .addGap(95, 95, 95)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(busStopBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(stopLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addComponent(infoButton))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 171, Short.MAX_VALUE)
-                .addComponent(resultPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    )
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 171, Short.MAX_VALUE)
+                )
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(resultPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(backButton)
                         .addGap(18, 18, 18)
@@ -179,8 +180,13 @@ public class RealTimeInfo extends javax.swing.JFrame {
                         .addComponent(infoButton)))
                 .addContainerGap())
         );
-
-        resultPanel.setVisible(false);
+        
+        javax.swing.BoxLayout windowLayout = new javax.swing.BoxLayout(getContentPane(), javax.swing.BoxLayout.PAGE_AXIS);
+        getContentPane().setLayout(windowLayout);
+        add(optionsPanel);
+        add(resultPanel);
+        
+        resultPanel.setVisible(true);
 
         java.awt.Dimension screenSize = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
         setBounds((screenSize.width-831)/2, (screenSize.height-321)/2, 831, 321);
@@ -189,10 +195,8 @@ public class RealTimeInfo extends javax.swing.JFrame {
    
 
     private void backButtonActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
         passenger.setVisible(true);
         dispose();
-
     }
 
     // User selects an area and the bus stops in that area become available
@@ -230,11 +234,23 @@ public class RealTimeInfo extends javax.swing.JFrame {
     }
 
     private void infoButtonActionPerformed(java.awt.event.ActionEvent evt) {
-        RouteCombo route = (RouteCombo)routeBox.getSelectedItem() ;
-        BusStopCombo stop = (BusStopCombo)busStopBox.getSelectedItem() ;
-        String result = Journey.view_RT_info(stop.getBusStop(), route.getRoute()) ;
-        resultTextArea.setText(result) ;
-        resultPanel.setVisible(true);
+        try {
+            stopSelectLabel.setForeground(Color.black);
+            if (routeBox.getSelectedItem() == null ||
+                busStopBox.getSelectedItem() == null ||
+                routeBox.getSelectedItem() instanceof String ||
+                busStopBox.getSelectedItem() instanceof String) {
+                throw new java.util.zip.DataFormatException();
+            }
+            RouteCombo route = (RouteCombo)routeBox.getSelectedItem() ;
+            BusStopCombo stop = (BusStopCombo)busStopBox.getSelectedItem() ;
+            String result = Journey.view_RT_info(stop.getBusStop(), route.getRoute()) ;
+            resultTextArea.setText(result) ;
+            resultPanel.setVisible(true);
+        }
+        catch (Exception e) {
+            stopSelectLabel.setForeground(Color.red);
+        }
     }
 
 
@@ -246,6 +262,7 @@ public class RealTimeInfo extends javax.swing.JFrame {
     private javax.swing.JComboBox busStopBox;
     private javax.swing.JButton infoButton;
     private javax.swing.JPanel resultPanel;
+    private javax.swing.JPanel optionsPanel;
     private javax.swing.JTextArea resultTextArea;
     private javax.swing.JLabel stopLabel;
     private javax.swing.JLabel stopSelectLabel;
