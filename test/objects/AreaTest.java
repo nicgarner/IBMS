@@ -1,4 +1,4 @@
-package test.passengerUI;
+package objects;
 
 /*
  * To change this template, choose Tools | Templates
@@ -39,48 +39,6 @@ public class AreaTest {
     @After
     public void tearDown() {
     }
-
-    /**
-     * Test of getID method, of class Area.
-     
-    @Test
-    public void testGetID() {
-        System.out.println("getID");
-        Area instance = null;
-        int expResult = 0;
-        int result = instance.getID();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of getName method, of class Area.
-     
-    @Test
-    public void testGetName() {
-        System.out.println("getName");
-        Area instance = null;
-        String expResult = "";
-        String result = instance.getName();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of getStopsInArea method, of class Area.
-     
-    @Test
-    public void testGetStopsInArea() {
-        System.out.println("getStopsInArea");
-        Area instance = null;
-        BusStop[] expResult = null;
-        BusStop[] result = instance.getStopsInArea();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }*/
 
     /**
      * Test of getUniqueStops method, of class Area using the Hayfield area
