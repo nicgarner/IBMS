@@ -84,7 +84,15 @@ public class Journey
 	{
 		return service;
 	}// getJourneyID
-
+    
+    
+    /**
+     * Method that gets the relevant journeys and their delays for a specific stop
+     * on a specifc route
+     *
+     * @param 	stop Bus stop that we want to see the information for
+     * @param	route Route that we want to see the information for
+     */
     public static String view_RT_info(BusStop stop,Route route)
     {
       LiveJourney[] liveJourneys = Timetable.getAlterTimes(route) ;
@@ -105,7 +113,6 @@ public class Journey
             added = true ;
             int status = liveJourneys[i].getStatus() ;
             if (status == -1) {
-             System.out.println("check2") ;
                string +=  "The " + route.getName() + " service is cancelled due to " +
                     "forcasted snow and icy conditions! We apologize for the inconvenience.\n" ; }
             else if (status == 0)
