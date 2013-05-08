@@ -76,5 +76,20 @@ public class TimetableTest {
         assertEquals(expResult, result);
     }
 
- 
+
+    /**
+     * Test of sim method, of class Timetable.
+     */
+    @Test
+    public void testSim() {
+        System.out.println("sim");
+        int expResult = 10000;
+        int result = 0;
+        int switcher = 0;
+        for(int i = 0; i < 10000; i++){
+           switcher = Timetable.sim();
+           if (switcher > 0 && switcher < 20) result++;
+        }
+        assertEquals(expResult, result);
+     }
 }
