@@ -67,15 +67,25 @@ public class Timetable
      
    }//sim
 
+   /**
+    * A method for getting current time in minutes after midnight. Gets the
+    * time when invoked.
+    *
+    * @return	current time in format - minutes past midnight
+    */
    public static int getCurTime()
    {
      int minute, hour, pastMidnight ;
+     
+     //create a date instance, access time, convert to minutes
      GregorianCalendar curTime = new GregorianCalendar() ;
      minute = curTime.get(GregorianCalendar.MINUTE) ;
-     hour = curTime.get(GregorianCalendar.HOUR) ;
+     hour = curTime.get(GregorianCalendar.HOUR_OF_DAY) ;
      pastMidnight = (hour * 60) + minute ;
+     
      return pastMidnight ;
-   }
+   }//getCurTime
+   
    /**
     * Method that simulates times of an array of Journeys
     * and applying delays, cancellations
@@ -84,6 +94,7 @@ public class Timetable
    {
      GregorianCalendar curTime = new GregorianCalendar() ;
      getCurTime() ;
+     System.out.println(curTime) ;
 
      ArrayList<LiveJourney> simJourneys = new ArrayList<LiveJourney>();
      
@@ -93,10 +104,13 @@ public class Timetable
      //iterate over all the journeys on the selected day
      for (int i = 0; i < journeys.length; i++)
      {
+                  System.out.println(journeys[i].startTime() + " and " + getCurTime()) ;
+
         //select the journeys we want to apply simulation to
         //Only journeys that have already started can have data changed
         if (journeys[i].startTime() < getCurTime())
         {
+           System.out.println(journeys[i].startTime() + " and " + getCurTime()) ;
            Service curService = journeys[i].getService() ;
            //get times for current journey
            int[] origTimes = curService.getTimes() ;
@@ -139,29 +153,7 @@ public class Timetable
     LiveJourney[] journeys_array = new LiveJourney[simJourneys.size()];
     return simJourneys.toArray(journeys_array);
    }//getAlterTimes
-   
-  /*
-    public static Journey[] getJourneys(BusStop stop, GregorianCalendar date,
-                                            Route route)
-        {
-          int minute, hour, pastMidnight ;
-          GregorianCalendar curTime = new GregorianCalendar() ;
-          minute = curTime.get(Calendar.MINUTE) ;
-          hour = curTime.get(Calendar.HOUR) ;
-          pastMidnight = (hour * 60) + minute ;
-
-          ArrayList<Journey> journeys = new ArrayList<Journey>();
-          
-          GregorianCalendar day = (GregorianCalendar)date.clone()
-         
-          //iterate over current day 
-          while(!day.after(date))
-          {
-            int[] services = TimetableInfo.getServices(route.getID(), day.getTime());
-            for (int service = 0; service < services.length; service++)
-                journeys.add(new Journey(services[service], day));
-          }
-  */
+ 
   /**
    * Returns the services for the the given route for the given day.
    *
@@ -484,5 +476,7 @@ public class Timetable
       }
       System.out.println("\n");
     } // for (routes)
-  } // method (main)
+  } // method (printall)
+
+ 
 } // class (Timetable)

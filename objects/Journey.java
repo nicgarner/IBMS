@@ -3,6 +3,7 @@ package objects;
 import wrapper.database;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.ArrayList;
 
 /** 
  * Creates a journey for IBMS rostering. A journey is a combination of a date 
@@ -84,7 +85,57 @@ public class Journey
 		return service;
 	}// getJourneyID
 	
-	/**
+	 public static String view_RT_info(BusStop stop,Route route)
+    {
+      printtest() ;
+      LiveJourney[] liveJourneys = Timetable.getAlterTimes(route) ;
+      int stopPosition = Network.stopPositionInRoute(stop) ;
+      ArrayList<Integer> relevantTimes = new ArrayList<Integer>() ;
+      System.out.println("test") ;
+      for (int i = 0; i < liveJourneys.length; i++)
+      {
+         LiveJourney liveJourney = liveJourneys[i];
+         Service curService = liveJourney.getService() ;
+         //get times for current journey
+         int[] times = curService.getTimes();
+         relevantTimes.add(times[stopPosition]);
+         System.out.println("test2") ;
+      }//for
+      
+      Integer[] relTimes = new Integer[relevantTimes.size()];
+      relevantTimes.toArray(relTimes);
+      
+      for(int i = 0; i < relTimes.length; i++)
+      {
+         System.out.println(i) ;
+         if ((Timetable.getCurTime()+60) > relTimes[i])
+         {
+            int status = liveJourneys[i].getStatus() ;
+            if (status == -1) 
+             return "The " + route.getName() + " service is cancelled due to " +
+                    "forcasted snow and icy conditions! We apologize for the inconvenience." ;
+            else
+             return "The " + route.getName() + " service is scheduled to arrive at " +
+                     (relTimes[i] + liveJourneys[i].getStatus()) ;
+             
+         }//if
+       }//for
+      return "" ;
+    }
+
+       public static void printtest()
+  {
+     Route route = new Route(68) ;
+     //LiveJourney[] journeys = Timetable.getAlterTimes(route) ;
+
+     for(int i = 0; i < 8; i++)
+     {
+         System.out.println(i) ;
+     }
+  }
+    
+
+        /**
 	 * Gets the date of the journey
 	 * @return the date of the journey
 	 */	

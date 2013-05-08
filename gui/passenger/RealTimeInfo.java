@@ -16,7 +16,7 @@ import java.util.ArrayList;
 
 /**
  *
- * @author Adam Nogradi
+ * @author Adam Nogradi & Kristaps Kalns
  */
 
 /**
@@ -186,30 +186,7 @@ public class RealTimeInfo extends javax.swing.JFrame {
         setBounds((screenSize.width-831)/2, (screenSize.height-321)/2, 831, 321);
     }// </editor-fold>
 
-    public static String view_RT_info(BusStop stop,Route route)
-    {
-      LiveJourney[] liveJourneys = Timetable.getAlterTimes(route) ;
-      int stopPosition = Network.stopPositionInRoute(stop) ;
-      ArrayList<Integer> relevantTimes = new ArrayList<Integer>() ;
-
-      for (int i = 0; i < liveJourneys.length; i++)
-      {
-         LiveJourney liveJourney = liveJourneys[i];
-         Service curService = liveJourney.getService() ;
-         //get times for current journey
-         int[] times = curService.getTimes();
-         relevantTimes.add(times[stopPosition]);
-      }
-      
-      Integer[] relTimes = new Integer[relevantTimes.size()];
-      relevantTimes.toArray(relTimes);
-      
-      for(int i = 0; i < relTimes.length; i++)
-      {
-         if ((Timetable.getCurTime()+60) > relTimes[i])
-             
-      }
-    }
+   
 
     private void backButtonActionPerformed(java.awt.event.ActionEvent evt) {
         // TODO add your handling code here:
@@ -253,8 +230,10 @@ public class RealTimeInfo extends javax.swing.JFrame {
     }
 
     private void infoButtonActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
-        // Kris, insert your method call here
+        RouteCombo route = (RouteCombo)routeBox.getSelectedItem() ;
+        BusStopCombo stop = (BusStopCombo)busStopBox.getSelectedItem() ;
+        String result = Journey.view_RT_info(stop.getBusStop(), route.getRoute()) ;
+        resultTextArea.setText(result) ;
         resultPanel.setVisible(true);
     }
 
